@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Prajan Karthik | Portfolio</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="/css/global.css" />
+    <link rel="stylesheet" href="/css/style.css" />
+    <link rel="stylesheet" href="/css/nav.css" />
+  </head>
+  <body>
+    <div id="loading-spinner"></div>
+
+    <div class="page">
+      <div id="nav-placeholder"></div>
+
+      <main class="grid">
+        <section class="card">
+          <div class="hero-label">
+            <span class="dot-pulse"></span>
+            <span>Hey there, 👋</span>
+          </div>
+
+          <h1 class="hero-heading">
+            I build <span>full-stack</span> web apps engineer things that
+            actually ship.
+          </h1>
+
+          <p class="hero-subtitle">
+            3<sup>rd</sup>rd year CS student with hands-on experience in web
+            development, embedded systems, and systems-level problem solving. I
+            enjoy turning messy ideas into clean UI, scalable backend logic, and
+            structured apps.
+          </p>
+
+          <div class="hero-buttons">
+            <a href="work.html" class="btn-primary"> View my projects 🚀 </a>
+            <a href="contact.html" class="btn-ghost"> Say Hi 👋</a>
+          </div>
+
+          <div class="hero-meta">
+            <div class="hero-pill">
+              <span>Focus</span> Full-stack Dev, MERN, Security, DevOps
+            </div>
+            <div class="hero-pill">
+              <span>Currently</span> Exploring full-stack roles and summer
+              internships.
+            </div>
+          </div>
+        </section>
+
+        <aside class="side-card">
+          <div class="side-label">Quick snapshot</div>
+          <div class="side-main">
+            Creative engineer energy<span> × Slight debugging addiction</span>
+          </div>
+          <p class="side-body">
+            I like building things that i actually want - from small tools for
+            myself to club projects. Half builder, half curious breaker (only on
+            my own Wi-Fi, don't worry 😄).
+          </p>
+          <div class="chip-row">
+            <div class="chip">Full-stack dev</div>
+            <div class="chip">React</div>
+            <div class="chip">Node + MongoDB</div>
+            <div class="chip">React Native</div>
+            <div class="chip">Security curious</div>
+          </div>
+          <div class="side-footer">
+            Looking for <strong>summer 2026 internships</strong> where I can
+            ship real features, learn a ton, and bring some playful energy to
+            the team.
+          </div>
+        </aside>
+      </main>
+
+      <section class="section" id="skills">
+        <div class="section-header">
+          <h2 class="section-title">What I do</h2>
+          <p class="section-sub">Things i have actually worked on.</p>
+        </div>
+
+        <div class="card-row">
+          <article class="mini-card">
+            <div class="mini-top">
+              <div class="mini-icon">💻</div>
+              <div class="mini-title">Full-stack web apps</div>
+            </div>
+            <p class="mini-body">
+              I like taking an idea from “hmm…” to a deployed app with auth,
+              APIs, and a UI that doesn't hurt your eyes.
+            </p>
+            <div class="mini-tags">
+              <span class="mini-tag">React</span>
+              <span class="mini-tag">Node.js</span>
+              <span class="mini-tag">MongoDB</span>
+            </div>
+          </article>
+
+          <article class="mini-card">
+            <div class="mini-top">
+              <div class="mini-icon">📱</div>
+              <div class="mini-title">Mobile experiments</div>
+            </div>
+            <p class="mini-body">
+              I tinker with React Native to build small apps that help me track
+              things, remember stuff, or just test out an idea.
+            </p>
+            <div class="mini-tags">
+              <span class="mini-tag">React Native</span>
+              <span class="mini-tag">Expo</span>
+            </div>
+          </article>
+
+          <article class="mini-card">
+            <div class="mini-top">
+              <div class="mini-icon">🕵️‍♂️</div>
+              <div class="mini-title">Security</div>
+            </div>
+            <p class="mini-body">
+              Took a few cyber courses and enjoy understanding how systems break
+              so I can build them a bit safer.
+            </p>
+            <div class="mini-tags">
+              <span class="mini-tag">Ethical hacking basics</span>
+              <span class="mini-tag">CTF mindset</span>
+            </div>
+          </article>
+
+          <article class="mini-card">
+            <div class="mini-top">
+              <div class="mini-icon">⚙️</div>
+              <div class="mini-title">Collab & club work</div>
+            </div>
+            <p class="mini-body">
+              I've worked in club teams, fixed real bugs, and helped others
+              debug when everyone was staring at the same error.
+            </p>
+            <div class="mini-tags">
+              <span class="mini-tag">Intel IoT Club</span>
+              <span class="mini-tag">Team projects</span>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <footer class="footer-note" id="contact">
+        <div class="footer-dot"></div>
+        <span>
+          Built by me, with a mix of curiosity, caffeine, and a healthy respect
+          for semicolons.
+        </span>
+      </footer>
+    </div>
+
+    <script>
+      // 1. Page Load Animation
+      window.addEventListener("load", () => {
+        const spinner = document.getElementById("loading-spinner");
+        if (spinner) spinner.classList.add("hidden");
+        document.body.classList.add("fade-in");
+      });
+
+      // 2. Fetch Nav and Handle Active State
+      fetch("/component/nav.html")
+        .then((res) => res.text())
+        .then((html) => {
+          document.getElementById("nav-placeholder").innerHTML = html;
+
+          // Robust Active Link Logic
+          const currentPath = window.location.pathname.split("/").pop();
+          const activePage = currentPath === "" ? "index.html" : currentPath;
+
+          document.querySelectorAll(".nav-link").forEach((link) => {
+            const href = link.getAttribute("href");
+
+            // Check if href matches active page
+            if (href === activePage) {
+              link.classList.add("active");
+            }
+
+            // Navigation Spinner Trigger
+            link.addEventListener("click", (e) => {
+              // Don't show spinner if clicking the page we are already on
+              if (href !== activePage) {
+                const spinner = document.getElementById("loading-spinner");
+                if (spinner) spinner.classList.remove("hidden");
+              }
+            });
+          });
+        });
+    </script>
+  </body>
+</html>

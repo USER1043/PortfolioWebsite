@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Contact | Prajan Karthik</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="/css/global.css" />
+    <link rel="stylesheet" href="/css/contact.css" />
+    <link rel="stylesheet" href="/css/nav.css" />
+  </head>
+  <body>
+    <div id="loading-spinner"></div>
+
+    <div class="page">
+      <div id="nav-placeholder"></div>
+
+      <h1 class="title">Let's talk! 🤝</h1>
+      <p class="subtitle">
+        If something here sparked an idea — reach out, I don't bite.
+      </p>
+
+      <section class="contact-card">
+        <h2 class="contact-header">Send a message</h2>
+        <p class="contact-text">
+          Whether it's internships, projects, research, or collaboration — I'd
+          love to hear from you.
+        </p>
+
+        <form
+          class="contact-form"
+          action="mailto:prjnkrthk@gmail.com"
+          method="POST"
+        >
+          <input type="text" name="name" placeholder="Your name" required />
+          <input type="email" name="email" placeholder="Your email" required />
+          <textarea
+            name="message"
+            placeholder="Your message"
+            required
+          ></textarea>
+          <button type="submit" class="btn-primary">Send message 💬</button>
+        </form>
+
+        <p class="micro-note">PS: This form opens your mail app.</p>
+      </section>
+
+      <section class="social-grid">
+        <a
+          class="social-card"
+          href="mailto:prjnkrthk@gmail.com"
+          target="_blank"
+        >
+          <h3>Email</h3>
+          <p>Fastest and easiest way to reach me.</p>
+          <span class="link">Send email →</span>
+        </a>
+
+        <a
+          class="social-card"
+          href="https://www.linkedin.com/in/prajan-karthik"
+          target="_blank"
+        >
+          <h3>LinkedIn</h3>
+          <p>Say hi or talk about opportunities.</p>
+          <span class="link">Open LinkedIn →</span>
+        </a>
+
+        <a
+          class="social-card"
+          href="https://github.com/USER1043"
+          target="_blank"
+        >
+          <h3>GitHub</h3>
+          <p>See things I've been hacking on.</p>
+          <span class="link">View repos →</span>
+        </a>
+      </section>
+
+      <footer class="footer">
+        <p>
+          Prefer Discord/Whatsapp? →
+          <a
+            href="mailto:youremail@example.com?subject=Hey Prajan, can I get your Discord/WhatsApp?"
+          >
+            Just ask 😊
+          </a>
+        </p>
+      </footer>
+    </div>
+
+    <script>
+      // 1. Page Load
+      window.addEventListener("load", () => {
+        const spinner = document.getElementById("loading-spinner");
+        if (spinner) spinner.classList.add("hidden");
+        document.body.classList.add("fade-in");
+      });
+
+      // 2. Fetch Nav
+      fetch("/component/nav.html")
+        .then((res) => res.text())
+        .then((html) => {
+          document.getElementById("nav-placeholder").innerHTML = html;
+
+          const currentPath = window.location.pathname.split("/").pop();
+          const activePage = currentPath === "" ? "index.html" : currentPath;
+
+          document.querySelectorAll(".nav-link").forEach((link) => {
+            const href = link.getAttribute("href");
+            if (href === activePage) {
+              link.classList.add("active");
+            }
+            link.addEventListener("click", (e) => {
+              if (href !== activePage) {
+                const spinner = document.getElementById("loading-spinner");
+                if (spinner) spinner.classList.remove("hidden");
+              }
+            });
+          });
+        });
+
+      // 3. Form Submit
+      document
+        .querySelector(".contact-form")
+        .addEventListener("submit", (e) => {
+          // e.preventDefault(); // Commented out to let mailto work
+          // alert("Thank you for your message! I'll get back to you soon.");
+        });
+    </script>
+  </body>
+</html>

@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Skills | Prajan Karthik</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="/css/global.css" />
+    <link rel="stylesheet" href="/css/skills.css" />
+    <link rel="stylesheet" href="/css/nav.css" />
+  </head>
+  <body>
+    <div id="loading-spinner"></div>
+
+    <div class="page">
+      <div id="nav-placeholder"></div>
+
+      <h1 class="title">Skills I've become friends with 👇</h1>
+      <p class="subtitle">
+        From full-stack engineering to club experience & security curiosity.
+      </p>
+
+      <section class="skill-section">
+        <div class="skill-card">
+          <h2 class="skill-header">Full-stack Development</h2>
+          <p class="skill-desc">
+            I enjoy building real apps with auth, routing, DB persistence and
+            clean UI.
+          </p>
+          <div class="skill-chips">
+            <span>React</span><span>Node.js</span> <span>Tailwind</span
+            ><span>MongoDB</span>
+          </div>
+          <!-- <button class="skill-detail-btn" data-modal-target="#skill-fullstack">
+            More details
+          </button> -->
+        </div>
+
+        <div class="skill-card">
+          <h2 class="skill-header">Mobile Engineering</h2>
+          <p class="skill-desc">
+            Mainly experimental apps for personal usage — tracking, reminders,
+            small tools.
+          </p>
+          <div class="skill-chips">
+            <span>React Native</span><span>Expo</span><span>PostgreSQL</span>
+          </div>
+          <!-- <button class="skill-detail-btn" data-modal-target="#skill-mobile">
+            More details
+          </button> -->
+        </div>
+
+        <div class="skill-card">
+          <h2 class="skill-header">Databases & Architecture</h2>
+          <p class="skill-desc">
+            Designing schemas, optimizing reads, structuring models that don't
+            become nightmares.
+          </p>
+          <div class="skill-chips">
+            <span>MongoDB</span><span>PostgreSQL</span><span>ODM</span>
+          </div>
+          <!-- <button class="skill-detail-btn" data-modal-target="#skill-db">
+            More details
+          </button> -->
+        </div>
+
+        <div class="skill-card">
+          <h2 class="skill-header">Security</h2>
+          <p class="skill-desc">
+            Beginner ethical hacking hobby — experimenting safely on my own
+            networks.
+          </p>
+          <div class="skill-chips">
+            <span>Linux</span><span>Networking</span><span>CTF basics</span>
+          </div>
+          <!-- <button class="skill-detail-btn" data-modal-target="#skill-security">
+            More details
+          </button> -->
+        </div>
+
+        <div class="skill-card">
+          <h2 class="skill-header">Team Experience</h2>
+          <p class="skill-desc">
+            Built features collaboratively, supported club members, led small
+            web teams.
+          </p>
+          <div class="skill-chips">
+            <span>Git</span><span>CI/CD</span><span>Debugging</span
+            ><span>Team reviews</span>
+          </div>
+          <!-- <button class="skill-detail-btn" data-modal-target="#skill-team">
+            More details
+          </button> -->
+        </div>
+      </section>
+
+      <footer class="footer">
+        <p>
+          If you want to pair on something cool →
+          <a href="mailto:prjnkrthk@gmail.com">Mail me</a> ✨
+        </p>
+      </footer>
+    </div>
+
+    <div class="modal" id="skill-fullstack">
+      <div class="modal-dialog">
+        <button class="modal-close" data-modal-close>&times;</button>
+        <h2>Full-stack Engineering</h2>
+        <p>Core interests include:</p>
+        <ul>
+          <li>REST APIs, routing, JWT auth</li>
+          <li>Protected dashboards & dynamic UI</li>
+          <li>Clean component structure / state management</li>
+          <li>DB modeling for habits, sessions, logs</li>
+          <li>Deployment & basic CI/CD setup</li>
+        </ul>
+        <p class="modal-meta">Tech: React, Next.js, Node, Tailwind, MongoDB</p>
+      </div>
+    </div>
+
+    <div class="modal" id="skill-mobile">
+      <div class="modal-dialog">
+        <button class="modal-close" data-modal-close>&times;</button>
+        <h2>Mobile Engineering</h2>
+        <p>Better UX through tiny helpful apps:</p>
+        <ul>
+          <li>Daily tracking tools, notes, reminders</li>
+          <li>Offline-first storage using SQLite</li>
+          <li>Testing on real devices & expo builds</li>
+        </ul>
+        <p class="modal-meta">Tech: React Native, Expo, SQLite</p>
+      </div>
+    </div>
+
+    <div class="modal" id="skill-db">
+      <div class="modal-dialog">
+        <button class="modal-close" data-modal-close>&times;</button>
+        <h2>Database Design</h2>
+        <p>Things I enjoy about DB & architecture:</p>
+        <ul>
+          <li>Entity relationships & indexing decisions</li>
+          <li>High-volume reads vs normalized schemas</li>
+          <li>Schema evolution without pain</li>
+        </ul>
+        <p class="modal-meta">
+          Tech: MongoDB, PostgreSQL, NoSQL design philosophies
+        </p>
+      </div>
+    </div>
+
+    <div class="modal" id="skill-security">
+      <div class="modal-dialog">
+        <button class="modal-close" data-modal-close>&times;</button>
+        <h2>Security Curiosity</h2>
+        <p>Learning mindset rather than production expertise:</p>
+        <ul>
+          <li>Safe local test labs for ethical hacking</li>
+          <li>Networking analysis & basic tooling</li>
+          <li>Notes from CTFs & beginners security topics</li>
+        </ul>
+        <p class="modal-meta">Tech: Linux, Python, networking tools</p>
+      </div>
+    </div>
+
+    <div class="modal" id="skill-team">
+      <div class="modal-dialog">
+        <button class="modal-close" data-modal-close>&times;</button>
+        <h2>Team Experience</h2>
+        <p>Things I've naturally practiced:</p>
+        <ul>
+          <li>Debugging others' code during sprints</li>
+          <li>Helping unblock teammates during builds</li>
+          <li>Small feature ownership & planning</li>
+          <li>Helping onboard contributors</li>
+        </ul>
+        <p class="modal-meta">Tech: Git, CI/CD, reviews, pair debugging</p>
+      </div>
+    </div>
+
+    <script>
+      // 1. Page Load
+      window.addEventListener("load", () => {
+        const spinner = document.getElementById("loading-spinner");
+        if (spinner) spinner.classList.add("hidden");
+        document.body.classList.add("fade-in");
+      });
+
+      // 2. Fetch Nav
+      fetch("/component/nav.html")
+        .then((res) => res.text())
+        .then((html) => {
+          document.getElementById("nav-placeholder").innerHTML = html;
+
+          const currentPath = window.location.pathname.split("/").pop();
+          const activePage = currentPath === "" ? "index.html" : currentPath;
+
+          document.querySelectorAll(".nav-link").forEach((link) => {
+            const href = link.getAttribute("href");
+            if (href === activePage) {
+              link.classList.add("active");
+            }
+            link.addEventListener("click", (e) => {
+              if (href !== activePage) {
+                const spinner = document.getElementById("loading-spinner");
+                if (spinner) spinner.classList.remove("hidden");
+              }
+            });
+          });
+        });
+
+      // 3. Modal Logic
+      const openButtons = document.querySelectorAll("[data-modal-target]");
+      const closeButtons = document.querySelectorAll("[data-modal-close]");
+      const modals = document.querySelectorAll(".modal");
+
+      openButtons.forEach((btn) => {
+        btn.addEventListener("click", () => {
+          const selector = btn.getAttribute("data-modal-target");
+          const modal = document.querySelector(selector);
+          if (modal) modal.classList.add("open");
+        });
+      });
+
+      closeButtons.forEach((btn) => {
+        btn.addEventListener("click", () => {
+          const modal = btn.closest(".modal");
+          if (modal) modal.classList.remove("open");
+        });
+      });
+
+      modals.forEach((modal) => {
+        modal.addEventListener("click", (e) => {
+          if (e.target === modal) modal.classList.remove("open");
+        });
+      });
+    </script>
+  </body>
+</html>
