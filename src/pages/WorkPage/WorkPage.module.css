@@ -1,0 +1,156 @@
+/* src/pages/WorkPage/WorkPage.module.css — from work.css */
+
+/* TITLE */
+:global(.title) {
+    font-size: 28px;
+    font-weight: 700;
+    margin-bottom: 6px;
+}
+
+:global(.subtitle) {
+    color: var(--text-muted);
+    margin-bottom: 28px;
+    font-size: 14px;
+}
+
+/* GRID */
+.grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 20px;
+}
+
+/* GLASSMORPHISM PROJECT CARD */
+:global(.project-card) {
+    position: relative;
+    padding: 18px 18px 20px;
+    border-radius: 26px;
+    border: 1px solid var(--card-border);
+    background: var(--bg-alt);
+    box-shadow: var(--shadow-soft);
+    backdrop-filter: blur(18px) saturate(140%);
+    -webkit-backdrop-filter: blur(18px) saturate(140%);
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    justify-content: space-between;
+}
+
+:global(.badge) {
+    position: absolute;
+    top: 10px;
+    right: 12px;
+    padding: 4px 10px;
+    background: var(--accent-soft);
+    color: var(--accent-dark);
+    font-size: 11px;
+    border-radius: var(--radius-pill);
+    font-weight: 600;
+}
+
+:global(.project-title) {
+    font-weight: 650;
+    font-size: 17px;
+}
+
+:global(.project-desc) {
+    font-size: 13px;
+    color: var(--text-muted);
+}
+
+/* STACK TAGS */
+:global(.stack) {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+}
+
+:global(.stack) span {
+    font-size: 11px;
+    padding: 4px 8px;
+    border-radius: var(--radius-pill);
+    background: rgba(223, 245, 232, 0.85);
+    color: var(--accent-dark);
+    font-weight: 500;
+}
+
+/* BUTTONS */
+:global(.actions) {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 6px;
+}
+
+:global(.btn) {
+    padding: 8px 14px;
+    font-size: 13px;
+    border-radius: var(--radius-pill);
+    text-decoration: none;
+    border: none;
+    cursor: pointer;
+    background: linear-gradient(to right, var(--accent), var(--accent-dark));
+    color: white;
+    font-weight: 500;
+    box-shadow: 0 6px 20px rgba(12, 112, 80, 0.35);
+    transition: 0.2s;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
+
+:global(.btn):hover {
+    filter: brightness(1.13);
+    transform: translateY(-1px);
+    box-shadow: 0 9px 26px rgba(12, 112, 80, 0.45);
+}
+
+:global(.btn.ghost) {
+    background: rgba(148, 163, 184, 0.16);
+    color: var(--accent-dark);
+    box-shadow: none;
+}
+
+:global(.btn.ghost):hover {
+    background: rgba(148, 163, 184, 0.24);
+}
+
+/* DEAD BUTTON */
+:global(.btn.dead) {
+    background: rgba(148, 163, 184, 0.16);
+    color: var(--accent-dark);
+    border-radius: var(--radius-pill);
+    box-shadow: none;
+    transition: none;
+}
+
+:global(.btn.dead):hover {
+    filter: none;
+    transform: none;
+    box-shadow: none;
+}
+
+:global(.btn.text) {
+    background: transparent;
+    box-shadow: none;
+    color: var(--accent-dark);
+    padding-inline: 0;
+}
+
+:global(.btn.text):hover {
+    transform: none;
+    text-decoration: underline;
+}
+
+/* FOOTER */
+:global(.footer) {
+    margin-top: 36px;
+    text-align: center;
+    font-size: 13px;
+}
+
+:global(.footer) a {
+    color: var(--accent-dark);
+    text-decoration: none;
+    font-weight: 600;
+}

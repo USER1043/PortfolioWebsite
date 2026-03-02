@@ -1,0 +1,86 @@
+/* src/pages/SkillsPage/SkillsPage.module.css — from skills.css */
+
+/* TITLE */
+:global(.title) {
+    font-size: 28px;
+    font-weight: 700;
+    margin-bottom: 6px;
+}
+
+:global(.subtitle) {
+    font-size: 14px;
+    margin-bottom: 28px;
+    color: var(--text-muted);
+}
+
+/* GRID */
+.skillSection {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 20px;
+}
+
+/* GLASS SKILL CARD */
+:global(.skill-card) {
+    backdrop-filter: blur(18px) saturate(140%);
+    -webkit-backdrop-filter: blur(18px) saturate(140%);
+    background: var(--glass);
+    border-radius: var(--radius-xl);
+    border: 1px solid var(--card-border);
+    box-shadow: var(--shadow-soft);
+    padding: 18px 18px 22px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+:global(.skill-header) {
+    font-weight: 650;
+    font-size: 17px;
+}
+
+:global(.skill-desc) {
+    flex: 0 0 auto;
+    font-size: 13px;
+    color: var(--text-muted);
+}
+
+:global(.skill-chips) {
+    flex: 0 0 auto;
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+}
+
+:global(.skill-chips) span {
+    padding: 4px 8px;
+    font-size: 11px;
+    border-radius: var(--radius-pill);
+    background: rgba(223, 245, 232, 0.85);
+    color: var(--accent-dark);
+    font-weight: 500;
+}
+
+/* MORE DETAILS BUTTON */
+:global(.skill-detail-btn) {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    color: var(--accent-dark);
+    font-size: 13px;
+    text-decoration: underline;
+    margin-top: auto !important;
+}
+
+/* FOOTER */
+:global(.footer) {
+    text-align: center;
+    margin-top: 40px;
+    font-size: 13px;
+}
+
+:global(.footer) a {
+    font-weight: 600;
+    text-decoration: none;
+    color: var(--accent-dark);
+}

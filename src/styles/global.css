@@ -1,0 +1,71 @@
+/* src/styles/global.css — merged from global.css + shared rules */
+:root {
+  /* COLORS */
+  --bg: #fafffb;
+  --bg-alt: #ffffff;
+  --glass: rgba(255, 255, 255, 0.72);
+
+  --accent: #0faf64; /* Main Green */
+  --accent-dark: #0a8a50; /* Darker Green */
+  --accent-soft: #cbf7dd; /* Mint */
+
+  --text-main: #1f2a26;
+  --text-muted: #6b7e75;
+
+  --card-border: rgba(227, 237, 230, 0.9);
+  --pill-bg: #e7f7ef;
+
+  /* SHADOWS & RADIUS */
+  --shadow-soft: 0 14px 40px rgba(0, 0, 0, 0.06);
+  --radius-xl: 24px;
+  --radius-lg: 18px;
+  --radius-pill: 999px;
+}
+
+/* RESET */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: system-ui, -apple-system, sans-serif;
+  background: radial-gradient(
+    circle at top,
+    #e7f7ef 0%,
+    var(--bg) 55%,
+    #ffffff 100%
+  );
+  color: var(--text-main);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow-x: hidden;
+}
+
+/* SHARED LAYOUT */
+.page {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 32px 28px 72px;
+  flex: 1;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+/* FADE-IN ANIMATION */
+.fade-in {
+  animation: fadeIn 0.8s ease-out;
+}
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
