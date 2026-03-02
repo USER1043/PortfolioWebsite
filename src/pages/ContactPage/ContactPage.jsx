@@ -5,22 +5,29 @@ import PageHeader from "../../components/PageHeader/PageHeader";
 import PageFooter from "../../components/PageFooter/PageFooter";
 import ContactForm from "../../components/ContactForm/ContactForm";
 import SocialCard from "../../components/SocialCard/SocialCard";
+import FadeInScroll from "../../components/FadeInScroll/FadeInScroll";
 import { socials } from "../../data/socials";
 
 function ContactPage() {
     return (
         <>
-            <PageHeader
-                title="Let's talk! 🤝"
-                subtitle="If something here sparked an idea — reach out, I don't bite."
-            />
+            <FadeInScroll>
+                <PageHeader
+                    title="Let's talk! 🤝"
+                    subtitle="If something here sparked an idea — reach out, I don't bite."
+                />
+            </FadeInScroll>
 
-            <ContactForm />
+            <FadeInScroll delay={0.1}>
+                <ContactForm />
+            </FadeInScroll>
 
             {/* Social links grid */}
             <section className="social-grid">
-                {socials.map((social) => (
-                    <SocialCard key={social.title} {...social} />
+                {socials.map((social, index) => (
+                    <FadeInScroll key={social.title} delay={index * 0.1}>
+                        <SocialCard {...social} />
+                    </FadeInScroll>
                 ))}
             </section>
 

@@ -6,6 +6,7 @@ import PageHeader from "../../components/PageHeader/PageHeader";
 import PageFooter from "../../components/PageFooter/PageFooter";
 import SkillCard from "../../components/SkillCard/SkillCard";
 import Modal from "../../components/Modal/Modal";
+import FadeInScroll from "../../components/FadeInScroll/FadeInScroll";
 import { skills } from "../../data/skills";
 
 function SkillsPage() {
@@ -17,19 +18,22 @@ function SkillsPage() {
 
     return (
         <>
-            <PageHeader
-                title="Skills I've become friends with 👇"
-                subtitle="From full-stack engineering to club experience & security curiosity."
-            />
+            <FadeInScroll>
+                <PageHeader
+                    title="Skills I've become friends with 👇"
+                    subtitle="From full-stack engineering to club experience & security curiosity."
+                />
+            </FadeInScroll>
 
             {/* Skill cards grid */}
             <section className={styles.skillSection}>
-                {skills.map((skill) => (
-                    <SkillCard
-                        key={skill.id}
-                        skill={skill}
-                        onOpenModal={setActiveModal}
-                    />
+                {skills.map((skill, index) => (
+                    <FadeInScroll key={skill.id} delay={index * 0.08}>
+                        <SkillCard
+                            skill={skill}
+                            onOpenModal={setActiveModal}
+                        />
+                    </FadeInScroll>
                 ))}
             </section>
 

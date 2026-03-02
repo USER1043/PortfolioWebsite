@@ -6,6 +6,7 @@ import PageHeader from "../../components/PageHeader/PageHeader";
 import PageFooter from "../../components/PageFooter/PageFooter";
 import ProjectCard from "../../components/ProjectCard/ProjectCard";
 import Modal from "../../components/Modal/Modal";
+import FadeInScroll from "../../components/FadeInScroll/FadeInScroll";
 import { projects } from "../../data/projects";
 
 function WorkPage() {
@@ -17,19 +18,22 @@ function WorkPage() {
 
     return (
         <>
-            <PageHeader
-                title="Projects I've built or contributed to 💪"
-                subtitle="A selection of things I enjoyed designing, debugging, and deploying."
-            />
+            <FadeInScroll>
+                <PageHeader
+                    title="Projects I've built or contributed to 💪"
+                    subtitle="A selection of things I enjoyed designing, debugging, and deploying."
+                />
+            </FadeInScroll>
 
             {/* Project cards grid */}
             <section className={styles.grid}>
-                {projects.map((project) => (
-                    <ProjectCard
-                        key={project.id}
-                        project={project}
-                        onOpenModal={setActiveModal}
-                    />
+                {projects.map((project, index) => (
+                    <FadeInScroll key={project.id} delay={index * 0.1}>
+                        <ProjectCard
+                            project={project}
+                            onOpenModal={setActiveModal}
+                        />
+                    </FadeInScroll>
                 ))}
             </section>
 

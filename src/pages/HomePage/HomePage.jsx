@@ -4,6 +4,7 @@ import styles from "./HomePage.module.css";
 import HeroSection from "../../components/HeroSection/HeroSection";
 import SideCard from "../../components/SideCard/SideCard";
 import MiniCard from "../../components/MiniCard/MiniCard";
+import FadeInScroll from "../../components/FadeInScroll/FadeInScroll";
 import { miniCards } from "../../data/miniCards";
 
 function HomePage() {
@@ -17,14 +18,18 @@ function HomePage() {
 
             {/* "What I Do" section */}
             <section className={styles.section} id="skills">
-                <div className={styles.sectionHeader}>
-                    <h2 className={styles.sectionTitle}>What I do</h2>
-                    <p className={styles.sectionSub}>Things i have actually worked on.</p>
-                </div>
+                <FadeInScroll>
+                    <div className={styles.sectionHeader}>
+                        <h2 className={styles.sectionTitle}>What I do</h2>
+                        <p className={styles.sectionSub}>Things i have actually worked on.</p>
+                    </div>
+                </FadeInScroll>
 
                 <div className="card-row">
-                    {miniCards.map((card) => (
-                        <MiniCard key={card.title} {...card} />
+                    {miniCards.map((card, index) => (
+                        <FadeInScroll key={card.title} delay={index * 0.1}>
+                            <MiniCard {...card} />
+                        </FadeInScroll>
                     ))}
                 </div>
             </section>

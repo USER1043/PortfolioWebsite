@@ -1,5 +1,6 @@
 // src/components/SideCard/SideCard.jsx
-// Right-side "Quick snapshot" card on the Home page
+// Right-side "Quick snapshot" card on the Home page — slides in from right on load
+import { motion } from "framer-motion";
 
 function SideCard() {
     const chips = [
@@ -11,7 +12,12 @@ function SideCard() {
     ];
 
     return (
-        <aside className="side-card">
+        <motion.aside
+            className="side-card"
+            initial={{ opacity: 0, x: 40 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.5, ease: "easeOut", delay: 0.35 }}
+        >
             <div className="side-label">Quick snapshot</div>
             <div className="side-main">
                 Creative engineer energy<span> × Slight debugging addiction</span>
@@ -32,8 +38,9 @@ function SideCard() {
                 Looking for <strong>summer 2026 internships</strong> where I can ship
                 real features, learn a ton, and bring some playful energy to the team.
             </div>
-        </aside>
+        </motion.aside>
     );
 }
 
 export default SideCard;
+
