@@ -1,6 +1,6 @@
 // src/pages/ContactPage/ContactPage.jsx
 // Contact page — form + social cards grid
-import "./ContactPage.module.css";
+import "./ContactPage.css";
 import PageHeader from "../../components/PageHeader/PageHeader";
 import PageFooter from "../../components/PageFooter/PageFooter";
 import ContactForm from "../../components/ContactForm/ContactForm";

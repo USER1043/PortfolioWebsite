@@ -1,20 +1,20 @@
-/* src/pages/ContactPage/ContactPage.module.css — from contact.css */
+/* src/pages/ContactPage/ContactPage.css */
 
 /* TITLE */
-:global(.title) {
+.title {
     font-size: 32px;
     font-weight: 700;
     margin-bottom: 6px;
 }
 
-:global(.subtitle) {
+.subtitle {
     font-size: 14px;
     margin-bottom: 32px;
     color: var(--text-muted);
 }
 
 /* CONTACT CARD */
-:global(.contact-card) {
+.contact-card {
     backdrop-filter: blur(18px) saturate(130%);
     -webkit-backdrop-filter: blur(18px) saturate(130%);
     background: var(--glass);
@@ -25,27 +25,27 @@
     margin-bottom: 40px;
 }
 
-:global(.contact-header) {
+.contact-header {
     font-size: 20px;
     font-weight: 650;
     margin-bottom: 8px;
 }
 
-:global(.contact-text) {
+.contact-text {
     font-size: 13px;
     color: var(--text-muted);
     margin-bottom: 14px;
 }
 
 /* FORM */
-:global(.contact-form) {
+.contact-form {
     display: flex;
     flex-direction: column;
     gap: 10px;
 }
 
-:global(.contact-form) input,
-:global(.contact-form) textarea {
+.contact-form input,
+.contact-form textarea {
     font-family: inherit;
     font-size: 14px;
     padding: 10px 12px;
@@ -54,12 +54,12 @@
     background: rgba(255, 255, 255, 0.85);
 }
 
-:global(.contact-form) textarea {
+.contact-form textarea {
     min-height: 120px;
     resize: vertical;
 }
 
-:global(.contact-card) :global(.btn-primary) {
+.contact-card .btn-primary {
     background: linear-gradient(to right, var(--accent), var(--accent-dark));
     border: none;
     height: 42px;
@@ -72,26 +72,26 @@
     transition: 0.2s;
 }
 
-:global(.contact-card) :global(.btn-primary):hover {
+.contact-card .btn-primary:hover {
     filter: brightness(1.13);
     transform: translateY(-2px);
 }
 
 /* MICRO NOTE */
-:global(.micro-note) {
+.micro-note {
     margin-top: 10px;
     font-size: 11px;
     color: var(--text-muted);
 }
 
 /* SOCIAL GRID */
-:global(.social-grid) {
+.social-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
     gap: 20px;
 }
 
-:global(.social-card) {
+.social-card {
     text-decoration: none;
     color: var(--text-main);
     backdrop-filter: blur(18px) saturate(130%);
@@ -107,21 +107,21 @@
     transition: 0.2s;
 }
 
-:global(.social-card):hover {
+.social-card:hover {
     transform: translateY(-3px);
 }
 
-:global(.social-card) h3 {
+.social-card h3 {
     font-size: 17px;
     font-weight: 650;
 }
 
-:global(.social-card) p {
+.social-card p {
     font-size: 13px;
     color: var(--text-muted);
 }
 
-:global(.social-card) :global(.link) {
+.social-card .link {
     margin-top: auto;
     font-size: 13px;
     color: var(--accent-dark);
@@ -129,14 +129,14 @@
 }
 
 /* FOOTER */
-:global(.footer) {
+.footer {
     margin-top: 46px;
     text-align: center;
     font-size: 13px;
     color: var(--text-muted);
 }
 
-:global(.footer) a {
+.footer a {
     color: var(--accent-dark);
     font-weight: 600;
     text-decoration: none;
