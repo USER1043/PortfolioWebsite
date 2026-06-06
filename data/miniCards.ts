@@ -1,11 +1,20 @@
-// src/data/miniCards.js
-// Data for the "What I Do" mini-cards on the Home page
+/**
+ * @file Type definitions and data for the "What I Do" mini-cards on the Home page.
+ * @module data/miniCards
+ */
 
-export const miniCards = [
+export interface MiniCardData {
+  icon: string;
+  title: string;
+  body: string;
+  tags: string[];
+}
+
+export const miniCards: MiniCardData[] = [
   {
     icon: "💻",
     title: "Full-stack web apps",
-    body: "I like taking an idea from \"hmm…\" to a deployed app with auth, APIs, and a UI that doesn't hurt your eyes.",
+    body: 'I like taking an idea from "hmm…" to a deployed app with auth, APIs, and a UI that doesn\'t hurt your eyes.',
     tags: ["React", "Node.js", "MongoDB"],
   },
   {
