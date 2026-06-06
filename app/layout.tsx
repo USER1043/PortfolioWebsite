@@ -1,3 +1,7 @@
+/**
+ * @file Root layout — HTML shell, metadata, global styles, and persistent Navbar.
+ * @module app/layout
+ */
 import type { Metadata } from "next";
 import "./globals.css";
 import Navbar from "@/components/Navbar/Navbar";
@@ -15,7 +19,8 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        <div className="max-w-[1120px] mx-auto px-7 pt-8 pb-[72px] flex-1 w-full flex flex-col animate-[fadeIn_0.8s_ease-out]">
+        <div className="page-wrapper animate-[fadeIn_0.8s_ease-out]">
+          {/* Main layout container wrapping navigation and page content */}
           <Navbar />
           {children}
         </div>

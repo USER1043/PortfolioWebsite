@@ -18,18 +18,29 @@
   --color-card-border: rgba(227, 237, 230, 0.9);
   --color-pill-bg:     #e7f7ef;
 
-  --shadow-soft: 0 14px 40px rgba(0, 0, 0, 0.06);
+  --shadow-soft: 0 8px 32px rgba(0, 0, 0, 0.10);
 
   --radius-xl:   24px;
   --radius-lg:   18px;
   --radius-pill: 999px;
 }
 
-/* ─── Reset ──────────────────────────────────────────────────────── */
-*, *::before, *::after {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
+
+html {
+  width: 100%;
+}
+
+body {
+  width: 100%;
+  min-height: 100vh;
+}
+
+/* ─── Page wrapper — centered container on all screen sizes ──────── */
+.page-wrapper {
+  max-width: 1120px;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 32px 28px 72px;
 }
 
 /* ─── Body ───────────────────────────────────────────────────────── */
@@ -38,8 +49,6 @@ body {
   background: radial-gradient(circle at top, #e7f7ef 0%, #fafffb 55%, #ffffff 100%);
   color: #1f2a26;
   min-height: 100vh;
-  display: flex;
-  flex-direction: column;
   overflow-x: hidden;
 }
 
