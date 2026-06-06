@@ -1,0 +1,55 @@
+/**
+ * @file Global styles — Tailwind v4 import, design tokens, body bg, and keyframes.
+ * @module globals
+ */
+
+@import "tailwindcss";
+
+/* ─── Design Tokens ──────────────────────────────────────────────── */
+@theme {
+  --color-accent:      #0faf64;
+  --color-accent-dark: #0a8a50;
+  --color-accent-soft: #cbf7dd;
+  --color-bg:          #fafffb;
+  --color-bg-alt:      #ffffff;
+  --color-glass:       rgba(255, 255, 255, 0.72);
+  --color-text-main:   #1f2a26;
+  --color-text-muted:  #6b7e75;
+  --color-card-border: rgba(227, 237, 230, 0.9);
+  --color-pill-bg:     #e7f7ef;
+
+  --shadow-soft: 0 14px 40px rgba(0, 0, 0, 0.06);
+
+  --radius-xl:   24px;
+  --radius-lg:   18px;
+  --radius-pill: 999px;
+}
+
+/* ─── Reset ──────────────────────────────────────────────────────── */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+/* ─── Body ───────────────────────────────────────────────────────── */
+body {
+  font-family: system-ui, -apple-system, sans-serif;
+  background: radial-gradient(circle at top, #e7f7ef 0%, #fafffb 55%, #ffffff 100%);
+  color: #1f2a26;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow-x: hidden;
+}
+
+/* ─── Keyframes ──────────────────────────────────────────────────── */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0);    }
+}
+
+@keyframes dotPulse {
+  0%, 100% { box-shadow: 0 0 0 0   rgba(22, 163, 74, 0.6); }
+  50%       { box-shadow: 0 0 0 6px rgba(22, 163, 74, 0);   }
+}
