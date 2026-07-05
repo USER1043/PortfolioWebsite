@@ -1,0 +1,14 @@
+name: Rebuild Portfolio
+
+on:
+  schedule:
+    - cron: "0 0 * * *" # Daily at midnight UTC
+  workflow_dispatch: # Allow manual trigger
+
+jobs:
+  trigger-vercel-rebuild:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger Vercel deployment
+        run: |
+          curl -X POST "${{ secrets.VERCEL_DEPLOYMENT_HOOK_URL }}"
