@@ -1,0 +1,69 @@
+---
+import '../styles/global.css';
+import '../styles/terminal.css';
+import PokemonAscii from '../components/PokemonAscii.astro';
+---
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>prajan-karthik@prajan-83dx</title>
+  </head>
+  <body>
+    <div class="container">
+      <div class="terminal-window">
+        <div class="panel-header">prajan-karthik@prajan-83dx</div>
+        
+        <PokemonAscii />
+        
+        <div class="system-info">
+          <div class="system-info-item">
+            <span class="system-info-icon">⚙</span>
+            <span>Linux 7.0.14-arch1-1</span>
+          </div>
+          <div class="system-info-item">
+            <span class="system-info-icon">📦</span>
+            <span>Arch Linux, Hyprland 0.55</span>
+          </div>
+          <div class="system-info-item">
+            <span class="system-info-icon">💻</span>
+            <span>CS Undergrad + Intel IoT Club</span>
+          </div>
+          <div class="system-info-item">
+            <span class="system-info-icon">🎯</span>
+            <span>Full-stack engineer, DSA, Linux</span>
+          </div>
+        </div>
+
+        <div class="terminal-prompt">$ gh repo list</div>
+        <div class="terminal-output">
+          <a href="/projects">View all projects →</a>
+        </div>
+
+        <div class="terminal-prompt">$ whoami</div>
+        <div class="terminal-output">
+          Full-stack engineer passionate about building scalable systems and solving complex problems. Currently focusing on distributed systems, web scraping, and ML integration.
+        </div>
+
+        <div class="terminal-prompt">$ cat about.txt</div>
+        <div class="terminal-output">
+          <a href="/about">View full bio →</a>
+        </div>
+
+        <div class="terminal-prompt">$ cat contact.txt</div>
+        <div class="terminal-output">
+          <a href="/contact">Get in touch →</a>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
+
+<style>
+  .container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 2rem 1rem;
+  }
+</style>

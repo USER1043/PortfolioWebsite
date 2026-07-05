@@ -1,0 +1,274 @@
+---
+import { getLanguageColor } from '../lib/github';
+
+const { project } = Astro.props;
+
+const languageColor = getLanguageColor(project.language);
+const relativeTime = getRelativeTime(project.updatedAt);
+
+function getRelativeTime(dateString: string) {
+  const date = new Date(dateString);
+  const now = new Date();
+  const seconds = Math.floor((now.getTime() - date.getTime()) / 1000);
+
+  const intervals = {
+    year: 31536000,
+    month: 2592000,
+    week: 604800,
+    day: 86400,
+    hour: 3600,
+    minute: 60,
+  };
+
+  for (const [unit, secondsInUnit] of Object.entries(intervals)) {
+    const interval = Math.floor(seconds / secondsInUnit);
+    if (interval >= 1) {
+      return `${interval} ${unit}${interval > 1 ? 's' : ''} ago`;
+    }
+  }
+
+  return 'just now';
+}
+
+function truncateReadme(readme: string, maxLength = 350) {
+  if (!readme) return null;
+  
+  // Remove markdown images
+  let cleaned = readme.replace(/!\[.*?\]\(.*?\)/g, '');
+  
+  // Remove code blocks
+  cleaned = cleaned.replace(/```[\s\S]*?```/g, '');
+  
+  // Remove inline code
+  cleaned = cleaned.replace(/`[^`]+`/g, '');
+  
+  // Remove headings
+  cleaned = cleaned.replace(/^#{1,6}\s+/gm, '');
+  
+  // Convert markdown links to plain text
+  cleaned = cleaned.replace(/\[([^\]]+)\]\([^)]+\)/g, '$1');
+  
+  // Remove extra whitespace
+  cleaned = cleaned.replace(/\n\s*\n/g, '\n\n').trim();
+  
+  if (cleaned.length > maxLength) {
+    return cleaned.substring(0, maxLength) + '...';
+  }
+  
+  return cleaned;
+}
+
+const readmePreview = truncateReadme(project.readme);
+const displayTopics = project.topics.slice(0, 4);
+---
+
+<div class="project-card">
+  <div class="card-header">
+    <a href={project.url} target="_blank" rel="noopener noreferrer" class="project-name">
+      {project.name}
+    </a>
+    {project.stars > 0 && (
+      <span class="stars">★ {project.stars}</span>
+    )}
+  </div>
+
+  <p class="project-description">{project.description}</p>
+
+  <div class="card-meta">
+    {project.language && (
+      <div class="language-badge">
+        <span class="language-dot" style={`background-color: ${languageColor}`}></span>
+        <span>{project.language}</span>
+      </div>
+    )}
+
+    {displayTopics.length > 0 && (
+      <div class="topics">
+        {displayTopics.map((topic: string) => (
+          <span class="topic">{topic}</span>
+        ))}
+      </div>
+    )}
+
+    <div class="updated">Updated {relativeTime}</div>
+  </div>
+
+  {readmePreview && (
+    <div class="readme-preview">
+      <div class="readme-header">README Preview</div>
+      <p class="readme-content">{readmePreview}</p>
+      <a href={`${project.url}#readme`} target="_blank" rel="noopener noreferrer" class="readme-link">
+        View full README →
+      </a>
+    </div>
+  )}
+
+  <div class="card-actions">
+    <a href={project.url} target="_blank" rel="noopener noreferrer" class="action-btn">
+      GitHub →
+    </a>
+    {project.homepage && (
+      <a href={project.homepage} target="_blank" rel="noopener noreferrer" class="action-btn">
+        Live Demo →
+      </a>
+    )}
+  </div>
+</div>
+
+<style>
+  .project-card {
+    border: 1px solid var(--border);
+    background-color: var(--bg-secondary);
+    padding: 1.rem;
+    margin-bottom: 1rem;
+    transition: border-color 0.2s ease;
+  }
+
+  .project-card:hover {
+    border-color: var(--accent);
+  }
+
+  .card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.75rem;
+  }
+
+  .project-name {
+    font-family: var(--font-mono);
+    font-size: 1.1rem;
+    color: var(--accent);
+    text-decoration: none;
+  }
+
+  .project-name:hover {
+    text-decoration: underline;
+  }
+
+  .stars {
+    font-family: var(--font-mono);
+    font-size: 0.9rem;
+    color: var(--yellow);
+  }
+
+  .project-description {
+    font-family: var(--font-body);
+    font-size: 0.95rem;
+    color: var(--text);
+    margin-bottom: 1rem;
+    line-height: 1.5;
+  }
+
+  .card-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    align-items: center;
+    margin-bottom: 1rem;
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+  }
+
+  .language-badge {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .language-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 0;
+  }
+
+  .topics {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .topic {
+    color: var(--text-muted);
+    font-size: 0.8rem;
+  }
+
+  .topic::before {
+    content: '#';
+    color: var(--accent);
+  }
+
+  .updated {
+    color: var(--text-muted);
+  }
+
+  .readme-preview {
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--border);
+  }
+
+  .readme-header {
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    margin-bottom: 0.5rem;
+  }
+
+  .readme-content {
+    font-family: var(--font-body);
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    margin-bottom: 0.5rem;
+    line-height: 1.5;
+  }
+
+  .readme-link {
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+    color: var(--accent);
+    text-decoration: none;
+  }
+
+  .readme-link:hover {
+    text-decoration: underline;
+  }
+
+  .card-actions {
+    display: flex;
+    gap: 0.75rem;
+    margin-top: 1rem;
+  }
+
+  .action-btn {
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+    color: var(--accent);
+    text-decoration: none;
+    padding: 0.5rem 1rem;
+    border: 1px solid var(--border);
+    background-color: var(--bg);
+    transition: all 0.2s ease;
+  }
+
+  .action-btn:hover {
+    background-color: var(--accent);
+    color: var(--bg);
+    border-color: var(--accent);
+  }
+
+  @media (max-width: 768px) {
+    .card-meta {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+
+    .card-actions {
+      flex-direction: column;
+    }
+
+    .action-btn {
+      text-align: center;
+    }
+  }
+</style>

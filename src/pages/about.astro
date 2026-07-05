@@ -1,0 +1,101 @@
+---
+import '../styles/global.css';
+import '../styles/terminal.css';
+---
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>about.txt - prajan-karthik</title>
+  </head>
+  <body>
+    <div class="container">
+      <div class="terminal-window">
+        <div class="panel-header">
+          <a href="/">← prajan-karthik@prajan-83dx</a> / about.txt
+        </div>
+
+        <div class="terminal-prompt">$ cat about.txt</div>
+        <div class="terminal-output">
+          <div class="panel">
+            <div class="panel-header">Background</div>
+            <div class="panel-content">
+              <p>I'm a Computer Science undergraduate with a passion for building scalable systems and solving complex problems. My journey in tech started with curiosity about how things work, which led me to explore everything from low-level systems to high-level web applications.</p>
+            </div>
+          </div>
+
+          <div class="panel">
+            <div class="panel-header">Focus Areas</div>
+            <div class="panel-content">
+              <ul>
+                <li><strong>Full-stack Development:</strong> Building end-to-end applications with modern frameworks</li>
+                <li><strong>Distributed Systems:</strong> Designing scalable architectures and concurrent systems</li>
+                <li><strong>Data Engineering:</strong> Web scraping, data pipelines, and ML integration</li>
+                <li><strong>Linux & Open Source:</strong> Contributing to the ecosystem and understanding system internals</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="panel">
+            <div class="panel-header">Experience</div>
+            <div class="panel-content">
+              <p><strong>Intel IoT Club:</strong> Working on IoT projects and embedded systems</p>
+              <p><strong>Hackathons:</strong> Participating in and winning hackathons like IndiaRuns</p>
+              <p><strong>Open Source:</strong> Contributing to various projects and building tools for the community</p>
+            </div>
+          </div>
+
+          <div class="panel">
+            <div class="panel-header">Philosophy</div>
+            <div class="panel-content">
+              <p>I believe in building systems that are not only functional but also maintainable, scalable, and well-documented. I enjoy diving deep into problems to understand their root causes and architect solutions that stand the test of time.</p>
+            </div>
+          </div>
+
+          <div class="panel">
+            <div class="panel-header">When I'm not coding</div>
+            <div class="panel-content">
+              <p>Exploring Linux distributions, optimizing my workflow, reading about system design, and occasionally gaming.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="terminal-prompt">$ cd /</div>
+        <div class="terminal-output">
+          <a href="/">Return to home →</a>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
+
+<style>
+  .container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 2rem 1rem;
+  }
+
+  .panel-content ul {
+    list-style: none;
+    padding-left: 0;
+  }
+
+  .panel-content li {
+    margin-bottom: 0.75rem;
+    padding-left: 1.5rem;
+    position: relative;
+  }
+
+  .panel-content li::before {
+    content: "•";
+    color: var(--accent);
+    position: absolute;
+    left: 0;
+  }
+
+  .panel-content p {
+    margin-bottom: 1rem;
+  }
+</style>
