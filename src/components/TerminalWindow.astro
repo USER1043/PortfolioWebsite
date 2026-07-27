@@ -1,0 +1,105 @@
+---
+/**
+ * @file Terminal window shell — title bar with Tux icon, scrollable body, and live input row.
+ * @module components/TerminalWindow
+ */
+interface Props {
+  username?: string;
+}
+
+const { username = 'prajan@portfolio' } = Astro.props;
+const [user, host] = username.split('@');
+---
+
+<div class="terminal-window" id="terminal-window">
+
+  <!-- ── Title Bar ── -->
+  <div class="terminal-titlebar">
+
+    <div class="titlebar-left">
+      <!-- Linux Tux penguin SVG icon -->
+      <svg
+        class="terminal-tux"
+        viewBox="0 0 64 82"
+        xmlns="http://www.w3.org/2000/svg"
+        aria-label="Linux"
+        role="img"
+      >
+        <!-- Dark head -->
+        <circle cx="32" cy="22" r="19" fill="#1C1C1C"/>
+        <!-- Dark body -->
+        <ellipse cx="32" cy="57" rx="22" ry="26" fill="#1C1C1C"/>
+        <!-- White face oval -->
+        <ellipse cx="32" cy="21" rx="12" ry="13" fill="#F0F0F0"/>
+        <!-- White belly -->
+        <ellipse cx="32" cy="58" rx="14" ry="19" fill="#F0F0F0"/>
+        <!-- Left eye: amber ring + dark pupil + shine -->
+        <circle cx="25" cy="15" r="4.5" fill="#F5C518"/>
+        <circle cx="25" cy="16" r="2.8" fill="#111"/>
+        <circle cx="26.2" cy="13.8" r="0.9" fill="white"/>
+        <!-- Right eye: amber ring + dark pupil + shine -->
+        <circle cx="39" cy="15" r="4.5" fill="#F5C518"/>
+        <circle cx="39" cy="16" r="2.8" fill="#111"/>
+        <circle cx="40.2" cy="13.8" r="0.9" fill="white"/>
+        <!-- Orange beak -->
+        <ellipse cx="32" cy="30" rx="5.5" ry="3.5" fill="#F5A623"/>
+        <!-- Dark left wing -->
+        <ellipse cx="11" cy="57" rx="8" ry="20" fill="#151515" transform="rotate(-8 11 57)"/>
+        <!-- Dark right wing -->
+        <ellipse cx="53" cy="57" rx="8" ry="20" fill="#151515" transform="rotate(8 53 57)"/>
+        <!-- Orange left foot -->
+        <ellipse cx="23" cy="80" rx="10" ry="4.5" fill="#F5A623" transform="rotate(-18 23 80)"/>
+        <!-- Orange right foot -->
+        <ellipse cx="41" cy="80" rx="10" ry="4.5" fill="#F5A623" transform="rotate(18 41 80)"/>
+      </svg>
+      <span class="titlebar-username">{username}</span>
+    </div>
+
+    <div class="titlebar-center">{username} — bash</div>
+
+    <div class="titlebar-buttons">
+      <button id="btn-min"   class="win-btn win-btn--min"   aria-label="Minimize" title="Minimize"></button>
+      <button id="btn-max"   class="win-btn win-btn--max"   aria-label="Maximize" title="Maximize"></button>
+      <button id="btn-close" class="win-btn win-btn--close" aria-label="Close"    title="Close"></button>
+    </div>
+
+  </div>
+
+  <!-- ── Scrollable Body ── -->
+  <div class="terminal-body" id="terminal-body">
+
+    <!-- Output lines mount here -->
+    <div id="terminal-output"></div>
+
+    <!-- Live input prompt row -->
+    <div class="terminal-prompt-row" id="terminal-prompt-row">
+      <span class="prompt-user">{user}</span>
+      <span class="prompt-at">@</span>
+      <span class="prompt-host">{host}</span>
+      <span class="prompt-colon">:</span>
+      <span class="prompt-tilde">~</span>
+      <span class="prompt-dollar">$</span>
+      <div class="terminal-input-wrapper">
+        <input
+          type="text"
+          id="terminal-input"
+          class="terminal-input"
+          autocomplete="off"
+          autocorrect="off"
+          autocapitalize="off"
+          spellcheck="false"
+          aria-label="Terminal input"
+        />
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ── Session Ended Overlay ── -->
+<div class="session-ended" id="session-ended" role="status" aria-live="polite">
+  <div class="session-ended-text">
+    Connection to the portfolio site has been terminated.
+  </div>
+  <div class="session-ended-hint">[ press anywhere to start reconnect ]</div>
+</div>
