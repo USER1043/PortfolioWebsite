@@ -1,101 +1,116 @@
 ---
+/**
+ * @file About page — static terminal-styled biography, skills, and project highlights.
+ * @module pages/about
+ */
 import '../styles/global.css';
 import '../styles/terminal.css';
+import TerminalLayout from '../components/TerminalLayout.astro';
 ---
 
-<html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>about.txt - prajan-karthik</title>
-  </head>
-  <body>
-    <div class="container">
-      <div class="terminal-window">
-        <div class="panel-header">
-          <a href="/">← prajan-karthik@prajan-83dx</a> / about.txt
-        </div>
+<TerminalLayout title="about — prajan@portfolio">
+  <div class="terminal-window page-panel" id="terminal-window">
 
-        <div class="terminal-prompt">$ cat about.txt</div>
-        <div class="terminal-output">
-          <div class="panel">
-            <div class="panel-header">Background</div>
-            <div class="panel-content">
-              <p>I'm a Computer Science undergraduate with a passion for building scalable systems and solving complex problems. My journey in tech started with curiosity about how things work, which led me to explore everything from low-level systems to high-level web applications.</p>
-            </div>
-          </div>
-
-          <div class="panel">
-            <div class="panel-header">Focus Areas</div>
-            <div class="panel-content">
-              <ul>
-                <li><strong>Full-stack Development:</strong> Building end-to-end applications with modern frameworks</li>
-                <li><strong>Distributed Systems:</strong> Designing scalable architectures and concurrent systems</li>
-                <li><strong>Data Engineering:</strong> Web scraping, data pipelines, and ML integration</li>
-                <li><strong>Linux & Open Source:</strong> Contributing to the ecosystem and understanding system internals</li>
-              </ul>
-            </div>
-          </div>
-
-          <div class="panel">
-            <div class="panel-header">Experience</div>
-            <div class="panel-content">
-              <p><strong>Intel IoT Club:</strong> Working on IoT projects and embedded systems</p>
-              <p><strong>Hackathons:</strong> Participating in and winning hackathons like IndiaRuns</p>
-              <p><strong>Open Source:</strong> Contributing to various projects and building tools for the community</p>
-            </div>
-          </div>
-
-          <div class="panel">
-            <div class="panel-header">Philosophy</div>
-            <div class="panel-content">
-              <p>I believe in building systems that are not only functional but also maintainable, scalable, and well-documented. I enjoy diving deep into problems to understand their root causes and architect solutions that stand the test of time.</p>
-            </div>
-          </div>
-
-          <div class="panel">
-            <div class="panel-header">When I'm not coding</div>
-            <div class="panel-content">
-              <p>Exploring Linux distributions, optimizing my workflow, reading about system design, and occasionally gaming.</p>
-            </div>
-          </div>
-        </div>
-
-        <div class="terminal-prompt">$ cd /</div>
-        <div class="terminal-output">
-          <a href="/">Return to home →</a>
-        </div>
+    <!-- Title Bar -->
+    <div class="terminal-titlebar">
+      <div class="titlebar-left">
+        <svg class="terminal-tux" viewBox="0 0 64 82" xmlns="http://www.w3.org/2000/svg" aria-label="Linux" role="img">
+          <circle cx="32" cy="22" r="19" fill="#1C1C1C"/>
+          <ellipse cx="32" cy="57" rx="22" ry="26" fill="#1C1C1C"/>
+          <ellipse cx="32" cy="21" rx="12" ry="13" fill="#F0F0F0"/>
+          <ellipse cx="32" cy="58" rx="14" ry="19" fill="#F0F0F0"/>
+          <circle cx="25" cy="15" r="4.5" fill="#F5C518"/>
+          <circle cx="25" cy="16" r="2.8" fill="#111"/>
+          <circle cx="26.2" cy="13.8" r="0.9" fill="white"/>
+          <circle cx="39" cy="15" r="4.5" fill="#F5C518"/>
+          <circle cx="39" cy="16" r="2.8" fill="#111"/>
+          <circle cx="40.2" cy="13.8" r="0.9" fill="white"/>
+          <ellipse cx="32" cy="30" rx="5.5" ry="3.5" fill="#F5A623"/>
+          <ellipse cx="11" cy="57" rx="8" ry="20" fill="#151515" transform="rotate(-8 11 57)"/>
+          <ellipse cx="53" cy="57" rx="8" ry="20" fill="#151515" transform="rotate(8 53 57)"/>
+          <ellipse cx="23" cy="80" rx="10" ry="4.5" fill="#F5A623" transform="rotate(-18 23 80)"/>
+          <ellipse cx="41" cy="80" rx="10" ry="4.5" fill="#F5A623" transform="rotate(18 41 80)"/>
+        </svg>
+        <span class="titlebar-username">prajan@portfolio — about</span>
+      </div>
+      <div class="titlebar-center">prajan@portfolio — about</div>
+      <div class="titlebar-buttons">
+        <button class="win-btn win-btn--min"   aria-label="Minimize"></button>
+        <button class="win-btn win-btn--max"   aria-label="Maximize"></button>
+        <a href="/" class="win-btn win-btn--close" aria-label="Back to terminal" title="Back to terminal" style="display:flex"></a>
       </div>
     </div>
-  </body>
-</html>
 
-<style>
-  .container {
-    max-width: 900px;
-    margin: 0 auto;
-    padding: 2rem 1rem;
-  }
+    <!-- Body -->
+    <div class="terminal-body" style="height: min(80vh, 640px);">
 
-  .panel-content ul {
-    list-style: none;
-    padding-left: 0;
-  }
+      <div class="page-section">
+        <div class="page-section-cmd">$ cat about.txt</div>
+        <div class="page-section-cmd" style="color:var(--yellow)">// whoami</div>
+        <p class="page-copy">
+          A CS undergrad obsessed with depth. I don't ship features until they work exactly as intended
+          for the person using them. I've built production systems that handle real users — job aggregation
+          platforms with 700+ postings, password managers with military-grade crypto, and education
+          platforms for kids with autism.
+        </p>
+        <p class="page-copy">
+          Currently leading web architecture at Intel IoT Club while building Jobify into a full-scale
+          product. I think in systems: how data flows, where latency hides, what breaks first.
+        </p>
+      </div>
 
-  .panel-content li {
-    margin-bottom: 0.75rem;
-    padding-left: 1.5rem;
-    position: relative;
-  }
+      <div class="page-section">
+        <div class="page-section-cmd">$ cat skills.txt</div>
+        <div class="page-section-label">Deep Expertise</div>
+        <ul class="page-list">
+          <li>Full-stack MERN (React, Node.js, MongoDB, Express)</li>
+          <li>Architectural thinking — data flow, scaling, security</li>
+          <li>Frontend state management (Redux, Context API)</li>
+          <li>Backend API design and authentication</li>
+        </ul>
+        <div class="page-section-label">Solid</div>
+        <ul class="page-list">
+          <li>Rust (zero-knowledge systems, memory safety)</li>
+          <li>TypeScript, Python, C++</li>
+          <li>Database design (PostgreSQL, MongoDB)</li>
+          <li>DevOps basics (Vercel, Render, GitHub Actions)</li>
+        </ul>
+        <div class="page-section-label">Competitive Programming</div>
+        <ul class="page-list">
+          <li>C++ for DSA, algorithmic thinking, optimization</li>
+        </ul>
+      </div>
 
-  .panel-content li::before {
-    content: "•";
-    color: var(--accent);
-    position: absolute;
-    left: 0;
-  }
+      <div class="page-section">
+        <div class="page-section-cmd">$ ls projects/ --sorted-by impact</div>
+        <div class="page-section-label">Jobify (MERN, Pre-launch)</div>
+        <p class="page-copy">→ Job Aggregation platform which hunts down openings across company career pages so you can find the right opportunity without the endless tab-switching.</p>
+        <p class="page-copy">→ Auth system, Redux state layer, config-driven scraper engine.</p>
+        <p class="page-copy">→ Live: <a href="https://jobverify-frontend.vercel.app" target="_blank" rel="noopener noreferrer">jobverify-frontend.vercel.app</a></p>
+        <div class="page-section-label">PasswordPal (Rust + Tauri, Shipped)</div>
+        <p class="page-copy">→ Zero-knowledge password manager — Argon2id + BLAKE3 + hardware isolation.</p>
+        <div class="page-section-label">MediStock (MERN + AI, Shipped)</div>
+        <p class="page-copy">→ Pharmacy inventory with Gemini chatbot and real-time analytics.</p>
+        <div class="page-section-label">Sensory Safari (MERN, Shipped)</div>
+        <p class="page-copy">→ Adaptive learning app for kids with autism. Web Audio API, CDN-optimized uploads.</p>
+      </div>
 
-  .panel-content p {
-    margin-bottom: 1rem;
-  }
-</style>
+      <div class="page-section">
+        <div class="page-section-cmd">$ contact</div>
+        <p class="page-copy">Looking for: Internship → full-time software engineering role.</p>
+        <p class="page-copy">Interested in: Product teams, backend systems, deep technical work.</p>
+        <p class="page-copy">
+          Reach out:
+          <a href="mailto:prjnkrthk@gmail.com">Gmail</a> &nbsp;•&nbsp;
+          <a href="https://github.com/prajan-karthik" target="_blank" rel="noopener noreferrer">GitHub</a> &nbsp;•&nbsp;
+          <a href="https://linkedin.com/in/prajan-karthik" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+        </p>
+      </div>
+
+      <div style="padding-top: 0.5rem;">
+        <a href="/" style="color:var(--text-muted);font-size:0.8rem;">← cd / (back to terminal)</a>
+      </div>
+
+    </div>
+  </div>
+</TerminalLayout>
