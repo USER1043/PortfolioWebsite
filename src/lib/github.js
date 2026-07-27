@@ -1,7 +1,14 @@
+import fs from "node:fs";
+import path from "node:path";
 import { githubRateLimiter } from "./rateLimit.mjs";
 
-const GITHUB_TOKEN = import.meta.env.GITHUB_TOKEN;
-const GITHUB_USERNAME = import.meta.env.GITHUB_USERNAME;
+const runtimeEnv =
+  typeof import.meta !== "undefined" && import.meta.env ? import.meta.env : {};
+const GITHUB_TOKEN = runtimeEnv.GITHUB_TOKEN || process.env.GITHUB_TOKEN;
+const GITHUB_USERNAME =
+  runtimeEnv.GITHUB_USERNAME || process.env.GITHUB_USERNAME;
+const CACHE_FILE = path.join(process.cwd(), "repos-cache.json");
+const CACHE_TTL_MS = 24 * 60 * 60 * 1000;
 
 const LANGUAGE_COLORS = {
   JavaScript: "#F7DF1E",
@@ -105,7 +112,42 @@ export async function fetchReadmesInParallel(repos, batchSize = 5) {
   return reposWithReadmes;
 }
 
+function readCache() {
+  if (!fs.existsSync(CACHE_FILE)) {
+    return null;
+  }
+
+  try {
+    const stats = fs.statSync(CACHE_FILE);
+    const ageMs = Date.now() - stats.mtimeMs;
+
+    if (ageMs >= CACHE_TTL_MS) {
+      return null;
+    }
+
+    const cached = fs.readFileSync(CACHE_FILE, "utf-8");
+    return JSON.parse(cached);
+  } catch (error) {
+    console.warn("Failed to read GitHub cache:", error);
+    return null;
+  }
+}
+
+function writeCache(data) {
+  try {
+    fs.writeFileSync(CACHE_FILE, JSON.stringify(data, null, 2));
+  } catch (error) {
+    console.warn("Failed to write GitHub cache:", error);
+  }
+}
+
 export async function getRepos() {
+  const cachedRepos = readCache();
+  if (cachedRepos) {
+    console.log("Using cached GitHub repositories");
+    return cachedRepos;
+  }
+
   if (!GITHUB_TOKEN || !GITHUB_USERNAME) {
     console.warn(
       "GITHUB_TOKEN or GITHUB_USERNAME not set, returning empty array",
@@ -137,10 +179,15 @@ export async function getRepos() {
 
     const repos = await response.json();
 
-    // Filter out forks, archived repos, and the portfolio repo itself
+    // Filter out forks, archived repos, the portfolio site itself,
+    // and keep only repositories tagged with the portfolio topic.
     const filteredRepos = repos.filter(
       (repo) =>
-        !repo.fork && !repo.archived && repo.name !== "PortfolioWebsite",
+        !repo.fork &&
+        !repo.archived &&
+        repo.name !== "PortfolioWebsite" &&
+        Array.isArray(repo.topics) &&
+        repo.topics.includes("portfolio"),
     );
 
     // Transform to our data structure
@@ -161,6 +208,7 @@ export async function getRepos() {
 
     // Fetch READMEs in parallel
     const reposWithReadmes = await fetchReadmesInParallel(transformedRepos);
+    writeCache(reposWithReadmes);
 
     return reposWithReadmes;
   } catch (error) {

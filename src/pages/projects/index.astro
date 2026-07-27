@@ -1,10 +1,23 @@
 ---
 import '../../styles/global.css';
 import '../../styles/terminal.css';
-import { getRepos } from '../../lib/github';
 import ProjectCard from '../../components/ProjectCard.astro';
+import { getRepos } from '../../lib/github.js';
 
-const projects = await getRepos();
+const githubRepos = await getRepos();
+const projects = githubRepos.map((repo: any) => ({
+  name: repo.name,
+  slug: repo.name.toLowerCase().replace(/[^a-z0-9]+/g, '-'),
+  status: repo.topics?.includes('portfolio') ? 'Featured' : 'Active',
+  description: repo.description || 'Repository details fetched from GitHub.',
+  tech: repo.language ? [repo.language] : [],
+  whatItDoes: repo.description || 'Repository details fetched from GitHub.',
+  whyItMatters: repo.topics?.length
+    ? `Topics: ${repo.topics.join(', ')}`
+    : 'Maintained as part of the portfolio collection.',
+  github: repo.url,
+  demo: repo.homepage,
+}));
 const buildTime = new Date().toISOString();
 ---
 
@@ -25,7 +38,7 @@ const buildTime = new Date().toISOString();
         <div class="terminal-output">
           <div class="projects-header">
             <h1>Projects</h1>
-            <p class="project-count">{projects.length} repositories</p>
+            <p class="project-count">{projects.length} featured projects</p>
             <p class="last-updated">
               Last updated: {new Date(buildTime).toLocaleString()}
             </p>
@@ -40,7 +53,6 @@ const buildTime = new Date().toISOString();
           ) : (
             <div class="empty-state">
               <p>No projects found. Check back soon!</p>
-              <p class="empty-hint">Make sure GITHUB_TOKEN and GITHUB_USERNAME are set in .env</p>
             </div>
           )}
         </div>

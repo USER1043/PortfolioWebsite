@@ -15,6 +15,9 @@
 # astro
 /.astro/
 
+# github cache
+/repos-cache.json
+
 # next.js
 /.next/
 /out/
