@@ -11,9 +11,7 @@ import { getProjects } from '../lib/projects';
 
 // Serialise project data for the client-side `projects` command.
 // `<` is escaped so a value can never close the <script> tag early.
-const projectsJson = JSON.stringify(
-  (await getProjects()).map(({ data }) => data),
-).replace(/</g, '\\u003c');
+const projectsJson = JSON.stringify(await getProjects()).replace(/</g, '\\u003c');
 ---
 
 <TerminalLayout title="prajan@portfolio — bash">

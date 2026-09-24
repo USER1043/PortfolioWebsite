@@ -1,4 +1,10 @@
 ---
+import type { Project } from '../lib/projects';
+
+interface Props {
+  project: Project;
+}
+
 const { project } = Astro.props;
 ---
 
@@ -16,22 +22,13 @@ const { project } = Astro.props;
 
   <div class="project-section">
     <div class="project-section-title">What it does</div>
-    <p class="project-description">{project.whatItDoes}</p>
+    <p class="project-description">{project.summary}</p>
   </div>
 
   {project.whyItMatters && (
     <div class="project-section">
       <div class="project-section-title">Why it matters</div>
       <p class="project-description">{project.whyItMatters}</p>
-    </div>
-  )}
-
-  {project.Content && (
-    <div class="project-section">
-      <div class="project-section-title">Details</div>
-      <div class="project-description project-details">
-        <project.Content />
-      </div>
     </div>
   )}
 
@@ -114,15 +111,6 @@ const { project } = Astro.props;
     margin-left: 1rem;
     color: var(--text);
     line-height: 1.5;
-  }
-
-  .project-details :global(p),
-  .project-details :global(ul) {
-    margin-bottom: 0.5rem;
-  }
-
-  .project-details :global(ul) {
-    padding-left: 1.25rem;
   }
 
   .project-description ul {

@@ -1,0 +1,13 @@
+# Manual corrections for generated project data (src/data/projects.json).
+# Key each entry by the GitHub repo name; every field is optional and wins
+# over the generated value. Leave this file with only comments when unused.
+#
+# jobverify-frontend:
+#   name: Jobify
+#   status: Pre-launch (~90%)
+#   tech: [MERN Stack]
+#   summary: One line that replaces the AI summary.
+#   whyItMatters: Replaces the AI "why it matters" text.
+#   demo: https://jobverify-frontend.vercel.app
+#   order: 0          # lower shows first
+#   hidden: true      # keep it pinned on GitHub but off the site
