@@ -233,58 +233,35 @@ function cmdSocial(r) {
   return d + STAGGER;
 }
 
-// Renders the projects list.
-function cmdProjects(r) {
-  const projects = [
-    {
-      name:   'Jobify',
-      tech:   'MERN Stack',
-      status: 'Pre-launch (~90%)',
-      desc:   'Job Aggregation platform which hunts down openings across company career pages so you can find the right opportunity without the endless tab-switching.',
-      link:   'https://jobverify-frontend.vercel.app',
-    },
-    {
-      name:   'PasswordPal',
-      tech:   'Rust + Tauri',
-      status: 'Shipped ✓',
-      desc:   'Zero-knowledge password manager — Argon2id + BLAKE3 crypto.',
-      link:   'https://github.com/USER1043/passwordpal_frontend/releases/latest',
-    },
-    {
-      name:   'MediStockAI',
-      tech:   'MERN + Gemini AI',
-      status: 'Shipped ✓',
-      desc:   'AI-powered inventory stocking and sales projection for small & mid-sized pharmacies.',
-      link:   'https://medistock-ai-demo.vercel.app',
-    },
-    {
-      name:   'Sensory Safari',
-      tech:   'MERN Stack',
-      status: 'Shipped ✓',
-      desc:   'Fun, interactive, adaptive animals & maths learning app for kids with autism.',
-      link:   'https://sensory-safari.vercel.app',
-    },
-  ];
-
+// Renders the projects list from the `projects` content collection.
+function cmdProjects(r, projects) {
   let d = 0;
   r.blank();
   r.line('// projects', 'terminal-line--info', d); d += STAGGER;
 
+  if (projects.length === 0) {
+    r.blank();
+    r.line('  No projects yet.', 'terminal-line--desc', d); d += STAGGER;
+  }
+
   projects.forEach((p) => {
+    const link = p.demo || p.github;
     r.blank();
     r.html(
       `  <span style="color:var(--cmd-cyan);font-weight:500">● ${escHtml(p.name)}</span>` +
-      `  <span style="color:var(--text-muted);font-size:0.8rem">${escHtml(p.tech)}</span>`,
+      `  <span style="color:var(--text-muted);font-size:0.8rem">${escHtml(p.tech.join(' + '))}</span>`,
       'terminal-line--default',
       d,
     ); d += STAGGER;
     r.line(`    Status : ${p.status}`, 'terminal-line--desc', d); d += STAGGER;
-    r.line(`    ${p.desc}`, 'terminal-line--desc', d); d += STAGGER;
-    r.html(
-      `    Link   : <a href="${p.link}" target="_blank" rel="noopener noreferrer">${escHtml(p.link)}</a>`,
-      'terminal-line--default',
-      d,
-    ); d += STAGGER;
+    r.line(`    ${p.summary}`, 'terminal-line--desc', d); d += STAGGER;
+    if (link) {
+      r.html(
+        `    Link   : <a href="${escHtml(link)}" target="_blank" rel="noopener noreferrer">${escHtml(link)}</a>`,
+        'terminal-line--default',
+        d,
+      ); d += STAGGER;
+    }
   });
 
   return d + STAGGER;
@@ -373,7 +350,7 @@ async function exitSequence(r, terminalWindowEl, sessionEndedEl, bodyEl) {
    ───────────────────────────────────────────── */
 
 // Bootstraps the interactive terminal — call once after the DOM is ready.
-export function initTerminal({ outputEl, inputEl, bodyEl, terminalWindowEl, sessionEndedEl }) {
+export function initTerminal({ outputEl, inputEl, bodyEl, terminalWindowEl, sessionEndedEl, projects = [] }) {
   const r        = new OutputRenderer(outputEl);
   const cmdHist  = new CommandHistory();
   /** @type {string[]} */
@@ -528,7 +505,7 @@ export function initTerminal({ outputEl, inputEl, bodyEl, terminalWindowEl, sess
       } else if (cmd === 'social') {
         totalDelay = cmdSocial(r);
       } else if (cmd === 'projects') {
-        totalDelay = cmdProjects(r);
+        totalDelay = cmdProjects(r, projects);
       } else if (cmd === 'email') {
         totalDelay = cmdEmail(r);
       } else if (cmd === 'history') {

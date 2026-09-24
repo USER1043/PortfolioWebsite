@@ -7,10 +7,18 @@ import '../styles/global.css';
 import '../styles/terminal.css';
 import TerminalLayout from '../components/TerminalLayout.astro';
 import TerminalWindow from '../components/TerminalWindow.astro';
+import { getProjects } from '../lib/projects';
+
+// Serialise project data for the client-side `projects` command.
+// `<` is escaped so a value can never close the <script> tag early.
+const projectsJson = JSON.stringify(
+  (await getProjects()).map(({ data }) => data),
+).replace(/</g, '\\u003c');
 ---
 
 <TerminalLayout title="prajan@portfolio — bash">
   <TerminalWindow username="prajan@portfolio" />
+  <script type="application/json" id="projects-data" set:html={projectsJson} />
 </TerminalLayout>
 
 <script type="module">
@@ -22,8 +30,9 @@ import TerminalWindow from '../components/TerminalWindow.astro';
   const bodyEl          = document.getElementById('terminal-body');
   const terminalWindowEl = document.getElementById('terminal-window');
   const sessionEndedEl  = document.getElementById('session-ended');
+  const projects        = JSON.parse(document.getElementById('projects-data')?.textContent || '[]');
 
   if (outputEl && inputEl && bodyEl && terminalWindowEl && sessionEndedEl) {
-    initTerminal({ outputEl, inputEl, bodyEl, terminalWindowEl, sessionEndedEl });
+    initTerminal({ outputEl, inputEl, bodyEl, terminalWindowEl, sessionEndedEl, projects });
   }
 </script>

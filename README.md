@@ -14,6 +14,7 @@ Welcome to my interactive terminal corner of the internet! A Modern-CLI styled p
 - [Key Features](#-key-features)
 - [Tech Stack](#-tech-stack)
 - [Interactive Terminal Commands](#-interactive-terminal-commands)
+- [Adding a Project](#-adding-a-project)
 - [Getting Started](#-getting-started)
 - [Available Scripts](#-available-scripts)
 - [License](#-license)
@@ -28,8 +29,9 @@ Welcome to my interactive terminal corner of the internet! A Modern-CLI styled p
   * **History & Autocomplete:** Up/Down arrow history navigation and `Tab` auto-completion.
   * **Window Management:** Working minimize/maximize title bar controls.
   * **Shutdown & Reconnect:** Simulated Linux broadcast shutdown sequence and session reconnect overlay.
+* **🗂️ Content-driven Projects:** Project details live in Markdown files under `src/content/projects/` (an Astro content collection with a validated schema), shared by the terminal `projects` command and the `/projects` page.
 * **🐙 GitHub API Integration & Cache:**
-  * Dynamically fetches user repositories tagged with `portfolio` using the GitHub REST API (`src/lib/github.js`).
+  * Dynamically fetches user repositories tagged with `portfolio` (repos without a curated entry are appended to `/projects`) using the GitHub REST API (`src/lib/github.js`).
   * Parallel README fetching with rate-limiting backoff.
   * Local 24-hour disk caching (`repos-cache.json`) for instant page loads and offline fallback.
 * **🛡️ Rate Limiting Engine:**
@@ -65,6 +67,33 @@ When visiting the homepage, you can interact with the terminal prompt:
 | `history` | Views chronological command history for the session |
 | `clear` | Clears terminal screen output |
 | `exit` | Triggers Linux-style shutdown sequence and overlay |
+
+---
+
+## 🗂️ Adding a Project
+
+Projects are **not** hardcoded in the code. Each one is a Markdown file in `src/content/projects/`, and both the terminal `projects` command and the `/projects` page read from it.
+
+1. Create `src/content/projects/my-project.md`:
+   ```md
+   ---
+   name: My Project                 # required
+   tech: [Astro, TypeScript]        # required, at least one
+   status: Shipped ✓                # required, free text
+   summary: One-line description.   # required, shown everywhere
+   whyItMatters: Why it's worth a look.   # optional
+   demo: https://my-project.dev     # optional URL
+   github: https://github.com/USER1043/my-project   # optional URL
+   repo: my-project                 # optional, GitHub repo name to avoid a duplicate card
+   order: 5                         # optional, lower shows first (default 100)
+   draft: false                     # optional, true hides it
+   ---
+
+   Optional long-form details in **Markdown**, shown under "Details" on `/projects`.
+   ```
+2. Run `npm run dev` (or `npx astro check`). A missing or invalid field fails with a clear error.
+
+To edit or remove a project, edit or delete its file.
 
 ---
 

@@ -1,23 +1,50 @@
 ---
 import '../../styles/global.css';
 import '../../styles/terminal.css';
+import { render } from 'astro:content';
 import ProjectCard from '../../components/ProjectCard.astro';
 import { getRepos } from '../../lib/github.js';
+import { getProjects } from '../../lib/projects';
 
+// Curated projects from src/content/projects/ come first.
+const curated = await Promise.all(
+  (await getProjects()).map(async (entry) => {
+    const { Content } = await render(entry);
+    const p = entry.data;
+    return {
+      name: p.name,
+      status: p.status,
+      tech: p.tech,
+      whatItDoes: p.summary,
+      whyItMatters: p.whyItMatters,
+      github: p.github,
+      demo: p.demo,
+      repo: p.repo,
+      Content: entry.body?.trim() ? Content : undefined,
+    };
+  }),
+);
+
+// Repos tagged `portfolio` on GitHub that have no curated entry are appended.
+const curatedRepos = new Set(
+  curated.flatMap((p) => [p.repo, p.name]).filter(Boolean).map((n) => n.toLowerCase()),
+);
 const githubRepos = await getRepos();
-const projects = githubRepos.map((repo: any) => ({
-  name: repo.name,
-  slug: repo.name.toLowerCase().replace(/[^a-z0-9]+/g, '-'),
-  status: repo.topics?.includes('portfolio') ? 'Featured' : 'Active',
-  description: repo.description || 'Repository details fetched from GitHub.',
-  tech: repo.language ? [repo.language] : [],
-  whatItDoes: repo.description || 'Repository details fetched from GitHub.',
-  whyItMatters: repo.topics?.length
-    ? `Topics: ${repo.topics.join(', ')}`
-    : 'Maintained as part of the portfolio collection.',
-  github: repo.url,
-  demo: repo.homepage,
-}));
+const fromGithub = githubRepos
+  .filter((repo: any) => !curatedRepos.has(repo.name.toLowerCase()))
+  .map((repo: any) => ({
+    name: repo.name,
+    status: 'Featured',
+    tech: repo.language ? [repo.language] : [],
+    whatItDoes: repo.description || 'Repository details fetched from GitHub.',
+    whyItMatters: repo.topics?.length
+      ? `Topics: ${repo.topics.join(', ')}`
+      : 'Maintained as part of the portfolio collection.',
+    github: repo.url,
+    demo: repo.homepage,
+  }));
+
+const projects = [...curated, ...fromGithub];
 const buildTime = new Date().toISOString();
 ---
 
@@ -38,7 +65,7 @@ const buildTime = new Date().toISOString();
         <div class="terminal-output">
           <div class="projects-header">
             <h1>Projects</h1>
-            <p class="project-count">{projects.length} featured projects</p>
+            <p class="project-count">{projects.length} projects</p>
             <p class="last-updated">
               Last updated: {new Date(buildTime).toLocaleString()}
             </p>

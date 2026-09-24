@@ -19,10 +19,21 @@ const { project } = Astro.props;
     <p class="project-description">{project.whatItDoes}</p>
   </div>
 
-  <div class="project-section">
-    <div class="project-section-title">Why it matters</div>
-    <p class="project-description">{project.whyItMatters}</p>
-  </div>
+  {project.whyItMatters && (
+    <div class="project-section">
+      <div class="project-section-title">Why it matters</div>
+      <p class="project-description">{project.whyItMatters}</p>
+    </div>
+  )}
+
+  {project.Content && (
+    <div class="project-section">
+      <div class="project-section-title">Details</div>
+      <div class="project-description project-details">
+        <project.Content />
+      </div>
+    </div>
+  )}
 
   <div class="project-links">
     {project.github && (
@@ -103,6 +114,15 @@ const { project } = Astro.props;
     margin-left: 1rem;
     color: var(--text);
     line-height: 1.5;
+  }
+
+  .project-details :global(p),
+  .project-details :global(ul) {
+    margin-bottom: 0.5rem;
+  }
+
+  .project-details :global(ul) {
+    padding-left: 1.25rem;
   }
 
   .project-description ul {
