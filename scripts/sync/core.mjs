@@ -190,12 +190,18 @@ export function planProjects(facts, previous) {
 
 const SUMMARY_MAX = 280;
 const WHY_MAX = 400;
-const NAME_MAX = 40;
+const NAME_MAX = 60;
 
-// Validates one generated blurb; returns an error string or null.
+// A usable display name, or null so the existing name is kept instead.
+function cleanName(name) {
+  const trimmed = typeof name === 'string' ? name.trim() : '';
+  return trimmed && trimmed.length <= NAME_MAX ? trimmed : null;
+}
+
+// Validates one generated blurb; returns an error string or null. A bad name
+// alone doesn't reject the blurb — the previous name is kept instead.
 export function checkSummary(s) {
   if (!s || typeof s !== 'object') return 'not an object';
-  if (typeof s.name !== 'string' || !s.name.trim() || s.name.length > NAME_MAX) return 'bad name';
   if (typeof s.summary !== 'string' || !s.summary.trim() || s.summary.length > SUMMARY_MAX) return 'bad summary';
   if (typeof s.whyItMatters !== 'string' || !s.whyItMatters.trim() || s.whyItMatters.length > WHY_MAX) return 'bad whyItMatters';
   return null;
@@ -217,7 +223,7 @@ export function applySummaries(planned, readmeShas, pending, summaries) {
     }
     return {
       ...p,
-      name: s.name.trim(),
+      name: cleanName(s.name) ?? p.name,
       summary: s.summary.trim(),
       whyItMatters: s.whyItMatters.trim(),
       readmeSha: readmeShas[p.id],

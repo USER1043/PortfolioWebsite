@@ -24,7 +24,7 @@ jobs:
     steps:
       - uses: actions/checkout@v6
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v6
         with:
           node-version: 22
           cache: npm
@@ -57,8 +57,8 @@ jobs:
 
             For every repo, return:
             - repo: the repo name exactly as listed above
-            - name: the project's display name, from the README title or a clean
-              version of the repo name (max 40 characters)
+            - name: the project's short display name, from the README title or a clean
+              version of the repo name (max 40 characters, no subtitles such as "Backend API")
             - summary: one plain-text sentence on what the project does (max 200 characters)
             - whyItMatters: one or two plain-text sentences on the problem it solves or
               what is technically interesting about it (max 300 characters)
@@ -85,7 +85,7 @@ jobs:
 
       # No PR when nothing changed; an open PR is updated in place.
       - name: Open pull request
-        uses: peter-evans/create-pull-request@v7
+        uses: peter-evans/create-pull-request@v8
         with:
           branch: auto/sync-projects
           delete-branch: true
