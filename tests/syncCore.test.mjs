@@ -100,18 +100,24 @@ test("applies valid summaries only to pending repos and rejects bad ones", () =>
     { id: "a", name: "A", summary: "x", readmeSha: null, tech: ["Rust"] },
     { id: "b", name: "B", summary: "y", readmeSha: null, tech: ["Go"] },
     { id: "c", name: "C", summary: "z", readmeSha: "s", tech: ["C"] },
+    { id: "d", name: "Repo D", summary: "w", readmeSha: null, tech: ["Java"] },
   ];
   const summaries = [
     { repo: "a", name: "Alpha", summary: " Does A. ", whyItMatters: "Because." },
     { repo: "b", name: "B", summary: "", whyItMatters: "Because." },
     { repo: "c", name: "Hijack", summary: "Nope", whyItMatters: "Nope" },
+    { repo: "d", name: "x".repeat(80), summary: "Does D.", whyItMatters: "Because." },
   ];
-  const { projects, errors } = applySummaries(planned, { a: "sa", b: "sb" }, ["a", "b"], summaries);
+  const { projects, errors } = applySummaries(
+    planned, { a: "sa", b: "sb", d: "sd" }, ["a", "b", "d"], summaries,
+  );
 
   assert.deepEqual(projects[0], {
     id: "a", name: "Alpha", summary: "Does A.", whyItMatters: "Because.", readmeSha: "sa", tech: ["Rust"],
   });
   assert.deepEqual(projects[1], planned[1]); // rejected → unchanged, retried next run
   assert.deepEqual(projects[2], planned[2]); // not pending → untouchable
+  assert.equal(projects[3].name, "Repo D"); // over-long name → keep the old one
+  assert.equal(projects[3].summary, "Does D."); // ...but still use the summary
   assert.deepEqual(errors, ["b: bad summary"]);
 });
