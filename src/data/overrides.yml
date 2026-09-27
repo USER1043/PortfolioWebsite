@@ -11,3 +11,11 @@
 #   demo: https://jobverify-frontend.vercel.app
 #   order: 0          # lower shows first
 #   hidden: true      # keep it pinned on GitHub but off the site
+PasswordPal_Backend:
+  hidden: true
+ScholarshipSystem-Backend:
+  hidden: true
+PasswordPal_Frontend:
+  tech: [Rust, Tauri, React, TypeScript, Express, PostgreSQL]
+ScholarshipSystem-Frontend:
+  tech: [MERN Stack]
