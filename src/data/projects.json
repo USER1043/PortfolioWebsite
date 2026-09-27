@@ -1,52 +1,96 @@
 [
   {
-    "id": "jobify",
-    "name": "Jobify",
-    "demo": "https://jobverify-frontend.vercel.app",
-    "tech": [
-      "MERN Stack"
-    ],
-    "status": "Pre-launch (~90%)",
-    "summary": "Job aggregation platform that hunts down openings across company career pages so you can find the right opportunity without the endless tab-switching.",
-    "readmeSha": null,
-    "order": 0
-  },
-  {
-    "id": "passwordpal",
+    "id": "PasswordPal_Frontend",
     "name": "PasswordPal",
-    "demo": "https://github.com/USER1043/passwordpal_frontend/releases/latest",
+    "github": "https://github.com/USER1043/PasswordPal_Frontend",
     "tech": [
-      "Rust",
-      "Tauri"
+      "Tauri",
+      "React",
+      "Tailwind CSS",
+      "TypeScript",
+      "Rust"
     ],
     "status": "Shipped ✓",
-    "summary": "Zero-knowledge password manager — Argon2id + BLAKE3 crypto.",
-    "readmeSha": null,
-    "order": 1
+    "summary": "A local-first password manager combining a Rust/Tauri backend with a React and TypeScript frontend for secure vault management.",
+    "readmeSha": "46c4957a370e7648347950baa7da48ae5b10ec74",
+    "order": 0,
+    "whyItMatters": "Uses a zero-knowledge design with AES-256-GCM encryption and Argon2 key derivation, zeroing keys from memory after use so vault data stays protected even during password changes."
   },
   {
-    "id": "medistockai",
-    "name": "MediStockAI",
-    "demo": "https://medistock-ai-demo.vercel.app",
-    "tech": [
-      "MERN Stack",
-      "Gemini AI"
-    ],
-    "status": "Shipped ✓",
-    "summary": "AI-powered inventory stocking and sales projection for small & mid-sized pharmacies.",
-    "readmeSha": null,
-    "order": 2
-  },
-  {
-    "id": "sensory-safari",
+    "id": "SensorySafari",
     "name": "Sensory Safari",
+    "github": "https://github.com/USER1043/SensorySafari",
     "demo": "https://sensory-safari.vercel.app",
     "tech": [
-      "MERN Stack"
+      "React",
+      "JavaScript"
     ],
-    "status": "Shipped ✓",
-    "summary": "Fun, interactive, adaptive animals & maths learning app for kids with autism.",
-    "readmeSha": null,
-    "order": 3
+    "status": "Live",
+    "summary": "An interactive animal learning web app with a gallery, matching game, and quiz covering 33 animals.",
+    "readmeSha": "15f01e08f3d0d4fd85f458b5c37ab387d20bbccc",
+    "order": 1,
+    "whyItMatters": "Built with autism-friendly accessibility in mind, featuring gentle colors, large touch targets, reduced-motion support, and full keyboard and screen reader navigation."
+  },
+  {
+    "id": "ScholarshipSystem-Frontend",
+    "name": "SafeApply",
+    "github": "https://github.com/USER1043/ScholarshipSystem-Frontend",
+    "demo": "https://scholarship-system-frontend.vercel.app",
+    "tech": [
+      "React",
+      "JavaScript"
+    ],
+    "status": "Live",
+    "summary": "The React and Vite frontend for SafeApply, a scholarship application system with dashboards for students, verifiers, and admins.",
+    "readmeSha": "79cb6cc7f0b3c08f2cfd341699a1271656a5a55a",
+    "order": 2,
+    "whyItMatters": "Supports JWT-based authentication for multiple roles and client-side encryption via node-forge, giving each user type a tailored, secure interface."
+  },
+  {
+    "id": "PasswordPal_Backend",
+    "name": "PasswordPal Backend",
+    "github": "https://github.com/USER1043/PasswordPal_Backend",
+    "demo": "https://passwordpal-backend-uh7a.onrender.com",
+    "tech": [
+      "Express",
+      "PostgreSQL",
+      "JavaScript"
+    ],
+    "status": "Live",
+    "summary": "A zero-knowledge Node.js and Express API for PasswordPal that never sees or stores user passwords.",
+    "readmeSha": "d74f8b3b5d0b0f1090593597c8d87584079af98c",
+    "order": 3,
+    "whyItMatters": "Combines double-hashed authentication proofs, Argon2id, JWT sessions, and TOTP-based MFA with Supabase/PostgreSQL, so even a compromised database exposes no usable password data."
+  },
+  {
+    "id": "ScholarshipSystem-Backend",
+    "name": "SafeApply Backend",
+    "github": "https://github.com/USER1043/ScholarshipSystem-Backend",
+    "demo": "https://scholarshipsystem-backend.onrender.com",
+    "tech": [
+      "Express",
+      "MongoDB",
+      "JavaScript"
+    ],
+    "status": "Live",
+    "summary": "The Node.js and Express server for SafeApply, handling authentication, application processing, and secure data management.",
+    "readmeSha": "b9cfe91e4d1d8a4ca2a3d30fe8031295cca0d9d0",
+    "order": 4,
+    "whyItMatters": "Implements role-based access control for students, verifiers, and admins alongside 2FA, rate limiting, and secure file uploads for scholarship documents."
+  },
+  {
+    "id": "talent-radar",
+    "name": "Talent Radar",
+    "github": "https://github.com/USER1043/talent-radar",
+    "tech": [
+      "PyTorch",
+      "Streamlit",
+      "Python"
+    ],
+    "status": "Active",
+    "summary": "An AI/ML candidate ranking pipeline that scores a pool of 100,000 candidates down to a ranked top 100 with fact-grounded reasoning.",
+    "readmeSha": "af367a34acf6cee006788ec5f43c3da582fb6cf0",
+    "order": 5,
+    "whyItMatters": "Combines hybrid FAISS and BM25 retrieval with a Ridge regression ranker and a rule-based Deterministic Reason Planner to generate non-repetitive, evidence-backed justifications within a 5-minute, CPU-only runtime budget."
   }
 ]
