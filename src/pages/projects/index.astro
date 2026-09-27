@@ -2,22 +2,9 @@
 import '../../styles/global.css';
 import '../../styles/terminal.css';
 import ProjectCard from '../../components/ProjectCard.astro';
-import { getRepos } from '../../lib/github.js';
+import { getProjects } from '../../lib/projects';
 
-const githubRepos = await getRepos();
-const projects = githubRepos.map((repo: any) => ({
-  name: repo.name,
-  slug: repo.name.toLowerCase().replace(/[^a-z0-9]+/g, '-'),
-  status: repo.topics?.includes('portfolio') ? 'Featured' : 'Active',
-  description: repo.description || 'Repository details fetched from GitHub.',
-  tech: repo.language ? [repo.language] : [],
-  whatItDoes: repo.description || 'Repository details fetched from GitHub.',
-  whyItMatters: repo.topics?.length
-    ? `Topics: ${repo.topics.join(', ')}`
-    : 'Maintained as part of the portfolio collection.',
-  github: repo.url,
-  demo: repo.homepage,
-}));
+const projects = await getProjects();
 const buildTime = new Date().toISOString();
 ---
 
@@ -38,7 +25,7 @@ const buildTime = new Date().toISOString();
         <div class="terminal-output">
           <div class="projects-header">
             <h1>Projects</h1>
-            <p class="project-count">{projects.length} featured projects</p>
+            <p class="project-count">{projects.length} projects</p>
             <p class="last-updated">
               Last updated: {new Date(buildTime).toLocaleString()}
             </p>
@@ -47,7 +34,7 @@ const buildTime = new Date().toISOString();
 
         <div class="projects-grid">
           {projects.length > 0 ? (
-            projects.map((project: any) => (
+            projects.map((project) => (
               <ProjectCard project={project} />
             ))
           ) : (

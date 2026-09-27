@@ -1,0 +1,52 @@
+[
+  {
+    "id": "jobify",
+    "name": "Jobify",
+    "demo": "https://jobverify-frontend.vercel.app",
+    "tech": [
+      "MERN Stack"
+    ],
+    "status": "Pre-launch (~90%)",
+    "summary": "Job aggregation platform that hunts down openings across company career pages so you can find the right opportunity without the endless tab-switching.",
+    "readmeSha": null,
+    "order": 0
+  },
+  {
+    "id": "passwordpal",
+    "name": "PasswordPal",
+    "demo": "https://github.com/USER1043/passwordpal_frontend/releases/latest",
+    "tech": [
+      "Rust",
+      "Tauri"
+    ],
+    "status": "Shipped ✓",
+    "summary": "Zero-knowledge password manager — Argon2id + BLAKE3 crypto.",
+    "readmeSha": null,
+    "order": 1
+  },
+  {
+    "id": "medistockai",
+    "name": "MediStockAI",
+    "demo": "https://medistock-ai-demo.vercel.app",
+    "tech": [
+      "MERN Stack",
+      "Gemini AI"
+    ],
+    "status": "Shipped ✓",
+    "summary": "AI-powered inventory stocking and sales projection for small & mid-sized pharmacies.",
+    "readmeSha": null,
+    "order": 2
+  },
+  {
+    "id": "sensory-safari",
+    "name": "Sensory Safari",
+    "demo": "https://sensory-safari.vercel.app",
+    "tech": [
+      "MERN Stack"
+    ],
+    "status": "Shipped ✓",
+    "summary": "Fun, interactive, adaptive animals & maths learning app for kids with autism.",
+    "readmeSha": null,
+    "order": 3
+  }
+]

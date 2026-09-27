@@ -15,9 +15,6 @@
 # astro
 /.astro/
 
-# github cache
-/repos-cache.json
-
 # next.js
 /.next/
 /out/
@@ -45,3 +42,6 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# project sync scratch files
+/.sync/

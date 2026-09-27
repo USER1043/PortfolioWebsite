@@ -1,4 +1,10 @@
 ---
+import type { Project } from '../lib/projects';
+
+interface Props {
+  project: Project;
+}
+
 const { project } = Astro.props;
 ---
 
@@ -16,13 +22,15 @@ const { project } = Astro.props;
 
   <div class="project-section">
     <div class="project-section-title">What it does</div>
-    <p class="project-description">{project.whatItDoes}</p>
+    <p class="project-description">{project.summary}</p>
   </div>
 
-  <div class="project-section">
-    <div class="project-section-title">Why it matters</div>
-    <p class="project-description">{project.whyItMatters}</p>
-  </div>
+  {project.whyItMatters && (
+    <div class="project-section">
+      <div class="project-section-title">Why it matters</div>
+      <p class="project-description">{project.whyItMatters}</p>
+    </div>
+  )}
 
   <div class="project-links">
     {project.github && (
