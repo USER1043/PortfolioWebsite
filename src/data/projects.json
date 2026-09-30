@@ -12,39 +12,66 @@
     ],
     "status": "Shipped ✓",
     "summary": "A local-first password manager combining a Rust/Tauri backend with a React and TypeScript frontend for secure vault management.",
+    "whyItMatters": "Uses a zero-knowledge design with AES-256-GCM encryption and Argon2 key derivation, zeroing keys from memory after use so vault data stays protected even during password changes.",
     "readmeSha": "46c4957a370e7648347950baa7da48ae5b10ec74",
-    "order": 0,
-    "whyItMatters": "Uses a zero-knowledge design with AES-256-GCM encryption and Argon2 key derivation, zeroing keys from memory after use so vault data stays protected even during password changes."
+    "order": 0
   },
   {
-    "id": "SensorySafari",
-    "name": "Sensory Safari",
-    "github": "https://github.com/USER1043/SensorySafari",
-    "demo": "https://sensory-safari.vercel.app",
+    "id": "Distributed-Auction-System",
+    "name": "Distributed Auction System",
+    "github": "https://github.com/EliteGamer007/Distributed-Auction-System",
     "tech": [
-      "React",
-      "JavaScript"
+      "Go"
     ],
-    "status": "Live",
-    "summary": "An interactive animal learning web app with a gallery, matching game, and quiz covering 33 animals.",
-    "readmeSha": "15f01e08f3d0d4fd85f458b5c37ab387d20bbccc",
+    "status": "Paused",
+    "summary": "A fault-tolerant real-time online auction built in Go, where four independent nodes coordinate over RPC using classic distributed systems algorithms.",
+    "readmeSha": "fe1c13c14f0470127df7a370843699e208c09b03",
     "order": 1,
-    "whyItMatters": "Built with autism-friendly accessibility in mind, featuring gentle colors, large touch targets, reduced-motion support, and full keyboard and screen reader navigation."
+    "whyItMatters": "It implements Bully election, Ricart-Agrawala mutual exclusion, two-phase commit with majority quorum, and Koo-Toueg checkpointing end-to-end, with crash recovery and transaction logging across laptops on Wi-Fi."
   },
   {
-    "id": "ScholarshipSystem-Frontend",
-    "name": "SafeApply",
-    "github": "https://github.com/USER1043/ScholarshipSystem-Frontend",
-    "demo": "https://scholarship-system-frontend.vercel.app",
+    "id": "Talent-Radar",
+    "name": "Talent Radar",
+    "github": "https://github.com/USER1043/Talent-Radar",
     "tech": [
-      "React",
-      "JavaScript"
+      "PyTorch",
+      "Streamlit",
+      "Python"
     ],
-    "status": "Live",
-    "summary": "The React and Vite frontend for SafeApply, a scholarship application system with dashboards for students, verifiers, and admins.",
-    "readmeSha": "79cb6cc7f0b3c08f2cfd341699a1271656a5a55a",
+    "status": "Active",
+    "summary": "A candidate ranking pipeline for a Senior AI/ML Engineer job description that produces a ranked top 100 from a pool of 100K candidates, with a Streamlit dashboard to explore results.",
+    "readmeSha": "af367a34acf6cee006788ec5f43c3da582fb6cf0",
     "order": 2,
-    "whyItMatters": "Supports JWT-based authentication for multiple roles and client-side encryption via node-forge, giving each user type a tailored, secure interface."
+    "whyItMatters": "It combines FAISS and BM25 hybrid retrieval, honeypot filtering and a Ridge ranker, which beat LightGBM on held-out NDCG@10. A deterministic reason planner writes the explanations, and ranking runs on CPU in under 5 minutes."
+  },
+  {
+    "id": "Monday.com-BI-Agent",
+    "name": "Monday.com BI Agent",
+    "github": "https://github.com/USER1043/Monday.com-BI-Agent",
+    "tech": [
+      "Streamlit",
+      "Python"
+    ],
+    "status": "Active",
+    "summary": "A conversational assistant that answers founders' questions about sales pipeline and work order data from two Monday.com boards, using Llama 3.3 70B via Groq and the Monday.com MCP server.",
+    "readmeSha": "54c3a522737530a78226cceb70254d44e26ce241",
+    "order": 3,
+    "whyItMatters": "Real board data has messy currencies, dates, nulls and contradictory statuses. A deterministic normalization layer cleans it and every answer discloses data quality issues, including the stage-based fallback used when 75% of deals lack a probability."
+  },
+  {
+    "id": "SentinelFlow",
+    "name": "SentinelFlow",
+    "github": "https://github.com/USER1043/SentinelFlow",
+    "tech": [
+      "FastAPI",
+      "LangChain",
+      "Python"
+    ],
+    "status": "Active",
+    "summary": "A multi-agent system built for a hackathon that turns meeting transcripts into tracked action items using LangChain, Vertex AI Gemini and AlloyDB, exposed through a FastAPI service.",
+    "readmeSha": "cb77df8610d53be0c1cf55e8a96249140d1320b2",
+    "order": 4,
+    "whyItMatters": "An Analyst agent extracts tasks with owners, deadlines and 768-dimension embeddings, and a Watchdog agent audits the database for unassigned tasks so action items are not silently dropped after a meeting."
   },
   {
     "id": "PasswordPal_Backend",
@@ -58,39 +85,8 @@
     ],
     "status": "Live",
     "summary": "A zero-knowledge Node.js and Express API for PasswordPal that never sees or stores user passwords.",
+    "whyItMatters": "Combines double-hashed authentication proofs, Argon2id, JWT sessions, and TOTP-based MFA with Supabase/PostgreSQL, so even a compromised database exposes no usable password data.",
     "readmeSha": "d74f8b3b5d0b0f1090593597c8d87584079af98c",
-    "order": 3,
-    "whyItMatters": "Combines double-hashed authentication proofs, Argon2id, JWT sessions, and TOTP-based MFA with Supabase/PostgreSQL, so even a compromised database exposes no usable password data."
-  },
-  {
-    "id": "ScholarshipSystem-Backend",
-    "name": "SafeApply Backend",
-    "github": "https://github.com/USER1043/ScholarshipSystem-Backend",
-    "demo": "https://scholarshipsystem-backend.onrender.com",
-    "tech": [
-      "Express",
-      "MongoDB",
-      "JavaScript"
-    ],
-    "status": "Live",
-    "summary": "The Node.js and Express server for SafeApply, handling authentication, application processing, and secure data management.",
-    "readmeSha": "b9cfe91e4d1d8a4ca2a3d30fe8031295cca0d9d0",
-    "order": 4,
-    "whyItMatters": "Implements role-based access control for students, verifiers, and admins alongside 2FA, rate limiting, and secure file uploads for scholarship documents."
-  },
-  {
-    "id": "talent-radar",
-    "name": "Talent Radar",
-    "github": "https://github.com/USER1043/talent-radar",
-    "tech": [
-      "PyTorch",
-      "Streamlit",
-      "Python"
-    ],
-    "status": "Active",
-    "summary": "An AI/ML candidate ranking pipeline that scores a pool of 100,000 candidates down to a ranked top 100 with fact-grounded reasoning.",
-    "readmeSha": "af367a34acf6cee006788ec5f43c3da582fb6cf0",
-    "order": 5,
-    "whyItMatters": "Combines hybrid FAISS and BM25 retrieval with a Ridge regression ranker and a rule-based Deterministic Reason Planner to generate non-repetitive, evidence-backed justifications within a 5-minute, CPU-only runtime budget."
+    "order": 5
   }
 ]
