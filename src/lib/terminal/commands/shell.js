@@ -6,7 +6,7 @@
 import { STAGGER, escHtml, formatDuration } from '../util.js';
 import { absolutePath, getNode, listDir, resolvePath } from '../vfs.js';
 import { labelRow, printLines } from './core.js';
-import { BIO_LINES, NOW_LINES, SOCIAL, STACK, SYSTEM } from './profile.js';
+import { BIO_LINES, NOW_LINES, SOCIAL, SYSTEM } from './profile.js';
 
 const HEX = /^#[0-9a-f]{6}$/i;
 
@@ -50,7 +50,7 @@ export function neofetchInfo({ projects, startedAt, theme = 'mocha', now = Date.
     ['Uptime', formatDuration(now - startedAt)],
     ['Projects', `${projects.length} (try: ls projects)`],
     ['Role', SYSTEM.role],
-    ['Stack', STACK[0][1]],
+    ['Stack', SYSTEM.stack],
     ['Theme', theme],
   ];
 }
@@ -61,7 +61,7 @@ const neofetch = {
   name: 'neofetch',
   aliases: ['fastfetch'],
   group: 'about',
-  description: 'System info, with a Charizard',
+  description: 'Show system info (with a Charizard)',
   run(ctx) {
     const info = neofetchInfo(ctx)
       .map(([label, value], i) =>
@@ -279,7 +279,7 @@ export function timelineCommits(timeline) {
 const git = {
   name: 'git',
   group: 'about',
-  description: 'git log — my journey so far',
+  description: 'Show my journey as git commits',
   usage: 'git log [--oneline] | git status',
   run({ r, timeline }, { args }) {
     const [sub, ...flags] = args;
@@ -365,7 +365,7 @@ const echo = {
 const uptime = {
   name: 'uptime',
   group: 'shell',
-  description: 'How long this session has been up',
+  description: 'Show how long this session has been up',
   run({ r, startedAt }) {
     const now = new Date();
     const clock = now.toTimeString().slice(0, 8);

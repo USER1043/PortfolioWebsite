@@ -9,7 +9,7 @@ import { STAGGER, escHtml } from '../util.js';
 const theme = {
   name: 'theme',
   group: 'session',
-  description: 'Change colours (theme list)',
+  description: 'Change the colour theme',
   usage: `theme [list | ${THEME_NAMES.join(' | ')}]`,
   complete: THEME_NAMES,
   run({ r, actions }, { args }) {

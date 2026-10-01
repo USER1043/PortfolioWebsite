@@ -29,7 +29,7 @@ export function printLines(r, lines, className, d) {
 const help = {
   name: 'help',
   group: 'session',
-  description: 'Displays this help message',
+  description: 'Show this help',
   run({ r, registry }) {
     const visible = registry.visible();
     const width = Math.max(...visible.filter((c) => c.group === 'about').map((c) => c.name.length)) + 3;
@@ -67,7 +67,7 @@ const help = {
 const aboutme = {
   name: 'aboutme',
   group: 'about',
-  description: 'Displays who I am',
+  description: 'Show who I am',
   run({ r }) {
     let d = 0;
     r.blank();
@@ -90,7 +90,7 @@ const aboutme = {
 const social = {
   name: 'social',
   group: 'about',
-  description: 'Lists social networks',
+  description: 'Show my social links',
   run({ r }) {
     let d = 0;
     r.blank();
@@ -112,7 +112,7 @@ const social = {
 const projects = {
   name: 'projects',
   group: 'about',
-  description: 'View coding projects',
+  description: 'Show my projects',
   run({ r, projects: list }) {
     let d = 0;
     r.blank();
@@ -178,7 +178,7 @@ const contact = {
 const history = {
   name: 'history',
   group: 'session',
-  description: 'View command history',
+  description: 'Show command history',
   run({ r, history: entries }) {
     r.blank();
     if (entries.length === 0) {

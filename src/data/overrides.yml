@@ -19,3 +19,5 @@ PasswordPal_Frontend:
   tech: [Rust, Tauri, React, TypeScript, Express, PostgreSQL]
 ScholarshipSystem-Frontend:
   tech: [MERN Stack]
+Distributed-Auction-System:
+  status: Completed
