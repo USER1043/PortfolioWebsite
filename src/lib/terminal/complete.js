@@ -28,14 +28,16 @@ export function completeInput(value, { registry, fs, cwd }) {
     return { value: commonPrefix(matches) || value, matches };
   }
 
-  // Completing a path argument, for commands that take one.
+  // Completing an argument: a path, or one of a fixed list of words.
   const name = value.slice(0, value.indexOf(' ')).toLowerCase();
   const kind = registry.find(name)?.complete;
   if (!kind) return { value, matches: [] };
 
   const head = value.slice(0, space + 1);
   const partial = value.slice(space + 1);
-  const matches = completePath(fs, cwd, partial, { dirsOnly: kind === 'dir' });
+  const matches = Array.isArray(kind)
+    ? kind.filter((word) => word.startsWith(partial.toLowerCase()))
+    : completePath(fs, cwd, partial, { dirsOnly: kind === 'dir' });
   if (matches.length === 1) {
     const done = matches[0];
     return { value: head + done + (done.endsWith('/') ? '' : ' '), matches: [] };

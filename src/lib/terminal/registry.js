@@ -4,7 +4,7 @@
  * A command is:
  *   {
  *     name, aliases?, group, description, usage?, hidden?,
- *     complete?: 'path' | 'dir',   // what Tab completes after the name
+ *     complete?: 'path' | 'dir' | string[],   // what Tab completes after the name
  *     run(ctx, input) → delayMs | null | Promise<delayMs | null>
  *   }
  * `input` is the parsed line ({ name, args, rest }). The returned delay is how

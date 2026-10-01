@@ -3,6 +3,8 @@ import assert from "node:assert/strict";
 import { buildRegistry } from "../src/lib/terminal/commands/index.js";
 import { artToHtml, fakeHash, neofetchInfo, timelineCommits } from "../src/lib/terminal/commands/shell.js";
 import { FORTUNES, bubble, coffeeBar, wrap } from "../src/lib/terminal/commands/fun.js";
+import { KONAMI, createSequenceMatcher } from "../src/lib/terminal/konami.js";
+import { DEFAULT_THEME, THEME_NAMES, isTheme } from "../src/lib/terminal/themes.js";
 import { commonPrefix, completeInput } from "../src/lib/terminal/complete.js";
 import { parseInput } from "../src/lib/terminal/parse.js";
 import { GROUPS, createRegistry } from "../src/lib/terminal/registry.js";
@@ -26,9 +28,9 @@ class FakeRenderer {
   get text() { return this.out.map((o) => o.text ?? o.html).join("\n"); }
 }
 
-async function run(raw, { cwd = [], timeline = [], shell, random = () => 0, reducedMotion = false } = {}) {
+async function run(raw, { cwd = [], timeline = [], shell, random = () => 0, reducedMotion = false, theme = DEFAULT_THEME } = {}) {
   const registry = buildRegistry();
-  const calls = { opened: [], cwd: null };
+  const calls = { opened: [], cwd: null, theme: null, matrix: 0 };
   const ctx = {
     r: new FakeRenderer(),
     registry,
@@ -37,6 +39,7 @@ async function run(raw, { cwd = [], timeline = [], shell, random = () => 0, redu
     shell: shell ?? { cwd },
     random,
     reducedMotion,
+    theme,
     timeline,
     art: { rows: [[["▀", "#ff0000", "#00ff00"], "  "]] },
     startedAt: Date.now() - 65_000,
@@ -47,6 +50,9 @@ async function run(raw, { cwd = [], timeline = [], shell, random = () => 0, redu
       navigate: (url) => calls.opened.push(url),
       clear: async () => {},
       exit: async () => {},
+      setTheme: (name) => { calls.theme = name; },
+      getTheme: () => theme,
+      matrix: async () => { calls.matrix++; },
     },
   };
   const input = parseInput(raw);
@@ -319,4 +325,63 @@ test(".secrets only shows with ls -a and hints at the eggs", async () => {
   assert.doesNotMatch((await run("ls")).text, /\.secrets/);
   assert.match((await run("ls -a")).text, /\.secrets/);
   assert.match((await run("cat .secrets")).text, /editors are a trap/);
+});
+
+/* ── visual effects ── */
+
+test("theme lists, switches and rejects unknown themes", async () => {
+  assert.deepEqual(THEME_NAMES, ["mocha", "gruvbox", "dracula", "fire"]);
+  assert.ok(isTheme("fire") && !isTheme("neon"));
+
+  const list = await run("theme", { theme: "dracula" });
+  for (const name of THEME_NAMES) assert.match(list.text, new RegExp(`>${name}\\s*<`));
+  assert.match(list.text, /\*<\/span> <span class="t-cmd">dracula/); // current one is starred
+  assert.match(list.text, /background:#FFA452/); // swatches preview each theme
+
+  const set = await run("theme Fire");
+  assert.equal(set.calls.theme, "fire");
+  assert.match(set.text, /theme set to fire/);
+
+  const bad = await run("theme neon");
+  assert.equal(bad.calls.theme, null);
+  assert.match(bad.text, /unknown theme 'neon'/);
+
+  assert.match((await run("neofetch", { theme: "gruvbox" })).text, /Theme<\/span>: gruvbox/);
+});
+
+test("Tab completes theme names", () => {
+  const ctx = { registry: buildRegistry(), fs: buildFs(PROJECTS), cwd: [] };
+  assert.equal(completeInput("theme dr", ctx).value, "theme dracula ");
+  assert.deepEqual(completeInput("theme ", ctx).matches, THEME_NAMES);
+});
+
+test("matrix is hidden and respects reduced motion", async () => {
+  assert.ok(!buildRegistry().visibleNames().includes("matrix"));
+  const rain = await run("matrix");
+  assert.equal(rain.calls.matrix, 1);
+  assert.match(rain.text, /wake up, neo…\n…you took the red pill/);
+
+  const calm = await run("matrix", { reducedMotion: true });
+  assert.equal(calm.calls.matrix, 0);
+  assert.match(calm.text, /animations are off/);
+});
+
+test("the Konami matcher fires once per full sequence", () => {
+  const feed = (keys) => {
+    const match = createSequenceMatcher();
+    return keys.map((k) => match(k));
+  };
+  assert.deepEqual(feed(KONAMI).filter(Boolean).length, 1);
+  assert.equal(feed(KONAMI).at(-1), true);
+  // A stray extra ↑ at the start still counts, and B/A are case-insensitive.
+  const extraUp = ["ArrowUp", ...KONAMI.slice(0, -2), "B", "A"];
+  assert.equal(feed(extraUp).at(-1), true);
+  // A wrong key in the middle resets it.
+  assert.equal(feed([...KONAMI.slice(0, 5), "x", ...KONAMI.slice(5)]).some(Boolean), false);
+});
+
+test(".secrets hints at the new eggs", async () => {
+  const { text } = await run("cat .secrets");
+  assert.match(text, /white rabbit/);
+  assert.match(text, /cheat codes/);
 });

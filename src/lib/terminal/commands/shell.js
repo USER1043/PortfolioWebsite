@@ -39,7 +39,7 @@ export function artToHtml(art) {
 }
 
 // The info column as [label, value] pairs (label null for the header lines).
-export function neofetchInfo({ projects, startedAt, now = Date.now() }) {
+export function neofetchInfo({ projects, startedAt, theme = 'mocha', now = Date.now() }) {
   return [
     [null, `${SYSTEM.user}@${SYSTEM.host}`],
     [null, '-'.repeat(`${SYSTEM.user}@${SYSTEM.host}`.length)],
@@ -51,6 +51,7 @@ export function neofetchInfo({ projects, startedAt, now = Date.now() }) {
     ['Projects', `${projects.length} (try: ls projects)`],
     ['Role', SYSTEM.role],
     ['Stack', STACK[0][1]],
+    ['Theme', theme],
   ];
 }
 
@@ -213,6 +214,8 @@ const cat = {
           '  - charizard has opinions',
           '  - fortunes are free',
           '  - some commands are destructive. allegedly.',
+          '  - follow the white rabbit',
+          '  - old cheat codes still work (↑↑↓↓…)',
         ], 'terminal-line--desc', d);
         break;
       default:

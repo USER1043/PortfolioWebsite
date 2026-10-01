@@ -2,6 +2,7 @@
 import '../../styles/global.css';
 import '../../styles/terminal.css';
 import ProjectCard from '../../components/ProjectCard.astro';
+import ThemeScript from '../../components/ThemeScript.astro';
 import { getProjects } from '../../lib/projects';
 
 const projects = await getProjects();
@@ -14,6 +15,7 @@ const buildTime = new Date().toISOString();
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Projects - prajan-karthik</title>
     <link rel="icon" type="image/svg+xml" href="/logo.svg" />
+    <ThemeScript />
   </head>
   <body>
     <div class="container">
