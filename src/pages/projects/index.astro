@@ -2,7 +2,7 @@
 import '../../styles/global.css';
 import '../../styles/terminal.css';
 import ProjectCard from '../../components/ProjectCard.astro';
-import ThemeScript from '../../components/ThemeScript.astro';
+import BaseHead from '../../components/BaseHead.astro';
 import { getProjects } from '../../lib/projects';
 
 const projects = await getProjects();
@@ -11,11 +11,10 @@ const buildTime = new Date().toISOString();
 
 <html lang="en">
   <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Projects - prajan-karthik</title>
-    <link rel="icon" type="image/svg+xml" href="/logo.svg" />
-    <ThemeScript />
+    <BaseHead
+      title="Projects - prajan-karthik"
+      description="Projects by Prajan Karthik, synced daily from GitHub: what each one does, its tech stack, status and links."
+    />
   </head>
   <body>
     <div class="container">
