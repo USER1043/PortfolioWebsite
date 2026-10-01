@@ -1,32 +1,33 @@
 # Your journey, shown by `git log` in the terminal (newest first).
-# Add a date to each entry as YYYY-MM (or just YYYY). Entries without a
-# date are hidden, so nothing shows until you fill these in.
+# Each entry needs a date as YYYY-MM (or just YYYY); entries without one are
+# hidden. Only the month is shown. To order entries within the same month,
+# add a day (YYYY-MM-DD); otherwise they're ordered by key.
 # Keys are just ids; messages read best in commit style.
 
 started-cs:
   message: "init: start CS undergrad"
-  # date: YYYY-MM
+  date: 2023-08
 
 intel-iot-club:
   message: "feat: join Intel IoT Club, lead web architecture"
-  # date: YYYY-MM
+  date: 2025-08
 
 passwordpal:
   message: "release: ship PasswordPal, a zero-knowledge password manager (Rust + Tauri)"
-  # date: YYYY-MM
+  date: 2026-01
 
 sensory-safari:
   message: "release: ship Sensory Safari, a learning app for kids with autism"
-  # date: YYYY-MM
+  date: 2026-01
 
 safeapply:
   message: "feat: build SafeApply, a secure scholarship application system"
-  # date: YYYY-MM
+  date: 2026-01
 
 talent-radar:
   message: "feat: Talent Radar, CPU-only candidate ranking for the IndiaRuns hackathon"
-  # date: YYYY-MM
+  date: 2026-06
 
 jobify:
   message: "wip: Jobify, a job aggregation platform, nearing launch"
-  # date: YYYY-MM
+  date: 2026-02

@@ -46,7 +46,7 @@ const projectOverrides = defineCollection({
 const timeline = defineCollection({
   loader: file('src/data/timeline.yml', { parser: (text) => yaml.load(text) ?? {} }),
   schema: z.object({
-    date: z.string().regex(/^\d{4}(-\d{2})?$/, 'Use YYYY or YYYY-MM').optional(),
+    date: z.string().regex(/^\d{4}(-\d{2}){0,2}$/, 'Use YYYY, YYYY-MM or YYYY-MM-DD').optional(),
     message: z.string(),
   }),
 });

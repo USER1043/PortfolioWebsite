@@ -248,7 +248,7 @@ export function fakeHash(text) {
 
 const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
-// "2025-03" → "Mar 2025".
+// "2025-03" or "2025-03-14" → "Mar 2025".
 function formatMonth(date) {
   const [y, m] = date.split('-').map(Number);
   return m ? `${MONTHS[m - 1]} ${y}` : String(y);

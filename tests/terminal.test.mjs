@@ -193,6 +193,12 @@ test("git log shows dated milestones newest first", async () => {
   ];
   const commits = timelineCommits(timeline);
   assert.deepEqual(commits.map((c) => c.message), ["newer", "older"]);
+  // A day orders same-month entries but only the month is shown.
+  const sameMonth = timelineCommits([
+    { date: "2026-01-05", message: "first" },
+    { date: "2026-01-20", message: "second" },
+  ]);
+  assert.deepEqual(sameMonth.map((c) => [c.message, c.date]), [["second", "Jan 2026"], ["first", "Jan 2026"]]);
   assert.equal(commits[0].date, "Jan 2026");
   assert.match(commits[0].hash, /^[0-9a-f]{7}$/);
   assert.equal(fakeHash("newer"), commits[0].hash); // stable across renders
