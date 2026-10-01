@@ -81,15 +81,18 @@
 
 .titlebar-buttons {
   display: flex;
-  gap: 7px;
+  gap: 0;
   align-items: center;
   z-index: 1;
 }
 
 /* Decorative window control buttons */
+/* A 24×24 tap target with a 13px dot painted in the middle. */
 .win-btn {
-  width: 13px;
-  height: 13px;
+  width: 24px;
+  height: 24px;
+  padding: 5.5px;
+  background-clip: content-box;
   border-radius: 50%;
   border: none;
   cursor: default;
@@ -98,12 +101,12 @@
 }
 
 .terminal-titlebar:hover .win-btn { opacity: 0.9; }
-.terminal-titlebar:hover .win-btn--close  { background: var(--win-close);  }
-.terminal-titlebar:hover .win-btn--min    { background: var(--win-min);    }
-.terminal-titlebar:hover .win-btn--max    { background: var(--win-max);    }
-.win-btn--close  { background: #4a2525; }
-.win-btn--min    { background: #3a3220; }
-.win-btn--max    { background: #1d3520; }
+.terminal-titlebar:hover .win-btn--close  { background-color: var(--win-close);  }
+.terminal-titlebar:hover .win-btn--min    { background-color: var(--win-min);    }
+.terminal-titlebar:hover .win-btn--max    { background-color: var(--win-max);    }
+.win-btn--close  { background-color: #4a2525; }
+.win-btn--min    { background-color: #3a3220; }
+.win-btn--max    { background-color: #1d3520; }
 
 /* ── Terminal Body ── */
 .terminal-body {
