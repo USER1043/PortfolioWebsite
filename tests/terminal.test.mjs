@@ -2,6 +2,7 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import { buildRegistry } from "../src/lib/terminal/commands/index.js";
 import { artToHtml, fakeHash, neofetchInfo, timelineCommits } from "../src/lib/terminal/commands/shell.js";
+import { FORTUNES, bubble, coffeeBar, wrap } from "../src/lib/terminal/commands/fun.js";
 import { commonPrefix, completeInput } from "../src/lib/terminal/complete.js";
 import { parseInput } from "../src/lib/terminal/parse.js";
 import { GROUPS, createRegistry } from "../src/lib/terminal/registry.js";
@@ -19,13 +20,13 @@ const PROJECTS = [
 // Records what commands print, instead of touching the DOM.
 class FakeRenderer {
   constructor() { this.out = []; }
-  line(text, cls) { this.out.push({ text, cls }); }
+  line(text, cls) { const entry = { text, cls }; this.out.push(entry); return entry; }
   html(markup, cls) { this.out.push({ html: markup, cls }); }
   blank() {}
   get text() { return this.out.map((o) => o.text ?? o.html).join("\n"); }
 }
 
-async function run(raw, { cwd = [], timeline = [] } = {}) {
+async function run(raw, { cwd = [], timeline = [], shell, random = () => 0, reducedMotion = false } = {}) {
   const registry = buildRegistry();
   const calls = { opened: [], cwd: null };
   const ctx = {
@@ -33,7 +34,9 @@ async function run(raw, { cwd = [], timeline = [] } = {}) {
     registry,
     projects: PROJECTS,
     fs: buildFs(PROJECTS),
-    shell: { cwd },
+    shell: shell ?? { cwd },
+    random,
+    reducedMotion,
     timeline,
     art: { rows: [[["▀", "#ff0000", "#00ff00"], "  "]] },
     startedAt: Date.now() - 65_000,
@@ -226,4 +229,94 @@ test("echo, man and whoami behave like their namesakes", async () => {
   assert.match((await run("man ls")).text, /SYNOPSIS\n\s+ls \[-a\] \[-l\] \[path\]/);
   assert.match((await run("man nope")).text, /No manual entry for nope/);
   assert.match((await run("whoami")).text, /^prajan/);
+});
+
+/* ── easter eggs (hidden) ── */
+
+const HIDDEN = buildRegistry().all().filter((c) => c.hidden);
+
+test("hidden commands stay out of help, completion and suggestions", async () => {
+  assert.ok(HIDDEN.length >= 10);
+  const { text } = await run("help");
+  assert.match(text, /psst… not every command is listed here/);
+  for (const c of HIDDEN) {
+    assert.doesNotMatch(text, new RegExp(`>${c.name.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}\\s*<`), c.name);
+  }
+  const ctx = { registry: buildRegistry(), fs: buildFs(PROJECTS), cwd: [] };
+  assert.equal(completeInput("su", ctx).value, "su"); // not "sudo "
+  assert.equal(completeInput("fort", ctx).value, "fort");
+  assert.equal(suggest("sudp", buildRegistry().visibleNames()), null);
+});
+
+test("sudo and make", async () => {
+  assert.match((await run("sudo ls")).text, /visitor is not in the sudoers file/);
+  assert.equal((await run("sudo make me a sandwich")).out.at(-1).text, "Okay.");
+  assert.match((await run("make me a sandwich")).text, /Make it yourself/);
+  assert.match((await run("sudo rm -rf /")).text, /nice try/);
+  assert.match((await run("sudo")).text, /usage: sudo/);
+  assert.match((await run("make all")).text, /No targets specified/);
+});
+
+test("rm -rf / melts down (jokingly); other rm calls are read-only", async () => {
+  const meltdown = await run("rm -rf /");
+  assert.match(meltdown.text, /removed '\/home\/prajan\/about\.txt'/);
+  assert.match(meltdown.text, /removed '\/home\/prajan\/projects\/passwordpal\.md'/);
+  assert.match(meltdown.text, /just kidding/);
+  assert.match((await run("rm -fr ~")).text, /just kidding/);
+  assert.match((await run("rm -r -f *")).text, /just kidding/);
+  assert.match((await run("rm about.txt")).text, /Read-only file system/);
+  assert.match((await run("rm -rf about.txt")).text, /Read-only file system/);
+  assert.match((await run("rm")).text, /missing operand/);
+});
+
+test("vim traps you until :q, and exit knows it", async () => {
+  const shell = { cwd: [] };
+  assert.match((await run("vim", { shell })).text, /you're in vim now/);
+  assert.equal(shell.inVim, true);
+  assert.match((await run("exit", { shell })).text, /still in vim\. try :q/);
+  assert.match((await run(":wq", { shell })).text, /ahead of most developers/);
+  assert.equal(shell.inVim, false);
+  assert.match((await run(":q", { shell })).text, /not in vim\. relax/);
+  assert.match((await run("emacs")).text, /lacking only a decent editor/);
+  assert.match((await run("nano")).text, /person of culture/);
+});
+
+test("charizard-say wraps text and never renders HTML", async () => {
+  assert.deepEqual(wrap("a ".repeat(30).trim(), 10), ["a a a a a", "a a a a a", "a a a a a", "a a a a a", "a a a a a", "a a a a a"]);
+  assert.deepEqual(wrap("x".repeat(25), 10), ["xxxxxxxxxx", "xxxxxxxxxx", "xxxxx"]);
+  assert.deepEqual(bubble("hi"), [" ____", "< hi >", " ----"]);
+  const long = bubble("one two three four five six seven eight nine ten eleven twelve");
+  assert.match(long[1], /^\/ /);
+  assert.match(long.at(-2), /^\\ /);
+  assert.ok(long.every((l) => l.length <= 44));
+
+  const { out } = await run("charizard-say <b>hi</b>");
+  assert.ok(out.some((o) => o.text === "< <b>hi</b> >"));
+  assert.ok(out.every((o) => o.html === undefined)); // only textContent lines
+  assert.match((await run("cowsay")).text, /< Rawr\. >/);
+});
+
+test("fortune, coffee, ping, hire and friends", async () => {
+  assert.equal((await run("fortune", { random: () => 0 })).out[0].text, FORTUNES[0]);
+  assert.equal((await run("fortune", { random: () => 0.9999 })).out[0].text, FORTUNES.at(-1));
+
+  assert.equal(coffeeBar(4), "brewing [####······] 40%");
+  const calm = await run("coffee", { reducedMotion: true });
+  assert.deepEqual(calm.out.map((o) => o.text), ["☕ ready. back to shipping."]);
+
+  assert.match((await run("ping")).text, /Destination address required/);
+  assert.match((await run("ping prajan")).text, /online and caffeinated/);
+  const pong = await run("ping example.com", { random: () => 0.5 });
+  assert.match(pong.text, /icmp_seq=4 ttl=64 time=15\.00 ms/);
+  assert.match(pong.text, /0% packet loss/);
+
+  assert.match((await run("hire-me")).text, /mailto:/);
+  assert.match((await run("hi")).text, /type help/);
+  assert.match((await run("42")).text, /what was the question/);
+});
+
+test(".secrets only shows with ls -a and hints at the eggs", async () => {
+  assert.doesNotMatch((await run("ls")).text, /\.secrets/);
+  assert.match((await run("ls -a")).text, /\.secrets/);
+  assert.match((await run("cat .secrets")).text, /editors are a trap/);
 });

@@ -157,7 +157,7 @@ export function initTerminal({
   const registry = buildRegistry();
   const projects = data.projects ?? [];
   const fs       = buildFs(projects);
-  const shell    = { cwd: [] };
+  const shell    = { cwd: [], inVim: false };
   /** @type {string[]} */
   let sessionLog = [];
   let isMinimized = false;
@@ -191,6 +191,8 @@ export function initTerminal({
     timeline: data.timeline ?? [],
     startedAt: data.startedAt ?? performance.timeOrigin,
     history: sessionLog.slice(0, -1),
+    reducedMotion: window.matchMedia?.('(prefers-reduced-motion: reduce)').matches ?? false,
+    random: Math.random,
   });
 
   // Runs one input line: echo it, dispatch, then add the trailing spacing.
@@ -321,6 +323,7 @@ export function initTerminal({
     sessionLog = [];
     cmdHist.reset();
     shell.cwd = [];
+    shell.inVim = false;
     setCwd([]);
 
     bootSequence().then(() => inputEl.focus());

@@ -31,6 +31,7 @@ export function buildFs(projects = []) {
     'about.txt': file('about'),
     'contact.txt': file('contact', { url: '/contact' }),
     'resume.pdf': file('binary', { url: '/Resume.pdf' }),
+    '.secrets': file('secrets'),
     projects: { ...dir(projectFiles), url: '/projects' },
   });
 }
