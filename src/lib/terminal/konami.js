@@ -8,12 +8,16 @@ export const KONAMI = [
   'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'b', 'a',
 ];
 
+// Modifier keys pressed on their own (e.g. Shift for a capital B) are ignored.
+const MODIFIERS = new Set(['Shift', 'Control', 'Alt', 'Meta', 'CapsLock', 'AltGraph']);
+
 // Returns a function to feed each key into; it returns true when the
 // sequence has just been completed. Letter keys are case-insensitive.
 export function createSequenceMatcher(sequence = KONAMI) {
   const want = sequence.map((k) => (k.length === 1 ? k.toLowerCase() : k));
   let progress = 0;
   return (key) => {
+    if (MODIFIERS.has(key)) return false;
     const k = key.length === 1 ? key.toLowerCase() : key;
     // Keep the longest tail of what's been typed that is still a valid start,
     // so e.g. ↑↑↑↓↓… works.
