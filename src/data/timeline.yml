@@ -1,0 +1,32 @@
+# Your journey, shown by `git log` in the terminal (newest first).
+# Add a date to each entry as YYYY-MM (or just YYYY). Entries without a
+# date are hidden, so nothing shows until you fill these in.
+# Keys are just ids; messages read best in commit style.
+
+started-cs:
+  message: "init: start CS undergrad"
+  # date: YYYY-MM
+
+intel-iot-club:
+  message: "feat: join Intel IoT Club, lead web architecture"
+  # date: YYYY-MM
+
+passwordpal:
+  message: "release: ship PasswordPal, a zero-knowledge password manager (Rust + Tauri)"
+  # date: YYYY-MM
+
+sensory-safari:
+  message: "release: ship Sensory Safari, a learning app for kids with autism"
+  # date: YYYY-MM
+
+safeapply:
+  message: "feat: build SafeApply, a secure scholarship application system"
+  # date: YYYY-MM
+
+talent-radar:
+  message: "feat: Talent Radar, CPU-only candidate ranking for the IndiaRuns hackathon"
+  # date: YYYY-MM
+
+jobify:
+  message: "wip: Jobify, a job aggregation platform, nearing launch"
+  # date: YYYY-MM

@@ -326,3 +326,66 @@
 
   .terminal-body { padding: 14px 16px 10px; }
 }
+
+/* ─────────────────────────────────────────────
+   Inline output styles (used inside terminal lines)
+   ───────────────────────────────────────────── */
+
+.t-cmd   { color: var(--cmd-cyan); font-weight: 500; }
+.t-desc  { color: #828294; }
+.t-muted { color: var(--text-muted); }
+.t-dir   { color: var(--prompt-blue); font-weight: 500; }
+.t-warn  { color: var(--yellow); }
+.t-title { color: var(--prompt-green); font-weight: 700; }
+
+/* ─────────────────────────────────────────────
+   neofetch
+   ───────────────────────────────────────────── */
+
+.neofetch {
+  display: flex;
+  align-items: center;
+  gap: 1.75rem;
+  padding: 0.25rem 0;
+}
+
+.neofetch-art {
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  line-height: 1;
+  letter-spacing: 0;
+  white-space: pre;
+  flex-shrink: 0;
+}
+
+.neofetch-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.neofetch-swatches {
+  display: flex;
+  margin-top: 0.5rem;
+}
+
+.neofetch-swatch {
+  width: 1.4rem;
+  height: 0.9rem;
+}
+
+/* Stack the art above the info on narrow screens. */
+@media (max-width: 600px) {
+  .neofetch {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.75rem;
+  }
+
+  .neofetch-art {
+    font-size: 0.65rem;
+  }
+}
