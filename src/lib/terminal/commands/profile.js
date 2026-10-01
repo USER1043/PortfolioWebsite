@@ -6,23 +6,23 @@
 export const EMAIL = 'prjnkrthk@gmail.com';
 
 export const BIO_LINES = [
-  "A CS undergrad obsessed with depth. I don't ship features until they",
-  'work exactly as intended for the person using them. I\'ve built',
-  'production systems that handle real users — job aggregation platforms',
-  'with 700+ postings, password managers with military-grade crypto,',
-  'and education platforms for kids with autism.',
+  'Final-year CS undergrad at Amrita Vishwa Vidyapeetham, Coimbatore.',
+  'I like building things end to end: a zero-knowledge password manager',
+  'in Rust and Tauri, distributed systems in Go, and AI pipelines that',
+  'rank 100K candidates on a CPU in under 5 minutes. I care about',
+  'software that works exactly as intended for the person using it.',
 ];
 
 export const NOW_LINES = [
-  'Currently leading web architecture at Intel IoT Club while building',
-  'Jobify into a full-scale product. I think in systems: how data flows,',
-  'where latency hides, what breaks first.',
+  "As web lead at Intel IoT Club, I'm building Jobify, a job aggregation",
+  'platform that pulls openings straight from company career pages.',
+  'I think in systems: how data flows, where latency hides, what breaks first.',
 ];
 
 export const STACK = [
-  ['Deep  ', 'React, Node.js, MongoDB, Express, Redux'],
-  ['Solid ', 'Rust, TypeScript, Python, C++, PostgreSQL'],
-  ['DSA   ', 'C++, algorithmic thinking, optimization'],
+  ['Web     ', 'React, Node.js, Express, PostgreSQL, MongoDB'],
+  ['Systems ', 'Rust (Tauri), Go, C++'],
+  ['AI/ML   ', 'Python, PyTorch, LangChain, FAISS, LLM APIs'],
 ];
 
 export const SOCIAL = [
@@ -39,5 +39,6 @@ export const SYSTEM = {
   kernel: '7.0.14-arch1-1',
   wm: 'Hyprland',
   shell: 'bash (well, this one)',
-  role: 'CS undergrad · Intel IoT Club web lead',
+  role: 'Final-year CS @ Amrita · Intel IoT Club web lead',
+  stack: 'React, Node.js, Rust, Go, Python',
 };
