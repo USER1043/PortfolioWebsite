@@ -9,6 +9,7 @@
   --bg-secondary:    #161616;
   --text:            #CDD6F4;
   --text-muted:      #6C7086;
+  --text-desc:       #828294;
   --border:          rgba(255, 255, 255, 0.07);
 
   /* Terminal chrome colors */
@@ -36,6 +37,69 @@
 
   /* Typography */
   --font-mono: 'JetBrains Mono', 'IBM Plex Mono', 'Courier Prime', monospace;
+}
+
+/* ── Themes ──
+   Switched with the terminal's `theme` command; the choice is saved per
+   visitor and applied before first paint by ThemeScript.astro. Mocha is the
+   :root default above. Keep names in sync with src/lib/terminal/themes.js. */
+
+:root[data-theme="gruvbox"] {
+  --bg:           #1D2021;
+  --bg-secondary: #282828;
+  --text:         #EBDBB2;
+  --text-muted:   #928374;
+  --text-desc:    #A89984;
+  --glass-bg:     rgba(29, 32, 33, 0.96);
+  --titlebar-bg:  #1A1C1D;
+  --accent:       #8EC07C;
+  --prompt-green: #B8BB26;
+  --prompt-blue:  #83A598;
+  --prompt-tilde: #D3869B;
+  --cmd-cyan:     #8EC07C;
+  --cursor-color: #EBDBB2;
+  --red:          #FB4934;
+  --yellow:       #FABD2F;
+  --green:        #B8BB26;
+}
+
+:root[data-theme="dracula"] {
+  --bg:           #21222C;
+  --bg-secondary: #282A36;
+  --text:         #F8F8F2;
+  --text-muted:   #6272A4;
+  --text-desc:    #9AA5CE;
+  --glass-bg:     rgba(33, 34, 44, 0.96);
+  --titlebar-bg:  #1E1F29;
+  --accent:       #8BE9FD;
+  --prompt-green: #50FA7B;
+  --prompt-blue:  #BD93F9;
+  --prompt-tilde: #FF79C6;
+  --cmd-cyan:     #8BE9FD;
+  --cursor-color: #F8F8F2;
+  --red:          #FF5555;
+  --yellow:       #F1FA8C;
+  --green:        #50FA7B;
+}
+
+/* Charizard: orange body, red-brown wings, teal wing membrane. */
+:root[data-theme="fire"] {
+  --bg:           #140B08;
+  --bg-secondary: #1F120D;
+  --text:         #F6E3D3;
+  --text-muted:   #8A6A5C;
+  --text-desc:    #C09A85;
+  --glass-bg:     rgba(20, 11, 8, 0.96);
+  --titlebar-bg:  #120906;
+  --accent:       #FFA452;
+  --prompt-green: #FFD166;
+  --prompt-blue:  #5DA9D6;
+  --prompt-tilde: #CD6A6A;
+  --cmd-cyan:     #FFA452;
+  --cursor-color: #FFA452;
+  --red:          #FF5F45;
+  --yellow:       #FFD166;
+  --green:        #9CCC65;
 }
 
 /* ── Reset ── */

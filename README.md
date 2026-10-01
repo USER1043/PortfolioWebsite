@@ -27,6 +27,7 @@ Welcome to my interactive terminal corner of the internet! A Modern-CLI styled p
   * **Command Registry:** every command is one object in `src/lib/terminal/commands/`; `help`, Tab completion and `man` are generated from it.
   * **Fake Filesystem:** `ls`, `cd`, `cat` and `open` over a home directory built from the real site data (`about.txt`, `contact.txt`, `resume.pdf`, `projects/`).
   * **`neofetch`:** system info next to a pixel-art Charizard.
+  * **Themes:** `theme` switches between Mocha, Gruvbox, Dracula and a Charizard "fire" palette (CSS variables in `src/styles/global.css`), saved per visitor and applied before first paint on every page.
   * **Typewriter Boot Sequence:** Auto-executes `help` command on launch.
   * **History & Autocomplete:** Up/Down history, bash-style `Tab` completion for commands and paths, "did you mean …?" for typos, `Ctrl+C` / `Ctrl+L`.
   * **Window Management:** Working minimize/maximize title bar controls.
@@ -65,6 +66,7 @@ When visiting the homepage, you can interact with the terminal prompt:
 | `git log` | My journey as commits (from `src/data/timeline.yml`) |
 | `ls` · `cd` · `pwd` · `cat` · `open` | Browse the fake home directory, e.g. `cd projects`, `cat about.txt`, `open resume.pdf` |
 | `whoami` · `date` · `echo` · `uptime` · `man` | The classics; `man <command>` explains any command |
+| `theme [list \| mocha \| gruvbox \| dracula \| fire]` | Switch colour theme; remembered for your next visit, on every page |
 | `history` · `clear` · `exit` | Session controls |
 
 <details>
@@ -85,8 +87,10 @@ When visiting the homepage, you can interact with the terminal prompt:
 | `ping <host>` | Try `ping prajan` |
 | `hire` / `hire-me` | The pitch |
 | `hi`, `42` | Small talk |
+| `matrix` | Follow the white rabbit (any key exits) |
+| ↑ ↑ ↓ ↓ ← → ← → B A | The Konami code, anywhere on the page: a shiny Charizard flies by |
 
-Hidden commands live in `src/lib/terminal/commands/fun.js` with `hidden: true`.
+Hidden commands live in `src/lib/terminal/commands/fun.js` and `effects.js` with `hidden: true`. With your device's reduced-motion setting on, the matrix and the flyby show a short message instead of animating.
 </details>
 
 To add a command, add an object to one of the files in `src/lib/terminal/commands/` (see `registry.js` for its shape). `help`, Tab completion and `man` pick it up automatically.

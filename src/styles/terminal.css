@@ -145,7 +145,7 @@
 }
 
 .terminal-line--cmd     { color: var(--cmd-cyan);     font-weight: 500; }
-.terminal-line--desc    { color: #828294; }
+.terminal-line--desc    { color: var(--text-desc); }
 .terminal-line--error   { color: var(--red); }
 .terminal-line--info    { color: var(--yellow); }
 .terminal-line--success { color: var(--green); }
@@ -240,7 +240,7 @@
 .session-ended-text {
   font-family: var(--font-mono);
   font-size: 0.95rem;
-  color: #a6adc8;
+  color: var(--text-desc);
   text-align: center;
   line-height: 2;
 }
@@ -248,7 +248,7 @@
 .session-ended-hint {
   font-family: var(--font-mono);
   font-size: 0.8rem;
-  color: #89B4FA;
+  color: var(--prompt-blue);
   animation: pulse 2.8s ease-in-out infinite;
   letter-spacing: 0.06em;
 }
@@ -276,7 +276,7 @@
 }
 
 .page-copy {
-  color: #828294;
+  color: var(--text-desc);
   font-size: 0.85rem;
   line-height: 1.75;
   margin-bottom: 0.45rem;
@@ -289,7 +289,7 @@
 }
 
 .page-list li {
-  color: #828294;
+  color: var(--text-desc);
   font-size: 0.85rem;
   padding-left: 1.1rem;
   margin-bottom: 0.3rem;
@@ -332,7 +332,7 @@
    ───────────────────────────────────────────── */
 
 .t-cmd   { color: var(--cmd-cyan); font-weight: 500; }
-.t-desc  { color: #828294; }
+.t-desc  { color: var(--text-desc); }
 .t-muted { color: var(--text-muted); }
 .t-dir   { color: var(--prompt-blue); font-weight: 500; }
 .t-warn  { color: var(--yellow); }
@@ -396,4 +396,62 @@
     animation: none;
     opacity: 1;
   }
+}
+
+/* ─────────────────────────────────────────────
+   Effects: theme swatches, matrix rain, shiny Charizard flyby
+   ───────────────────────────────────────────── */
+
+.theme-swatch {
+  display: inline-block;
+  width: 0.9rem;
+  height: 0.9rem;
+  margin-right: 2px;
+  vertical-align: -0.1rem;
+}
+
+.matrix-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  background: #000;
+  cursor: pointer;
+}
+
+.matrix-overlay canvas {
+  display: block;
+}
+
+.matrix-hint {
+  position: absolute;
+  bottom: 1.25rem;
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  background: rgba(0, 0, 0, 0.7);
+  padding: 0.25rem 0.75rem;
+  white-space: nowrap;
+}
+
+/* The sprite faces left, so it flies right → left with a little bob. */
+.shiny-flyby {
+  position: fixed;
+  top: 28%;
+  left: 100vw;
+  width: min(160px, 35vw);
+  image-rendering: pixelated;
+  pointer-events: none;
+  z-index: 999;
+  filter: drop-shadow(0 0 10px rgba(255, 215, 90, 0.55));
+  animation: shinyFlyby 3.2s ease-in-out forwards;
+}
+
+@keyframes shinyFlyby {
+  0%   { transform: translate(0, 0) rotate(-4deg); }
+  25%  { transform: translate(calc(-1 * (25vw + 50px)), -30px) rotate(3deg); }
+  50%  { transform: translate(calc(-1 * (50vw + 100px)), 10px) rotate(-3deg); }
+  75%  { transform: translate(calc(-1 * (75vw + 150px)), -25px) rotate(3deg); }
+  100% { transform: translate(calc(-1 * (100vw + 220px)), 0) rotate(-4deg); }
 }

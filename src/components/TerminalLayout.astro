@@ -12,6 +12,7 @@ const {
   title       = 'prajan@portfolio — bash',
   description = 'Prajan Karthik — Full-stack engineer. CS undergrad building production systems.',
 } = Astro.props;
+import ThemeScript from './ThemeScript.astro';
 ---
 
 <html lang="en">
@@ -21,6 +22,7 @@ const {
     <meta name="description" content={description} />
     <title>{title}</title>
     <link rel="icon" type="image/svg+xml" href="/logo.svg" />
+    <ThemeScript />
 
     <!-- JetBrains Mono from Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />

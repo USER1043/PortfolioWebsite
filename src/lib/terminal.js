@@ -5,6 +5,8 @@
  */
 import { buildRegistry } from './terminal/commands/index.js';
 import { completeInput } from './terminal/complete.js';
+import { applyTheme, currentTheme, shinyFlyby, startMatrix } from './terminal/effects.js';
+import { createSequenceMatcher } from './terminal/konami.js';
 import { parseInput } from './terminal/parse.js';
 import { suggest } from './terminal/suggest.js';
 import { STAGGER, escHtml, wait } from './terminal/util.js';
@@ -178,7 +180,16 @@ export function initTerminal({
       bodyEl.style.opacity = '1';
     },
     exit: () => exitSequence(r, terminalWindowEl, sessionEndedEl, bodyEl),
+    setTheme: applyTheme,
+    getTheme: currentTheme,
+    matrix: async () => {
+      await startMatrix();
+      inputEl.focus();
+    },
   };
+
+  const prefersReducedMotion = () =>
+    window.matchMedia?.('(prefers-reduced-motion: reduce)').matches ?? false;
 
   const context = () => ({
     r,
@@ -191,7 +202,8 @@ export function initTerminal({
     timeline: data.timeline ?? [],
     startedAt: data.startedAt ?? performance.timeOrigin,
     history: sessionLog.slice(0, -1),
-    reducedMotion: window.matchMedia?.('(prefers-reduced-motion: reduce)').matches ?? false,
+    reducedMotion: prefersReducedMotion(),
+    theme: currentTheme(),
     random: Math.random,
   });
 
@@ -307,6 +319,18 @@ export function initTerminal({
       setTimeout(() => inputEl.focus(), 310);
     });
   }
+
+  // Konami code (↑↑↓↓←→←→BA) anywhere on the page: a shiny Charizard flies by.
+  const konami = createSequenceMatcher();
+  document.addEventListener('keydown', (e) => {
+    if (!konami(e.key)) return;
+    e.preventDefault(); // don't type the final "a"
+    inputEl.value = '';
+    r.blank();
+    r.line('✨ a wild shiny Charizard appeared!', 'terminal-line--info', 0);
+    if (!prefersReducedMotion()) shinyFlyby();
+    r.scrollToBottom(bodyEl);
+  });
 
   // Run boot sequence, then hand control to the user.
   bootSequence().then(() => inputEl.focus());
