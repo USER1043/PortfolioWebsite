@@ -66,4 +66,18 @@ const matrix = {
   },
 };
 
-export const effectCommands = [theme, matrix];
+// Someone typed the Konami code as text instead of pressing the keys.
+const typedArrows = {
+  name: '↑',
+  aliases: ['↓', '←', '→', 'up', 'uuddlrlrba'],
+  group: 'fun',
+  hidden: true,
+  description: '🥚',
+  run({ r }) {
+    r.blank();
+    r.line('so close. press the actual arrow keys, then B and A: ↑ ↑ ↓ ↓ ← → ← → B A', 'terminal-line--info', 0);
+    return STAGGER;
+  },
+};
+
+export const effectCommands = [theme, matrix, typedArrows];

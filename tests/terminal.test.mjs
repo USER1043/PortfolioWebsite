@@ -376,6 +376,9 @@ test("the Konami matcher fires once per full sequence", () => {
   // A stray extra ↑ at the start still counts, and B/A are case-insensitive.
   const extraUp = ["ArrowUp", ...KONAMI.slice(0, -2), "B", "A"];
   assert.equal(feed(extraUp).at(-1), true);
+  // Shift (for a capital B/A) and other modifiers are ignored.
+  const shifted = [...KONAMI.slice(0, 8), "Shift", "B", "Shift", "A"];
+  assert.equal(feed(shifted).at(-1), true);
   // A wrong key in the middle resets it.
   assert.equal(feed([...KONAMI.slice(0, 5), "x", ...KONAMI.slice(5)]).some(Boolean), false);
 });
@@ -384,4 +387,10 @@ test(".secrets hints at the new eggs", async () => {
   const { text } = await run("cat .secrets");
   assert.match(text, /white rabbit/);
   assert.match(text, /cheat codes/);
+});
+
+test("typing the Konami arrows as text gets a hint, not an error", async () => {
+  const { text } = await run("↑ ↑ ↓ ↓ ← → ← → B A");
+  assert.match(text, /press the actual arrow keys/);
+  assert.ok(!buildRegistry().visibleNames().includes("↑"));
 });
