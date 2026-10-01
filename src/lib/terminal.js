@@ -1,7 +1,14 @@
 /**
- * @file Interactive terminal engine — command registry, history, output renderer, boot & exit sequences.
+ * @file Interactive terminal engine — history, output renderer, input handling,
+ * boot & exit sequences. Commands live in ./terminal/commands/.
  * @module lib/terminal
  */
+import { buildRegistry } from './terminal/commands/index.js';
+import { completeInput } from './terminal/complete.js';
+import { parseInput } from './terminal/parse.js';
+import { suggest } from './terminal/suggest.js';
+import { STAGGER, escHtml, wait } from './terminal/util.js';
+import { buildFs, displayPath } from './terminal/vfs.js';
 
 /* ─────────────────────────────────────────────
    Command History
@@ -9,6 +16,10 @@
 
 class CommandHistory {
   constructor() {
+    this.reset();
+  }
+
+  reset() {
     this._history = [];
     this._pointer = -1;
   }
@@ -33,11 +44,6 @@ class CommandHistory {
     this._pointer--;
     return this._history[this._pointer] ?? '';
   }
-
-  // Returns a copy of history in chronological order.
-  all() {
-    return [...this._history].reverse();
-  }
 }
 
 /* ─────────────────────────────────────────────
@@ -60,6 +66,7 @@ class OutputRenderer {
   }
 
   // Appends a line containing raw HTML (for links etc.), with delay.
+  // Callers must escape any user-provided text with escHtml.
   html(markup, className = 'terminal-line--default', delayMs = 0) {
     const div = document.createElement('div');
     div.className = `terminal-line ${className}`;
@@ -77,7 +84,7 @@ class OutputRenderer {
   }
 
   // Appends a frozen prompt-echo line (shows the command the user ran).
-  promptEcho(cmd) {
+  promptEcho(cmd, cwd = '~') {
     const div = document.createElement('div');
     div.className = 'terminal-line terminal-line--prompt-echo';
     div.innerHTML =
@@ -85,7 +92,7 @@ class OutputRenderer {
       `<span class="prompt-at">@</span>` +
       `<span class="prompt-host">portfolio</span>` +
       `<span class="prompt-colon">:</span>` +
-      `<span class="prompt-tilde">~</span>` +
+      `<span class="prompt-tilde">${escHtml(cwd)}</span>` +
       `<span class="prompt-dollar">$</span>` +
       `&nbsp;<span style="color:var(--text)">${escHtml(cmd)}</span>`;
     this._el.appendChild(div);
@@ -102,221 +109,12 @@ class OutputRenderer {
   }
 }
 
-/* ─────────────────────────────────────────────
-   Helpers
-   ───────────────────────────────────────────── */
-
-// Escapes HTML special chars for safe text injection.
-function escHtml(str) {
-  return str
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;');
-}
-
-// Returns a promise that resolves after `ms` milliseconds.
-const wait = (ms) => new Promise((r) => setTimeout(r, ms));
-
 // Types text into an input element character by character for a typewriter feel.
 async function typewriter(inputEl, text, baseSpeed = 55) {
   for (const char of text) {
     inputEl.value += char;
     await wait(baseSpeed + Math.random() * 20 - 10);
   }
-}
-
-/* ─────────────────────────────────────────────
-   Command Definitions
-   ───────────────────────────────────────────── */
-
-const STAGGER = 55; // ms between staggered output lines
-
-// Renders the help command list.
-function cmdHelp(r) {
-  const entries = [
-    ['aboutme',  'Displays who I am'],
-    ['social',   'Lists social networks'],
-    ['projects', 'View coding projects'],
-    ['email',    'Send me an email'],
-    ['history',  'View command history'],
-    ['help',     'Displays this help message'],
-    ['clear',    'Clear the terminal'],
-    ['exit',     'Close the terminal'],
-  ];
-
-  let d = 0;
-  r.blank();
-  entries.forEach(([cmd, desc]) => {
-    r.line(cmd, 'terminal-line--cmd', d);
-    d += STAGGER;
-    r.line(`  ↳ ${desc}`, 'terminal-line--desc', d);
-    d += STAGGER;
-  });
-
-  return d + STAGGER;
-}
-
-// Renders the about-me biography and stack.
-function cmdAboutme(r) {
-  const bioLines = [
-    "A CS undergrad obsessed with depth. I don't ship features until they",
-    "work exactly as intended for the person using them. I've built",
-    "production systems that handle real users — job aggregation platforms",
-    "with 700+ postings, password managers with military-grade crypto,",
-    "and education platforms for kids with autism.",
-  ];
-
-  const stackLines = [
-    ['Deep  ', 'React, Node.js, MongoDB, Express, Redux'],
-    ['Solid ', 'Rust, TypeScript, Python, C++, PostgreSQL'],
-    ['DSA   ', 'C++, algorithmic thinking, optimization'],
-  ];
-
-  let d = 0;
-  r.blank();
-  r.line('// whoami', 'terminal-line--info', d); d += STAGGER;
-  r.blank();
-
-  bioLines.forEach((l) => {
-    r.line(l, 'terminal-line--default', d);
-    d += STAGGER;
-  });
-
-  r.blank();
-  r.line('Currently leading web architecture at Intel IoT Club while building', 'terminal-line--default', d); d += STAGGER;
-  r.line('Jobify into a full-scale product. I think in systems: how data flows,', 'terminal-line--default', d); d += STAGGER;
-  r.line('where latency hides, what breaks first.', 'terminal-line--default', d); d += STAGGER;
-
-  r.blank();
-  r.line('// stack', 'terminal-line--info', d); d += STAGGER;
-  r.blank();
-
-  stackLines.forEach(([label, val]) => {
-    r.html(
-      `  <span style="color:var(--cmd-cyan)">${label}</span>` +
-      `<span style="color:var(--text-muted)">→</span>  ` +
-      `<span style="color:#828294">${escHtml(val)}</span>`,
-      'terminal-line--default',
-      d,
-    );
-    d += STAGGER;
-  });
-
-  return d + STAGGER;
-}
-
-// Renders social network links.
-function cmdSocial(r) {
-  const links = [
-    ['GitHub   ', 'https://github.com/USER1043',              'github.com/prajan-karthik'],
-    ['LinkedIn ', 'https://linkedin.com/in/prajan-karthik', 'linkedin.com/in/prajan-karthik'],
-    ['Email    ', 'mailto:prjnkrthk@gmail.com',              'prjnkrthk@gmail.com'],
-  ];
-
-  let d = 0;
-  r.blank();
-  r.line('// social networks', 'terminal-line--info', d); d += STAGGER;
-  r.blank();
-
-  links.forEach(([label, href, display]) => {
-    r.html(
-      `  <span style="color:var(--cmd-cyan)">${label}</span>` +
-      `<span style="color:var(--text-muted)">→</span>  ` +
-      `<a href="${href}" target="_blank" rel="noopener noreferrer">${escHtml(display)}</a>`,
-      'terminal-line--default',
-      d,
-    );
-    d += STAGGER;
-  });
-
-  return d + STAGGER;
-}
-
-// Renders the projects list from the `projects` content collection.
-function cmdProjects(r, projects) {
-  let d = 0;
-  r.blank();
-  r.line('// projects', 'terminal-line--info', d); d += STAGGER;
-
-  if (projects.length === 0) {
-    r.blank();
-    r.line('  No projects yet.', 'terminal-line--desc', d); d += STAGGER;
-  }
-
-  projects.forEach((p) => {
-    const link = p.demo || p.github;
-    r.blank();
-    r.html(
-      `  <span style="color:var(--cmd-cyan);font-weight:500">● ${escHtml(p.name)}</span>` +
-      `  <span style="color:var(--text-muted);font-size:0.8rem">${escHtml(p.tech.join(' + '))}</span>`,
-      'terminal-line--default',
-      d,
-    ); d += STAGGER;
-    r.line(`    Status : ${p.status}`, 'terminal-line--desc', d); d += STAGGER;
-    r.line(`    ${p.summary}`, 'terminal-line--desc', d); d += STAGGER;
-    if (link) {
-      r.html(
-        `    Link   : <a href="${escHtml(link)}" target="_blank" rel="noopener noreferrer">${escHtml(link)}</a>`,
-        'terminal-line--default',
-        d,
-      ); d += STAGGER;
-    }
-  });
-
-  return d + STAGGER;
-}
-
-// Opens the mail client and prints a confirmation.
-function cmdEmail(r) {
-  r.blank();
-  r.line('Opening email client...', 'terminal-line--muted', 0);
-  r.html(
-    `  → <a href="mailto:prjnkrthk@gmail.com">prjnkrthk@gmail.com</a>`,
-    'terminal-line--default',
-    STAGGER,
-  );
-  window.location.href = 'mailto:prjnkrthk@gmail.com';
-  return STAGGER * 2;
-}
-
-// Renders the session command history list.
-function cmdHistory(r, history) {
-  r.blank();
-  if (history.length === 0) {
-    r.line('No commands in history yet.', 'terminal-line--desc', 0);
-    return STAGGER;
-  }
-  r.line('// command history', 'terminal-line--info', 0);
-  r.blank();
-  history.forEach((cmd, i) => {
-    r.line(
-      `  ${String(i + 1).padStart(3)}  ${cmd}`,
-      'terminal-line--desc',
-      STAGGER + i * 40,
-    );
-  });
-  return STAGGER + history.length * 40 + STAGGER;
-}
-
-/* ─────────────────────────────────────────────
-   Boot Sequence
-   ───────────────────────────────────────────── */
-
-// Runs the page-load typewriter boot — auto-types "help" and displays the output.
-async function bootSequence(r, inputEl, bodyEl) {
-  await wait(350);
-  await typewriter(inputEl, 'help', 60);
-  await wait(200);
-
-  inputEl.value = '';
-  r.promptEcho('help');
-
-  const totalDelay = cmdHelp(r);
-  await wait(totalDelay + 200);
-
-  r.blank();
-  r.scrollToBottom(bodyEl);
 }
 
 /* ─────────────────────────────────────────────
@@ -350,18 +148,106 @@ async function exitSequence(r, terminalWindowEl, sessionEndedEl, bodyEl) {
    ───────────────────────────────────────────── */
 
 // Bootstraps the interactive terminal — call once after the DOM is ready.
-export function initTerminal({ outputEl, inputEl, bodyEl, terminalWindowEl, sessionEndedEl, projects = [] }) {
+// `data` carries the site content: { projects, art, timeline }.
+export function initTerminal({
+  outputEl, inputEl, bodyEl, terminalWindowEl, sessionEndedEl, promptCwdEl, data = {},
+}) {
   const r        = new OutputRenderer(outputEl);
   const cmdHist  = new CommandHistory();
+  const registry = buildRegistry();
+  const projects = data.projects ?? [];
+  const fs       = buildFs(projects);
+  const shell    = { cwd: [] };
   /** @type {string[]} */
   let sessionLog = [];
   let isMinimized = false;
   let isMaximized = false;
 
-  const ALL_COMMANDS = ['aboutme', 'clear', 'email', 'exit', 'help', 'history', 'projects', 'social'];
+  const setCwd = (segs) => {
+    if (promptCwdEl) promptCwdEl.textContent = displayPath(segs);
+  };
 
-  // Focus input when clicking anywhere in the body.
-  bodyEl.addEventListener('click', () => inputEl.focus());
+  const actions = {
+    setCwd,
+    navigate: (url) => { window.location.href = url; },
+    openUrl: (url) => { window.open(url, '_blank', 'noopener'); },
+    clear: async () => {
+      bodyEl.style.opacity = '0';
+      await wait(200);
+      r.clear();
+      bodyEl.style.opacity = '1';
+    },
+    exit: () => exitSequence(r, terminalWindowEl, sessionEndedEl, bodyEl),
+  };
+
+  const context = () => ({
+    r,
+    registry,
+    projects,
+    fs,
+    shell,
+    actions,
+    art: data.art,
+    timeline: data.timeline ?? [],
+    startedAt: data.startedAt ?? performance.timeOrigin,
+    history: sessionLog.slice(0, -1),
+  });
+
+  // Runs one input line: echo it, dispatch, then add the trailing spacing.
+  async function execute(raw) {
+    const input = parseInput(raw);
+    if (!input.name) return;
+
+    cmdHist.push(raw);
+    sessionLog.push(raw);
+    r.promptEcho(raw, displayPath(shell.cwd));
+
+    const command = registry.find(input.name);
+    let delay;
+    if (!command) {
+      const guess = suggest(input.name, registry.visibleNames());
+      r.blank();
+      r.line(`bash: ${input.name}: command not found`, 'terminal-line--error', 0);
+      r.line(
+        guess ? `did you mean '${guess}'?` : `Type 'help' to see available commands.`,
+        'terminal-line--desc',
+        STAGGER,
+      );
+      delay = STAGGER * 2;
+    } else {
+      try {
+        delay = await command.run(context(), input);
+      } catch (error) {
+        console.error(error);
+        r.line(`${input.name}: something went wrong`, 'terminal-line--error', 0);
+        delay = STAGGER;
+      }
+    }
+
+    if (delay === null) return;
+    setTimeout(() => {
+      r.blank();
+      r.scrollToBottom(bodyEl);
+    }, delay + 80);
+  }
+
+  // Runs the page-load typewriter boot — auto-types "help" and runs it.
+  async function bootSequence() {
+    await wait(350);
+    await typewriter(inputEl, 'help', 60);
+    await wait(200);
+    inputEl.value = '';
+    r.promptEcho('help');
+    const totalDelay = registry.find('help').run(context(), parseInput('help'));
+    await wait(totalDelay + 200);
+    r.blank();
+    r.scrollToBottom(bodyEl);
+  }
+
+  // Focus input when clicking anywhere in the body (but not while selecting text).
+  bodyEl.addEventListener('click', () => {
+    if (!window.getSelection()?.toString()) inputEl.focus();
+  });
 
   // ── Window control buttons ──
 
@@ -370,10 +256,9 @@ export function initTerminal({ outputEl, inputEl, bodyEl, terminalWindowEl, sess
   if (btnClose) {
     btnClose.style.cursor = 'pointer';
     btnClose.addEventListener('click', async () => {
-      const inp = document.getElementById('terminal-input');
-      if (inp) inp.value = '';
-      r.promptEcho('exit');
-      await exitSequence(r, terminalWindowEl, sessionEndedEl, bodyEl);
+      inputEl.value = '';
+      r.promptEcho('exit', displayPath(shell.cwd));
+      await actions.exit();
     });
   }
 
@@ -422,7 +307,7 @@ export function initTerminal({ outputEl, inputEl, bodyEl, terminalWindowEl, sess
   }
 
   // Run boot sequence, then hand control to the user.
-  bootSequence(r, inputEl, bodyEl).then(() => inputEl.focus());
+  bootSequence().then(() => inputEl.focus());
 
   // Reconnect: reset state and re-run boot when the user clicks the overlay.
   sessionEndedEl.addEventListener('click', () => {
@@ -434,22 +319,47 @@ export function initTerminal({ outputEl, inputEl, bodyEl, terminalWindowEl, sess
 
     r.clear();
     sessionLog = [];
-    cmdHist._history = [];
-    cmdHist._pointer = -1;
+    cmdHist.reset();
+    shell.cwd = [];
+    setCwd([]);
 
-    bootSequence(r, inputEl, bodyEl).then(() => inputEl.focus());
+    bootSequence().then(() => inputEl.focus());
   });
 
   // Keyboard handler — routes all terminal interactions.
   inputEl.addEventListener('keydown', async (e) => {
 
-    // Tab autocomplete
+    // Tab: complete commands and paths; list the options when ambiguous.
     if (e.key === 'Tab') {
       e.preventDefault();
-      const val = inputEl.value.trim().toLowerCase();
-      if (!val) return;
-      const match = ALL_COMMANDS.find((c) => c.startsWith(val));
-      if (match) inputEl.value = match;
+      if (!inputEl.value.trim()) return;
+      const before = inputEl.value;
+      const { value, matches } = completeInput(before, { registry, fs, cwd: shell.cwd });
+      inputEl.value = value;
+      if (matches.length > 1 && value === before) {
+        r.promptEcho(before, displayPath(shell.cwd));
+        r.html(
+          matches.map((m) => escHtml(m.slice(m.lastIndexOf('/', m.length - 2) + 1))).join('  '),
+          'terminal-line--desc',
+        );
+        r.scrollToBottom(bodyEl);
+      }
+      return;
+    }
+
+    // Ctrl+C: abandon the current line, like a real shell.
+    if (e.ctrlKey && e.key.toLowerCase() === 'c' && inputEl.selectionStart === inputEl.selectionEnd) {
+      e.preventDefault();
+      r.promptEcho(`${inputEl.value}^C`, displayPath(shell.cwd));
+      inputEl.value = '';
+      r.scrollToBottom(bodyEl);
+      return;
+    }
+
+    // Ctrl+L: clear the screen.
+    if (e.ctrlKey && e.key.toLowerCase() === 'l') {
+      e.preventDefault();
+      await actions.clear();
       return;
     }
 
@@ -473,55 +383,8 @@ export function initTerminal({ outputEl, inputEl, bodyEl, terminalWindowEl, sess
     // Enter: execute
     if (e.key === 'Enter') {
       const raw = inputEl.value.trim();
-      const cmd = raw.toLowerCase();
       inputEl.value = '';
-
-      if (!cmd) return;
-
-      cmdHist.push(cmd);
-      sessionLog.push(cmd);
-      r.promptEcho(cmd);
-
-      // ── Command dispatch ──
-      if (cmd === 'exit') {
-        await exitSequence(r, terminalWindowEl, sessionEndedEl, bodyEl);
-        return;
-      }
-
-      if (cmd === 'clear') {
-        bodyEl.style.opacity = '0';
-        await wait(200);
-        r.clear();
-        bodyEl.style.opacity = '1';
-        return;
-      }
-
-      let totalDelay = 0;
-
-      if (cmd === 'help') {
-        totalDelay = cmdHelp(r);
-      } else if (cmd === 'aboutme') {
-        totalDelay = cmdAboutme(r);
-      } else if (cmd === 'social') {
-        totalDelay = cmdSocial(r);
-      } else if (cmd === 'projects') {
-        totalDelay = cmdProjects(r, projects);
-      } else if (cmd === 'email') {
-        totalDelay = cmdEmail(r);
-      } else if (cmd === 'history') {
-        totalDelay = cmdHistory(r, sessionLog.slice(0, -1));
-      } else {
-        // Unknown command fallback
-        r.blank();
-        r.line(`bash: ${cmd}: command not found`, 'terminal-line--error', 0);
-        r.line(`Type 'help' to see available commands.`, 'terminal-line--desc', STAGGER);
-        totalDelay = STAGGER * 2;
-      }
-
-      setTimeout(() => {
-        r.blank();
-        r.scrollToBottom(bodyEl);
-      }, totalDelay + 80);
+      await execute(raw);
     }
   });
 }

@@ -24,9 +24,11 @@ Welcome to my interactive terminal corner of the internet! A Modern-CLI styled p
 ## ✨ Key Features
 
 * **⌨️ Interactive Terminal Emulator:** Built from scratch (`src/lib/terminal.js`) with support for:
-  * **Command Registry:** `aboutme`, `projects`, `social`, `email`, `history`, `help`, `clear`, and `exit`.
+  * **Command Registry:** every command is one object in `src/lib/terminal/commands/`; `help`, Tab completion and `man` are generated from it.
+  * **Fake Filesystem:** `ls`, `cd`, `cat` and `open` over a home directory built from the real site data (`about.txt`, `contact.txt`, `resume.pdf`, `projects/`).
+  * **`neofetch`:** system info next to a pixel-art Charizard.
   * **Typewriter Boot Sequence:** Auto-executes `help` command on launch.
-  * **History & Autocomplete:** Up/Down arrow history navigation and `Tab` auto-completion.
+  * **History & Autocomplete:** Up/Down history, bash-style `Tab` completion for commands and paths, "did you mean …?" for typos, `Ctrl+C` / `Ctrl+L`.
   * **Window Management:** Working minimize/maximize title bar controls.
   * **Shutdown & Reconnect:** Simulated Linux broadcast shutdown sequence and session reconnect overlay.
 * **🤖 Automatic Project Sync:** A daily GitHub Action reads your pinned repos, works out tech stack and status, has Claude Code summarise any README that changed, and opens a PR updating `src/data/projects.json`. The terminal `projects` command and the `/projects` page both read that one file.
@@ -40,7 +42,7 @@ Welcome to my interactive terminal corner of the internet! A Modern-CLI styled p
 
 ## 🛠️ Tech Stack
 
-* **Framework:** [Astro 7](https://astro.build/) (`@astrojs/mdx`)
+* **Framework:** [Astro 7](https://astro.build/)
 * **Languages:** TypeScript, JavaScript (ESM)
 * **Styling:** Custom CSS Variables, Flexbox, CSS Grid, CSS Animations
 * **API & Integrations:** GitHub REST + GraphQL API, Claude Code GitHub Action, Formspree
@@ -55,6 +57,19 @@ When visiting the homepage, you can interact with the terminal prompt:
 
 | Command | Description |
 | :--- | :--- |
+| `help` | Lists the commands |
+| `aboutme` | Bio, current role and tech stack |
+| `projects` | Featured projects with status and links |
+| `social` / `email` / `contact` | Links, mail client, and the `/contact` message form |
+| `neofetch` | System info with a pixel-art Charizard |
+| `git log` | My journey as commits (from `src/data/timeline.yml`) |
+| `ls` · `cd` · `pwd` · `cat` · `open` | Browse the fake home directory, e.g. `cd projects`, `cat about.txt`, `open resume.pdf` |
+| `whoami` · `date` · `echo` · `uptime` · `man` | The classics; `man <command>` explains any command |
+| `history` · `clear` · `exit` | Session controls |
+
+To add a command, add an object to one of the files in `src/lib/terminal/commands/` (see `registry.js` for its shape). `help`, Tab completion and `man` pick it up automatically.
+
+--- | :--- |
 | `help` | Displays available commands and usage hints |
 | `aboutme` | Prints full bio, current role, and tech stack overview |
 | `projects` | Renders a list of featured projects with status and links |

@@ -8,15 +8,22 @@ import '../styles/terminal.css';
 import TerminalLayout from '../components/TerminalLayout.astro';
 import TerminalWindow from '../components/TerminalWindow.astro';
 import { getProjects } from '../lib/projects';
+import { getTimeline } from '../lib/timeline';
+import art from '../data/charizard-art.json';
 
-// Serialise project data for the client-side `projects` command.
+// Everything the client-side terminal needs, serialised into the page.
 // `<` is escaped so a value can never close the <script> tag early.
-const projectsJson = JSON.stringify(await getProjects()).replace(/</g, '\\u003c');
+const terminalJson = JSON.stringify({
+  projects: await getProjects(),
+  timeline: await getTimeline(),
+  art,
+})
+  .replace(/</g, '\\u003c');
 ---
 
 <TerminalLayout title="prajan@portfolio — bash">
   <TerminalWindow username="prajan@portfolio" />
-  <script type="application/json" id="projects-data" set:html={projectsJson} />
+  <script type="application/json" id="terminal-data" set:html={terminalJson} />
 </TerminalLayout>
 
 <script type="module">
@@ -28,9 +35,10 @@ const projectsJson = JSON.stringify(await getProjects()).replace(/</g, '\\u003c'
   const bodyEl          = document.getElementById('terminal-body');
   const terminalWindowEl = document.getElementById('terminal-window');
   const sessionEndedEl  = document.getElementById('session-ended');
-  const projects        = JSON.parse(document.getElementById('projects-data')?.textContent || '[]');
+  const promptCwdEl     = document.getElementById('prompt-cwd');
+  const data            = JSON.parse(document.getElementById('terminal-data')?.textContent || '{}');
 
   if (outputEl && inputEl && bodyEl && terminalWindowEl && sessionEndedEl) {
-    initTerminal({ outputEl, inputEl, bodyEl, terminalWindowEl, sessionEndedEl, projects });
+    initTerminal({ outputEl, inputEl, bodyEl, terminalWindowEl, sessionEndedEl, promptCwdEl, data });
   }
 </script>
