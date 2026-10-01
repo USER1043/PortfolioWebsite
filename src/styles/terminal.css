@@ -389,3 +389,11 @@
     font-size: 0.65rem;
   }
 }
+
+/* Visitors who asked for less motion get every line instantly. */
+@media (prefers-reduced-motion: reduce) {
+  .terminal-line {
+    animation: none;
+    opacity: 1;
+  }
+}

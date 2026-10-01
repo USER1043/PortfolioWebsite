@@ -67,6 +67,28 @@ When visiting the homepage, you can interact with the terminal prompt:
 | `whoami` · `date` · `echo` · `uptime` · `man` | The classics; `man <command>` explains any command |
 | `history` · `clear` · `exit` | Session controls |
 
+<details>
+<summary>🥚 Spoilers: hidden commands</summary>
+
+`help` doesn't list these, and Tab completion never suggests them. `ls -a` and `cat .secrets` give hints.
+
+| Command | What happens |
+| :--- | :--- |
+| `sudo …` | You're not in the sudoers file (but `sudo make me a sandwich` works) |
+| `make me a sandwich` | xkcd 149 |
+| `rm -rf /` | A very convincing meltdown |
+| `vim` / `vi` / `nvim`, then `:q` | Can you get out? `exit` won't help |
+| `nano`, `emacs` | Opinions |
+| `fortune` | A random developer joke |
+| `charizard-say <text>` / `cowsay` | Charizard says it |
+| `coffee` / `brew` | Brews one |
+| `ping <host>` | Try `ping prajan` |
+| `hire` / `hire-me` | The pitch |
+| `hi`, `42` | Small talk |
+
+Hidden commands live in `src/lib/terminal/commands/fun.js` with `hidden: true`.
+</details>
+
 To add a command, add an object to one of the files in `src/lib/terminal/commands/` (see `registry.js` for its shape). `help`, Tab completion and `man` pick it up automatically.
 
 --- | :--- |

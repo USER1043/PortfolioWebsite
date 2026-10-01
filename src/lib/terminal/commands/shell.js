@@ -204,6 +204,17 @@ const cat = {
       case 'project':
         d = projectLines(r, node.project, d);
         break;
+      case 'secrets':
+        d = printLines(r, [
+          '# things worth trying',
+          '  - editors are a trap',
+          "  - ask nicely (or don't)",
+          '  - coffee fixes everything',
+          '  - charizard has opinions',
+          '  - fortunes are free',
+          '  - some commands are destructive. allegedly.',
+        ], 'terminal-line--desc', d);
+        break;
       default:
         r.line(`cat: ${target}: binary file — try: open ${target}`, 'terminal-line--error', d);
         d += STAGGER;

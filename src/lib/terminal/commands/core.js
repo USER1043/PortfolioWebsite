@@ -58,6 +58,7 @@ const help = {
       r.blank();
     }
 
+    r.line('psst… not every command is listed here. try things.', 'terminal-line--info', d); d += STAGGER;
     r.line('Tab completes · ↑/↓ browse history · man <command> for details', 'terminal-line--muted', d);
     return d + STAGGER;
   },
@@ -208,7 +209,12 @@ const exit = {
   aliases: ['logout'],
   group: 'session',
   description: 'Close the terminal',
-  async run({ actions }) {
+  async run({ r, shell, actions }) {
+    if (shell.inVim) {
+      r.blank();
+      r.line("you're still in vim. try :q", 'terminal-line--info', 0);
+      return STAGGER;
+    }
     await actions.exit();
     return null;
   },
