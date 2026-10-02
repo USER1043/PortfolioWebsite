@@ -25,9 +25,9 @@
     ],
     "status": "Paused",
     "summary": "A fault-tolerant real-time online auction built in Go, where four independent nodes coordinate over RPC using classic distributed systems algorithms.",
+    "whyItMatters": "It implements Bully election, Ricart-Agrawala mutual exclusion, two-phase commit with majority quorum, and Koo-Toueg checkpointing end-to-end, with crash recovery and transaction logging across laptops on Wi-Fi.",
     "readmeSha": "fe1c13c14f0470127df7a370843699e208c09b03",
-    "order": 1,
-    "whyItMatters": "It implements Bully election, Ricart-Agrawala mutual exclusion, two-phase commit with majority quorum, and Koo-Toueg checkpointing end-to-end, with crash recovery and transaction logging across laptops on Wi-Fi."
+    "order": 1
   },
   {
     "id": "Talent-Radar",
@@ -38,11 +38,11 @@
       "Streamlit",
       "Python"
     ],
-    "status": "Active",
+    "status": "Paused",
     "summary": "A candidate ranking pipeline for a Senior AI/ML Engineer job description that produces a ranked top 100 from a pool of 100K candidates, with a Streamlit dashboard to explore results.",
+    "whyItMatters": "It combines FAISS and BM25 hybrid retrieval, honeypot filtering and a Ridge ranker, which beat LightGBM on held-out NDCG@10. A deterministic reason planner writes the explanations, and ranking runs on CPU in under 5 minutes.",
     "readmeSha": "af367a34acf6cee006788ec5f43c3da582fb6cf0",
-    "order": 2,
-    "whyItMatters": "It combines FAISS and BM25 hybrid retrieval, honeypot filtering and a Ridge ranker, which beat LightGBM on held-out NDCG@10. A deterministic reason planner writes the explanations, and ranking runs on CPU in under 5 minutes."
+    "order": 2
   },
   {
     "id": "Monday.com-BI-Agent",
@@ -54,9 +54,9 @@
     ],
     "status": "Active",
     "summary": "A conversational assistant that answers founders' questions about sales pipeline and work order data from two Monday.com boards, using Llama 3.3 70B via Groq and the Monday.com MCP server.",
+    "whyItMatters": "Real board data has messy currencies, dates, nulls and contradictory statuses. A deterministic normalization layer cleans it and every answer discloses data quality issues, including the stage-based fallback used when 75% of deals lack a probability.",
     "readmeSha": "54c3a522737530a78226cceb70254d44e26ce241",
-    "order": 3,
-    "whyItMatters": "Real board data has messy currencies, dates, nulls and contradictory statuses. A deterministic normalization layer cleans it and every answer discloses data quality issues, including the stage-based fallback used when 75% of deals lack a probability."
+    "order": 3
   },
   {
     "id": "SentinelFlow",
@@ -69,9 +69,9 @@
     ],
     "status": "Active",
     "summary": "A multi-agent system built for a hackathon that turns meeting transcripts into tracked action items using LangChain, Vertex AI Gemini and AlloyDB, exposed through a FastAPI service.",
+    "whyItMatters": "An Analyst agent extracts tasks with owners, deadlines and 768-dimension embeddings, and a Watchdog agent audits the database for unassigned tasks so action items are not silently dropped after a meeting.",
     "readmeSha": "cb77df8610d53be0c1cf55e8a96249140d1320b2",
-    "order": 4,
-    "whyItMatters": "An Analyst agent extracts tasks with owners, deadlines and 768-dimension embeddings, and a Watchdog agent audits the database for unassigned tasks so action items are not silently dropped after a meeting."
+    "order": 4
   },
   {
     "id": "PasswordPal_Backend",
