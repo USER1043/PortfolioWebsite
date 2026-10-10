@@ -11,10 +11,10 @@
       "Rust"
     ],
     "status": "Shipped ✓",
-    "summary": "A local-first password manager combining a Rust/Tauri backend with a React and TypeScript frontend for secure vault management.",
-    "whyItMatters": "Uses a zero-knowledge design with AES-256-GCM encryption and Argon2 key derivation, zeroing keys from memory after use so vault data stays protected even during password changes.",
-    "readmeSha": "46c4957a370e7648347950baa7da48ae5b10ec74",
-    "order": 0
+    "summary": "A zero-knowledge, local-first desktop password manager built with Tauri v2, React and Rust, where the vault is encrypted on the device before syncing.",
+    "readmeSha": "98252867187e8211a7ddfcff842fe8adeb494df3",
+    "order": 0,
+    "whyItMatters": "The server only ever stores ciphertext it cannot read. Keys are derived with Argon2id, the vault key is wrapped with AES-256-GCM, and forgotten master passwords can be reset through an Ed25519-signed recovery key."
   },
   {
     "id": "Distributed-Auction-System",
@@ -25,9 +25,9 @@
     ],
     "status": "Paused",
     "summary": "A fault-tolerant real-time online auction built in Go, where four independent nodes coordinate over RPC using classic distributed systems algorithms.",
+    "whyItMatters": "It implements Bully election, Ricart-Agrawala mutual exclusion, two-phase commit with majority quorum, and Koo-Toueg checkpointing end-to-end, with crash recovery and transaction logging across laptops on Wi-Fi.",
     "readmeSha": "fe1c13c14f0470127df7a370843699e208c09b03",
-    "order": 1,
-    "whyItMatters": "It implements Bully election, Ricart-Agrawala mutual exclusion, two-phase commit with majority quorum, and Koo-Toueg checkpointing end-to-end, with crash recovery and transaction logging across laptops on Wi-Fi."
+    "order": 1
   },
   {
     "id": "Talent-Radar",
@@ -39,10 +39,10 @@
       "Python"
     ],
     "status": "Active",
-    "summary": "A candidate ranking pipeline for a Senior AI/ML Engineer job description that produces a ranked top 100 from a pool of 100K candidates, with a Streamlit dashboard to explore results.",
-    "readmeSha": "af367a34acf6cee006788ec5f43c3da582fb6cf0",
+    "summary": "A ranking pipeline for a hackathon that picks the top 100 of 100,000 candidates for a Senior AI Engineer job description and writes a CSV with fact-checked reasoning for each finalist.",
+    "readmeSha": "1b370ea7774ff4d2f019d6c0463a9bdd380e8939",
     "order": 2,
-    "whyItMatters": "It combines FAISS and BM25 hybrid retrieval, honeypot filtering and a Ridge ranker, which beat LightGBM on held-out NDCG@10. A deterministic reason planner writes the explanations, and ranking runs on CPU in under 5 minutes."
+    "whyItMatters": "It combines FAISS and BM25 retrieval with a Ridge ranker, an availability multiplier and a honeypot filter. The ranking step runs on CPU in under two minutes with no network or LLM-API calls, and every reasoning claim is audited against the candidate's record."
   },
   {
     "id": "Monday.com-BI-Agent",
@@ -54,9 +54,9 @@
     ],
     "status": "Active",
     "summary": "A conversational assistant that answers founders' questions about sales pipeline and work order data from two Monday.com boards, using Llama 3.3 70B via Groq and the Monday.com MCP server.",
+    "whyItMatters": "Real board data has messy currencies, dates, nulls and contradictory statuses. A deterministic normalization layer cleans it and every answer discloses data quality issues, including the stage-based fallback used when 75% of deals lack a probability.",
     "readmeSha": "54c3a522737530a78226cceb70254d44e26ce241",
-    "order": 3,
-    "whyItMatters": "Real board data has messy currencies, dates, nulls and contradictory statuses. A deterministic normalization layer cleans it and every answer discloses data quality issues, including the stage-based fallback used when 75% of deals lack a probability."
+    "order": 3
   },
   {
     "id": "SentinelFlow",
@@ -69,9 +69,9 @@
     ],
     "status": "Active",
     "summary": "A multi-agent system built for a hackathon that turns meeting transcripts into tracked action items using LangChain, Vertex AI Gemini and AlloyDB, exposed through a FastAPI service.",
+    "whyItMatters": "An Analyst agent extracts tasks with owners, deadlines and 768-dimension embeddings, and a Watchdog agent audits the database for unassigned tasks so action items are not silently dropped after a meeting.",
     "readmeSha": "cb77df8610d53be0c1cf55e8a96249140d1320b2",
-    "order": 4,
-    "whyItMatters": "An Analyst agent extracts tasks with owners, deadlines and 768-dimension embeddings, and a Watchdog agent audits the database for unassigned tasks so action items are not silently dropped after a meeting."
+    "order": 4
   },
   {
     "id": "PasswordPal_Backend",
@@ -84,9 +84,9 @@
       "JavaScript"
     ],
     "status": "Live",
-    "summary": "A zero-knowledge Node.js and Express API for PasswordPal that never sees or stores user passwords.",
-    "whyItMatters": "Combines double-hashed authentication proofs, Argon2id, JWT sessions, and TOTP-based MFA with Supabase/PostgreSQL, so even a compromised database exposes no usable password data.",
-    "readmeSha": "d74f8b3b5d0b0f1090593597c8d87584079af98c",
-    "order": 5
+    "summary": "The Node.js, Express and Supabase API for PasswordPal, handling accounts, device-bound sessions, two-factor auth, account recovery and encrypted vault sync.",
+    "readmeSha": "755f5805e867660e129bfe893f6e4e508f21ebdd",
+    "order": 5,
+    "whyItMatters": "The server never receives the master password or any key that can decrypt a vault. It uses signature-based recovery, per-IP brute-force limits, delta sync with optimistic version locking, and Row Level Security on every table."
   }
 ]
