@@ -2,6 +2,7 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import {
   applySummaries,
+  orderFields,
   buildTech,
   deriveStatus,
   mainLanguages,
@@ -120,4 +121,29 @@ test("applies valid summaries only to pending repos and rejects bad ones", () =>
   assert.equal(projects[3].name, "Repo D"); // over-long name → keep the old one
   assert.equal(projects[3].summary, "Does D."); // ...but still use the summary
   assert.deepEqual(errors, ["b: bad summary"]);
+});
+
+test("both sync phases write fields in the same order", () => {
+  const keys = (o) => Object.keys(o);
+  const fact = {
+    id: "r", github: "https://github.com/u/r", homepage: null, description: "d",
+    tech: ["Go"], status: "Active", readmeSha: "s2", readme: "# r",
+  };
+
+  // Phase 1: README changed, so the project is pending and has no whyItMatters yet.
+  const { projects: planned, pending } = planProjects([fact], [
+    { id: "r", name: "R", summary: "old", whyItMatters: "old why", readmeSha: "s1" },
+  ]);
+  // Phase 2: Claude's blurb is merged in.
+  const { projects: summarised } = applySummaries(planned, { r: "s2" }, pending, [
+    { repo: "r", name: "R", summary: "new", whyItMatters: "new why" },
+  ]);
+  // Next run: unchanged README, so the entry is carried over as is.
+  const { projects: carried } = planProjects([fact], summarised);
+
+  const expected = ["id", "name", "github", "tech", "status", "summary", "whyItMatters", "readmeSha", "order"];
+  assert.deepEqual(keys(summarised[0]), expected);
+  assert.deepEqual(keys(carried[0]), expected);
+  assert.deepEqual(carried[0], summarised[0]); // identical, so no diff
+  assert.deepEqual(keys(orderFields({ order: 1, extra: 2, id: "x" })), ["id", "order", "extra"]);
 });
