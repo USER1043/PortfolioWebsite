@@ -6,7 +6,9 @@
  *   node scripts/sync-projects.mjs prepare   # fetch repos, write projects.json + .sync/
  *   node scripts/sync-projects.mjs finalize  # merge Claude's summaries (SUMMARIES_JSON)
  *
- * Env: GITHUB_TOKEN (required for prepare), GITHUB_USERNAME (defaults to the repo owner).
+ * Env: GITHUB_TOKEN (required for prepare), GITHUB_USERNAME (defaults to the repo owner),
+ *      PREVIOUS_PROJECTS (optional: projects.json from an open sync PR, so its
+ *      summaries are reused instead of asking Claude again).
  * @module scripts/sync-projects
  */
 import fs from 'node:fs';
@@ -166,7 +168,11 @@ async function prepare() {
   const facts = [];
   for (const repo of repos) facts.push(await collectFacts(repo));
 
-  const { projects, pending } = planProjects(facts, readJson(PROJECTS_FILE, []));
+  // Compare against the open sync PR if there is one, so READMEs it already
+  // summarised aren't sent to Claude again every day until it's merged.
+  const fromOpenPr = process.env.PREVIOUS_PROJECTS ? readJson(process.env.PREVIOUS_PROJECTS, null) : null;
+  if (fromOpenPr) console.log('Reusing summaries from the open sync PR');
+  const { projects, pending } = planProjects(facts, fromOpenPr ?? readJson(PROJECTS_FILE, []));
   writeJson(PROJECTS_FILE, projects);
 
   fs.rmSync(SYNC_DIR, { recursive: true, force: true });

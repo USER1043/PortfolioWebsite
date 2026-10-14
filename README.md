@@ -118,6 +118,8 @@ Projects are never hardcoded. They come from GitHub:
    * `finalize` checks those blurbs and merges them in, the site build is checked, and a PR **"Update portfolio projects"** is opened.
 3. **Review and merge the PR.** Vercel deploys it.
 
+While a sync PR is open, later runs start from that PR's summaries: Claude is only asked about READMEs that changed since, and the PR isn't rewritten unless something new comes in.
+
 Run it anytime from **Actions → Sync Portfolio Projects → Run workflow**. Unpinning a repo removes it on the next sync. Forks, archived and private repos are never listed.
 
 ### Fixing something by hand

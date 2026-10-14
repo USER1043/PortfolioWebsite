@@ -121,3 +121,30 @@ test("prepare → Claude → finalize → re-run only summarises changed READMEs
     assert.match(outputs, /pending_count=1/);
   });
 });
+
+test("an open sync PR's summaries are reused instead of asking Claude again", async () => {
+  const cwd = fs.mkdtempSync(path.join(os.tmpdir(), "sync-"));
+  const projectsFile = path.join(cwd, "src/data/projects.json");
+  // main still has the old README fingerprint for "app"…
+  fs.mkdirSync(path.dirname(projectsFile), { recursive: true });
+  fs.writeFileSync(projectsFile, JSON.stringify([{ id: "app", name: "App", summary: "Old.", readmeSha: "old" }]));
+  // …but the open PR already summarised the current README.
+  const prFile = path.join(cwd, "previous-projects.json");
+  fs.writeFileSync(prFile, JSON.stringify([
+    { id: "app", name: "App", summary: "From the PR.", whyItMatters: "Because.", readmeSha: "sha1" },
+  ]));
+
+  await withServer("sha1", async (api) => {
+    const reused = await sync(cwd, "prepare", { GITHUB_API_URL: api, PREVIOUS_PROJECTS: prFile });
+    assert.match(reused.outputs, /pending_count=0/); // Claude is skipped
+    assert.match(reused.stdout, /Reusing summaries from the open sync PR/);
+    const app = JSON.parse(fs.readFileSync(projectsFile, "utf-8")).find((p) => p.id === "app");
+    assert.equal(app.summary, "From the PR.");
+    assert.equal(app.whyItMatters, "Because.");
+
+    // No open PR (file missing): compare against main as before.
+    fs.writeFileSync(projectsFile, JSON.stringify([{ id: "app", name: "App", summary: "Old.", readmeSha: "old" }]));
+    const fresh = await sync(cwd, "prepare", { GITHUB_API_URL: api, PREVIOUS_PROJECTS: path.join(cwd, "missing.json") });
+    assert.match(fresh.outputs, /pending_count=1/);
+  });
+});
