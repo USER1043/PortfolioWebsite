@@ -85,6 +85,7 @@ test("formats durations and escapes HTML", () => {
 /* ── virtual filesystem ── */
 
 test("resolves paths without escaping home", () => {
+  assert.deepEqual(resolvePath(["projects"], ""), ["projects"]); // empty = stay here
   assert.deepEqual(resolvePath(["projects"], ".."), []);
   assert.deepEqual(resolvePath([], "../../.."), []);
   assert.deepEqual(resolvePath(["projects"], "~"), []);
@@ -393,4 +394,19 @@ test("typing the Konami arrows as text gets a hint, not an error", async () => {
   const { text } = await run("↑ ↑ ↓ ↓ ← → ← → B A");
   assert.match(text, /press the actual arrow keys/);
   assert.ok(!buildRegistry().visibleNames().includes("↑"));
+});
+
+test("ls without a path lists the current directory, not home", async () => {
+  // The reported bug: after `cd projects`, a bare `ls` still listed home.
+  const shell = { cwd: [] };
+  await run("cd projects", { shell });
+  const { text } = await run("ls", { shell });
+  assert.match(text, /passwordpal\.md/);
+  assert.match(text, /sensory-safari\.md/);
+  assert.doesNotMatch(text, /about\.txt/);
+  assert.match((await run("ls -l", { shell })).text, /passwordpal\.md/);
+  assert.match((await run("ls ..", { shell })).text, /about\.txt/);
+  // cd with no argument still goes home.
+  await run("cd", { shell });
+  assert.deepEqual(shell.cwd, []);
 });
