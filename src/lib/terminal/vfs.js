@@ -37,12 +37,14 @@ export function buildFs(projects = []) {
 }
 
 // Resolves `input` against `cwd`; returns the new segment array.
-// `~`, `/` and `/home/prajan` all mean home.
+// An empty path means the current directory; `~`, `/` and `/home/prajan`
+// all mean home. (`cd` with no argument going home is handled by `cd`.)
 export function resolvePath(cwd, input = '') {
   let path = input.trim();
   let segs = [...cwd];
 
-  if (path === '' || path === '~' || path === '/') return [];
+  if (path === '') return segs;
+  if (path === '~' || path === '/') return [];
   if (path.startsWith('~/')) {
     segs = [];
     path = path.slice(2);
