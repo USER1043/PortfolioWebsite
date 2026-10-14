@@ -8,6 +8,11 @@ on:
   schedule:
     - cron: "0 0 * * *" # Daily at midnight UTC
   workflow_dispatch: # "Run workflow" button in the Actions tab
+    inputs:
+      dry_run:
+        description: "Dry run: do everything except opening or updating the PR"
+        type: boolean
+        default: false
 
 permissions:
   contents: write
@@ -31,11 +36,25 @@ jobs:
 
       - run: npm ci
 
+      # If a sync PR is still open, start from its projects.json so summaries it
+      # already has are reused, and an unchanged PR isn't rewritten every day.
+      # Branches of closed PRs are ignored.
+      - name: Reuse the open sync PR's summaries
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          open_pr=$(gh pr list --head auto/sync-projects --state open --json number --jq '.[0].number // empty')
+          if [ -n "$open_pr" ] && git fetch --depth=1 origin auto/sync-projects; then
+            git show FETCH_HEAD:src/data/projects.json > "$RUNNER_TEMP/previous-projects.json"
+            echo "Using projects.json from open PR #$open_pr"
+          fi
+
       # Plain script, no AI: repo facts, tech stack, status, and which READMEs changed.
       - name: Fetch pinned repos
         id: prepare
         run: node scripts/sync-projects.mjs prepare
         env:
+          PREVIOUS_PROJECTS: ${{ runner.temp }}/previous-projects.json
           # Add a PORTFOLIO_GITHUB_TOKEN secret only if the built-in token can't see your repos.
           GITHUB_TOKEN: ${{ secrets.PORTFOLIO_GITHUB_TOKEN || secrets.GITHUB_TOKEN }}
 
@@ -84,7 +103,13 @@ jobs:
         run: npm run build
 
       # No PR when nothing changed; an open PR is updated in place.
+      # Dry runs stop here and just show what would have changed.
+      - name: Show changes (dry run)
+        if: ${{ inputs.dry_run }}
+        run: git diff --stat -- src/data/projects.json && git diff -- src/data/projects.json | head -80
+
       - name: Open pull request
+        if: ${{ !inputs.dry_run }}
         uses: peter-evans/create-pull-request@v8
         with:
           branch: auto/sync-projects
