@@ -8,6 +8,11 @@ on:
   schedule:
     - cron: "0 0 * * *" # Daily at midnight UTC
   workflow_dispatch: # "Run workflow" button in the Actions tab
+    inputs:
+      dry_run:
+        description: "Dry run: do everything except opening or updating the PR"
+        type: boolean
+        default: false
 
 permissions:
   contents: write
@@ -98,7 +103,13 @@ jobs:
         run: npm run build
 
       # No PR when nothing changed; an open PR is updated in place.
+      # Dry runs stop here and just show what would have changed.
+      - name: Show changes (dry run)
+        if: ${{ inputs.dry_run }}
+        run: git diff --stat -- src/data/projects.json && git diff -- src/data/projects.json | head -80
+
       - name: Open pull request
+        if: ${{ !inputs.dry_run }}
         uses: peter-evans/create-pull-request@v8
         with:
           branch: auto/sync-projects
