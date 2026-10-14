@@ -158,6 +158,22 @@ export function selectRepos(pinned, topicRepos, exclude) {
   });
 }
 
+// Field order for every entry in projects.json. Both sync phases write through
+// orderFields, so a project that didn't change produces no diff.
+const FIELD_ORDER = ['id', 'name', 'github', 'demo', 'tech', 'status', 'summary', 'whyItMatters', 'readmeSha', 'order'];
+
+// Returns the project with its fields in FIELD_ORDER (unknown fields last).
+export function orderFields(project) {
+  const ordered = {};
+  for (const key of FIELD_ORDER) {
+    if (project[key] !== undefined) ordered[key] = project[key];
+  }
+  for (const [key, value] of Object.entries(project)) {
+    if (!(key in ordered) && value !== undefined) ordered[key] = value;
+  }
+  return ordered;
+}
+
 // Builds the next projects.json from fresh repo facts and the previous file.
 // Text written by Claude is carried over while the README is unchanged; repos
 // whose README changed (or that are new) are returned in `pending`.
@@ -170,7 +186,7 @@ export function planProjects(facts, previous) {
     const fresh = prev && prev.readmeSha === f.readmeSha && f.readmeSha && prev.summary;
     if (!fresh && f.readme) pending.push(f.id);
 
-    return {
+    return orderFields({
       id: f.id,
       name: fresh ? prev.name : prev?.name ?? prettifyRepoName(f.id),
       github: f.github,
@@ -182,7 +198,7 @@ export function planProjects(facts, previous) {
       // Only recorded once Claude has summarised this README version.
       readmeSha: fresh ? f.readmeSha : null,
       order,
-    };
+    });
   });
 
   return { projects, pending };
@@ -221,13 +237,13 @@ export function applySummaries(planned, readmeShas, pending, summaries) {
       errors.push(`${p.id}: ${error}`);
       return p;
     }
-    return {
+    return orderFields({
       ...p,
       name: cleanName(s.name) ?? p.name,
       summary: s.summary.trim(),
       whyItMatters: s.whyItMatters.trim(),
       readmeSha: readmeShas[p.id],
-    };
+    });
   });
 
   return { projects, errors };
