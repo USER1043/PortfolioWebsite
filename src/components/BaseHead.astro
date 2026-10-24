@@ -1,0 +1,54 @@
+---
+/**
+ * @file Shared <head> contents for every page: title and description, canonical
+ * URL, link-preview tags (Open Graph / Twitter), favicon, saved theme and fonts.
+ * @module components/BaseHead
+ */
+import ThemeScript from './ThemeScript.astro';
+
+interface Props {
+  title: string;
+  description: string;
+  /** Keep the page out of search results (e.g. the 404 page). */
+  noindex?: boolean;
+}
+
+const { title, description, noindex = false } = Astro.props;
+const site = Astro.site ?? new URL('https://prajan-karthik.vercel.app');
+const canonical = new URL(Astro.url.pathname, site);
+const image = new URL('/og.png', site);
+---
+
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>{title}</title>
+<meta name="description" content={description} />
+{noindex ? <meta name="robots" content="noindex" /> : <link rel="canonical" href={canonical} />}
+<meta name="theme-color" content="#0D0D0D" />
+<link rel="icon" type="image/svg+xml" href="/logo.svg" />
+<link rel="sitemap" href="/sitemap.xml" />
+
+<!-- Link previews (LinkedIn, WhatsApp, Slack, X, …) -->
+<meta property="og:type" content="website" />
+<meta property="og:site_name" content="Prajan Karthik" />
+<meta property="og:title" content={title} />
+<meta property="og:description" content={description} />
+<meta property="og:url" content={canonical} />
+<meta property="og:image" content={image} />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:image:alt" content="Prajan Karthik's terminal portfolio: neofetch with a pixel-art Charizard" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content={title} />
+<meta name="twitter:description" content={description} />
+<meta name="twitter:image" content={image} />
+
+<ThemeScript />
+
+<!-- JetBrains Mono from Google Fonts -->
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link
+  href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&display=swap"
+  rel="stylesheet"
+/>

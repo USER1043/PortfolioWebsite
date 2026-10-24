@@ -1,0 +1,92 @@
+[
+  {
+    "id": "PasswordPal_Frontend",
+    "name": "PasswordPal",
+    "github": "https://github.com/USER1043/PasswordPal_Frontend",
+    "tech": [
+      "Tauri",
+      "React",
+      "Tailwind CSS",
+      "TypeScript",
+      "Rust"
+    ],
+    "status": "Shipped ✓",
+    "summary": "A zero-knowledge, local-first desktop password manager built with Tauri v2, React and Rust, where the vault is encrypted on the device before anything is synced.",
+    "whyItMatters": "The server only ever stores ciphertext it cannot read. Keys are derived with Argon2id, vaults use AES-256-GCM, and a recovery key lets users reset a forgotten master password via an Ed25519 signature.",
+    "readmeSha": "98252867187e8211a7ddfcff842fe8adeb494df3",
+    "order": 0
+  },
+  {
+    "id": "Distributed-Auction-System",
+    "name": "Distributed Auction System",
+    "github": "https://github.com/EliteGamer007/Distributed-Auction-System",
+    "tech": [
+      "Go"
+    ],
+    "status": "Paused",
+    "summary": "A fault-tolerant real-time online auction built in Go, where four independent nodes coordinate over RPC using classic distributed systems algorithms.",
+    "whyItMatters": "It implements Bully election, Ricart-Agrawala mutual exclusion, two-phase commit with majority quorum, and Koo-Toueg checkpointing end-to-end, with crash recovery and transaction logging across laptops on Wi-Fi.",
+    "readmeSha": "fe1c13c14f0470127df7a370843699e208c09b03",
+    "order": 1
+  },
+  {
+    "id": "Talent-Radar",
+    "name": "Talent Radar",
+    "github": "https://github.com/USER1043/Talent-Radar",
+    "tech": [
+      "PyTorch",
+      "Streamlit",
+      "Python"
+    ],
+    "status": "Active",
+    "summary": "Ranks the top 100 of a 100,000-candidate pool for a Senior AI Engineer job description and writes a submission.csv with fact-checked reasoning for each finalist.",
+    "whyItMatters": "Ranking runs CPU-only with no network or LLM calls in about 1 min 47 s, combining FAISS and BM25 retrieval with a Ridge ranker. Every explanation is audited against the candidate's own record, and the README documents its limitations.",
+    "readmeSha": "1b370ea7774ff4d2f019d6c0463a9bdd380e8939",
+    "order": 2
+  },
+  {
+    "id": "Monday.com-BI-Agent",
+    "name": "Monday.com BI Agent",
+    "github": "https://github.com/USER1043/Monday.com-BI-Agent",
+    "tech": [
+      "Streamlit",
+      "Python"
+    ],
+    "status": "Active",
+    "summary": "A conversational assistant that answers founders' questions about sales pipeline and work order data from two Monday.com boards, using Llama 3.3 70B via Groq and the Monday.com MCP server.",
+    "whyItMatters": "Real board data has messy currencies, dates, nulls and contradictory statuses. A deterministic normalization layer cleans it and every answer discloses data quality issues, including the stage-based fallback used when 75% of deals lack a probability.",
+    "readmeSha": "54c3a522737530a78226cceb70254d44e26ce241",
+    "order": 3
+  },
+  {
+    "id": "SentinelFlow",
+    "name": "SentinelFlow",
+    "github": "https://github.com/USER1043/SentinelFlow",
+    "tech": [
+      "FastAPI",
+      "LangChain",
+      "Python"
+    ],
+    "status": "Active",
+    "summary": "A multi-agent system built for a hackathon that turns meeting transcripts into tracked action items using LangChain, Vertex AI Gemini and AlloyDB, exposed through a FastAPI service.",
+    "whyItMatters": "An Analyst agent extracts tasks with owners, deadlines and 768-dimension embeddings, and a Watchdog agent audits the database for unassigned tasks so action items are not silently dropped after a meeting.",
+    "readmeSha": "cb77df8610d53be0c1cf55e8a96249140d1320b2",
+    "order": 4
+  },
+  {
+    "id": "PasswordPal_Backend",
+    "name": "PasswordPal Backend",
+    "github": "https://github.com/USER1043/PasswordPal_Backend",
+    "demo": "https://passwordpal-backend-uh7a.onrender.com",
+    "tech": [
+      "Express",
+      "PostgreSQL",
+      "JavaScript"
+    ],
+    "status": "Live",
+    "summary": "The Node.js and Express sync and account API for PasswordPal, backed by Supabase PostgreSQL, handling auth, 2FA, device management and encrypted vault sync.",
+    "whyItMatters": "The server never receives the master password or any key that can decrypt a vault. It adds device-bound JWT sessions, Ed25519 signature-based recovery, shared brute-force rate limiting and delta sync with optimistic version locking.",
+    "readmeSha": "755f5805e867660e129bfe893f6e4e508f21ebdd",
+    "order": 5
+  }
+]

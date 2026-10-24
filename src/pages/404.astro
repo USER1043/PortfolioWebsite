@@ -1,0 +1,58 @@
+---
+/**
+ * @file Not-found page, styled as a failed `cd` in the terminal.
+ * @module pages/404
+ */
+import '../styles/global.css';
+import '../styles/terminal.css';
+import TerminalLayout from '../components/TerminalLayout.astro';
+---
+
+<TerminalLayout
+  title="404 - prajan@portfolio"
+  description="This page doesn't exist on Prajan Karthik's portfolio."
+  noindex
+>
+  <div class="terminal-window page-panel">
+    <div class="terminal-titlebar">
+      <div class="titlebar-left">
+        <span class="titlebar-username">prajan@portfolio - 404</span>
+      </div>
+      <div class="titlebar-center">prajan@portfolio - 404</div>
+      <div class="titlebar-buttons">
+        <a href="/" class="win-btn win-btn--close" aria-label="Back to terminal" title="Back to terminal" style="display:flex"></a>
+      </div>
+    </div>
+
+    <main class="terminal-body">
+      <div class="page-section">
+        <div class="page-section-cmd">$ cd <span class="missing-path">this-page</span></div>
+        <p class="page-copy not-found-error">
+          bash: cd: <span class="missing-path">this-page</span>: No such file or directory
+        </p>
+      </div>
+
+      <div class="page-section">
+        <div class="page-section-cmd">// try one of these</div>
+        <p class="page-copy"><a href="/">cd ~</a> <span class="t-muted">→ back to the terminal</span></p>
+        <p class="page-copy"><a href="/projects">ls projects/</a> <span class="t-muted">→ all projects</span></p>
+        <p class="page-copy"><a href="/contact">contact</a> <span class="t-muted">→ send me a message</span></p>
+      </div>
+    </main>
+  </div>
+</TerminalLayout>
+
+<script>
+  // Show the path the visitor actually tried (as text, never HTML).
+  const path = decodeURIComponent(window.location.pathname);
+  document.querySelectorAll('.missing-path').forEach((el) => {
+    el.textContent = path;
+  });
+</script>
+
+<style>
+  .not-found-error {
+    color: var(--red);
+    overflow-wrap: anywhere;
+  }
+</style>

@@ -1,0 +1,19 @@
+---
+/**
+ * @file Applies the visitor's saved terminal theme before first paint, so
+ * pages never flash the default colours. Include it in every page's <head>.
+ * @module components/ThemeScript
+ */
+import { DEFAULT_THEME, THEME_NAMES, THEME_STORAGE_KEY } from '../lib/terminal/themes.js';
+---
+
+<script is:inline define:vars={{ names: THEME_NAMES, key: THEME_STORAGE_KEY, fallback: DEFAULT_THEME }}>
+  try {
+    const saved = localStorage.getItem(key);
+    if (saved && saved !== fallback && names.includes(saved)) {
+      document.documentElement.dataset.theme = saved;
+    }
+  } catch {
+    // Storage unavailable: keep the default theme.
+  }
+</script>
