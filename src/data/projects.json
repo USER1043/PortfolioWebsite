@@ -48,14 +48,15 @@
     "id": "Monday.com-BI-Agent",
     "name": "Monday.com BI Agent",
     "github": "https://github.com/USER1043/Monday.com-BI-Agent",
+    "demo": "https://founder-bi-agent.streamlit.app/",
     "tech": [
       "Streamlit",
       "Python"
     ],
-    "status": "Active",
-    "summary": "A conversational assistant that answers founders' questions about sales pipeline and work order data from two Monday.com boards, using Llama 3.3 70B via Groq and the Monday.com MCP server.",
-    "whyItMatters": "Real board data has messy currencies, dates, nulls and contradictory statuses. A deterministic normalization layer cleans it and every answer discloses data quality issues, including the stage-based fallback used when 75% of deals lack a probability.",
-    "readmeSha": "54c3a522737530a78226cceb70254d44e26ce241",
+    "status": "Live",
+    "summary": "A conversational Streamlit assistant that answers natural-language questions about sales pipeline and work order data pulled from two Monday.com boards.",
+    "whyItMatters": "It normalizes messy data such as currency strings, mixed units and null values, and discloses anomalies in every answer. Tool figures are tested against independent pandas calculations from the raw Excel files.",
+    "readmeSha": "5a2aa67e0812882dd0fc4f297dfeb48cd9abb041",
     "order": 3
   },
   {
