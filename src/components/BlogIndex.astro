@@ -36,7 +36,7 @@ const command = tag ? `ls -lt | grep ${tag}` : 'ls -lt';
     <nav class="tag-filter" aria-label="Filter by tag">
       <span class="t-muted">--grep=</span>
       <a href="/blog/" aria-current={tag ? undefined : 'page'}>all</a>
-      {tags.map(({ tag: t, count }) => (
+      {tags.map(({ tag: t, count }: { tag: string; count: number }) => (
         <a href={`/blog/tag/${t}/`} aria-current={t === tag ? 'page' : undefined}>
           {t}<span class="tag-count">{count}</span>
         </a>
