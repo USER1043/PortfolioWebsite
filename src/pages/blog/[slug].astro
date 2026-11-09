@@ -1,0 +1,114 @@
+---
+/**
+ * @file A blog post, laid out like a `less` / man page: header line, details,
+ * a `tree` table of contents, the post, then older/newer links.
+ * @module pages/blog/[slug]
+ */
+import { render } from 'astro:content';
+import BlogLayout from '../../components/BlogLayout.astro';
+import PagerStatusBar from '../../components/PagerStatusBar.astro';
+import { getPosts, type Post } from '../../lib/blog';
+import { isoDay, tocTree } from '../../lib/blog/util.mjs';
+import { getProjects } from '../../lib/projects';
+
+export async function getStaticPaths() {
+  const posts = await getPosts();
+  // Posts are newest first, so the previous one in the list is newer.
+  return posts.map((post, i) => ({
+    params: { slug: post.slug },
+    props: { post, newer: posts[i - 1], older: posts[i + 1] },
+  }));
+}
+
+interface Props {
+  post: Post;
+  newer?: Post;
+  older?: Post;
+}
+
+const { post, newer, older } = Astro.props;
+const { Content, headings } = await render(post.entry);
+const toc = tocTree(headings);
+const project = post.project ? (await getProjects()).find((p) => p.id === post.project) : undefined;
+const projectUrl = project ? (project.demo ?? project.github ?? '/projects/') : undefined;
+const file = `${post.slug}.md`;
+---
+
+<BlogLayout
+  title={`${post.title} - prajan@portfolio`}
+  description={post.description}
+  command={`~/blog$ less ${file}`}
+  article={{ published: post.date, modified: post.updated, tags: post.tags }}
+>
+  <article class="post">
+    <header>
+      <div class="man-head" aria-hidden="true">
+        <span class="man-name">{post.slug.toUpperCase()}(7)</span>
+        <span class="man-section">Project Notes</span>
+        <span class="man-date">{isoDay(post.date)}</span>
+      </div>
+
+      <p class="prompt-line" aria-hidden="true">
+        <span class="prompt-user">prajan</span><span class="prompt-at">@</span><span class="prompt-host">portfolio</span><span class="prompt-colon">:</span><span class="prompt-tilde">~/blog</span><span class="prompt-dollar">$</span> cat {file}
+      </p>
+      <h1 class="post-title">{post.title}</h1>
+
+      <dl class="post-meta">
+        <div>
+          <dt>date</dt>
+          <dd>
+            <time datetime={isoDay(post.date)}>{isoDay(post.date)}</time>
+            {post.updated && <> · updated <time datetime={isoDay(post.updated)}>{isoDay(post.updated)}</time></>}
+          </dd>
+        </div>
+        <div>
+          <dt>wc -w</dt>
+          <dd>{post.words.toLocaleString('en-US')} words · ~{post.minutes} min read</dd>
+        </div>
+        {project && (
+          <div>
+            <dt>project</dt>
+            <dd>
+              <a href={projectUrl} target={projectUrl?.startsWith('http') ? '_blank' : undefined} rel="noopener noreferrer">{project.name} →</a>
+              {project.tech.length > 0 && <span class="t-muted"> ({project.tech.slice(0, 3).join(' · ')})</span>}
+            </dd>
+          </div>
+        )}
+        {post.tags.length > 0 && (
+          <div>
+            <dt>tags</dt>
+            <dd class="post-tags">
+              {post.tags.map((tag: string) => <a class="tag" href={`/blog/tag/${tag}/`}>{tag}</a>)}
+            </dd>
+          </div>
+        )}
+      </dl>
+    </header>
+
+    {toc.length >= 3 && (
+      <nav class="post-toc" aria-label="Contents">
+        <pre><span class="t-dir">{file}</span>{'\n'}{toc.map((row: { prefix: string; slug: string; text: string }) => (
+          <>{row.prefix}<a href={`#${row.slug}`}>{row.text}</a>{'\n'}</>
+        ))}</pre>
+      </nav>
+    )}
+
+    <div class="prose">
+      <Content />
+    </div>
+
+    <footer class="post-end">
+      <p>
+        <span class="t-muted">(END)</span> · <a href="/blog/">← cd ../ (all posts)</a> · <a href="/rss.xml">rss</a>
+      </p>
+      {(older || newer) && (
+        <nav class="post-nav" aria-label="More posts">
+          {older ? <a href={`/blog/${older.slug}/`} rel="prev"><small>← older</small>{older.title}</a> : <span></span>}
+          {newer && <a href={`/blog/${newer.slug}/`} rel="next" class="post-nav-newer"><small>newer →</small>{newer.title}</a>}
+        </nav>
+      )}
+    </footer>
+  </article>
+
+  <PagerStatusBar slot="after" file={file} minutes={post.minutes} />
+</BlogLayout>

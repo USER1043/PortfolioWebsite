@@ -105,6 +105,18 @@ subsections become the post's table of contents.
 
 A quote without a marker stays a normal quote.
 
+**Why / trade-off boxes.** A bullet list where *every* item starts with a bold
+label ending in a colon is shown as a labelled box, like the decisions in the
+template:
+
+```markdown
+- **Why:** adding a company means adding a file.
+- **Trade-off:** selectors still break when a site redesigns.
+```
+
+Any label works (`**Cost:**`, `**Result:**`). If one item has no label, the
+list stays a normal bullet list.
+
 **Code.** Put the language after the opening backticks so it's highlighted in
 the visitor's theme colours: `js`, `ts`, `python`, `rust`, `json`, `bash`,
 `yaml` and so on.

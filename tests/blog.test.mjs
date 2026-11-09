@@ -2,13 +2,14 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import { createSatteriMarkdownProcessor } from "@astrojs/markdown-satteri";
 import { calloutsPlugin } from "../src/lib/blog/callouts.mjs";
-import { countWords, isoDay, readingMinutes, sortPosts } from "../src/lib/blog/util.mjs";
+import { labelListsPlugin } from "../src/lib/blog/labelLists.mjs";
+import { countWords, isoDay, readingMinutes, sortPosts, tocTree } from "../src/lib/blog/util.mjs";
 
 // The same Markdown pipeline astro.config.mjs sets up.
 const processor = await createSatteriMarkdownProcessor({
   syntaxHighlight: "shiki",
   shikiConfig: { theme: "css-variables" },
-  hastPlugins: [calloutsPlugin],
+  hastPlugins: [calloutsPlugin, labelListsPlugin],
 });
 const render = async (md) => (await processor.render(md)).code;
 
@@ -96,4 +97,64 @@ test("posts sort newest first, then by slug", () => {
   ];
   assert.deepEqual(sortPosts(posts).map((p) => p.slug), ["c", "a", "b"]);
   assert.deepEqual(posts.map((p) => p.slug), ["b", "c", "a"], "does not mutate");
+});
+
+/* ── labelled lists ── */
+
+test("a list of bold labels becomes a definition list", async () => {
+  const html = await render("- **Why:** adding a file, no `deploy`.\n- **Trade-off:** selectors break.");
+  assert.match(html, /<dl class="label-list">/);
+  assert.match(html, /<dt>why<\/dt><dd>adding a file, no <code>deploy<\/code>.<\/dd>/);
+  assert.match(html, /<dt>trade-off<\/dt><dd>selectors break.<\/dd>/);
+  assert.doesNotMatch(html, /<ul>|<strong>/);
+});
+
+test("loose labelled lists work too", async () => {
+  const html = await render("- **Why:** one.\n\n- **Cost:** two.");
+  assert.match(html, /<dt>why<\/dt><dd>one.<\/dd>/);
+  assert.match(html, /<dt>cost<\/dt><dd>two.<\/dd>/);
+});
+
+test("ordinary lists stay lists", async () => {
+  for (const md of [
+    "- **Why:** one.\n- plain item",          // one item unlabelled
+    "- **Free tier**, so limited memory.\n- **27 companies**.", // bold but no colon
+    "- **Why:** only one item",
+    "- **Why:**\n- **How:**",                   // labels with nothing after them
+  ]) {
+    const html = await render(md);
+    assert.match(html, /<ul>/, md);
+    assert.doesNotMatch(html, /label-list/, md);
+  }
+});
+
+/* ── table of contents ── */
+
+const h = (depth, text) => ({ depth, text, slug: text.toLowerCase() });
+
+test("contents are drawn like `tree` output", () => {
+  const rows = tocTree([
+    h(2, "Intro"), h(2, "Problem"), h(3, "Limits"), h(3, "Done"),
+    h(2, "Approach"), h(3, "Config"), h(2, "End"), h(4, "Ignored"),
+  ]);
+  assert.deepEqual(rows.map((r) => r.prefix + r.text), [
+    "├── Intro",
+    "├── Problem",
+    "│   ├── Limits",
+    "│   └── Done",
+    "├── Approach",
+    "│   └── Config",
+    "└── End",
+  ]);
+});
+
+test("subsections of the last section get no trunk line", () => {
+  const rows = tocTree([h(2, "A"), h(2, "B"), h(3, "B1"), h(3, "B2")]);
+  assert.deepEqual(rows.map((r) => r.prefix + r.text), ["├── A", "└── B", "    ├── B1", "    └── B2"]);
+});
+
+test("subsections before any section are shown as sections", () => {
+  const rows = tocTree([h(3, "Early"), h(2, "Main"), h(3, "Sub")]);
+  assert.deepEqual(rows.map((r) => r.prefix + r.text), ["├── Early", "└── Main", "    └── Sub"]);
+  assert.deepEqual(tocTree([]), []);
 });
