@@ -15,6 +15,7 @@ Welcome to my interactive terminal corner of the internet! A Modern-CLI styled p
 - [Tech Stack](#-tech-stack)
 - [Interactive Terminal Commands](#-interactive-terminal-commands)
 - [How Projects Get on the Site](#-how-projects-get-on-the-site)
+- [Writing a Blog Post](#️-writing-a-blog-post)
 - [Getting Started](#-getting-started)
 - [Available Scripts](#-available-scripts)
 - [License](#-license)
@@ -32,6 +33,7 @@ Welcome to my interactive terminal corner of the internet! A Modern-CLI styled p
   * **History & Autocomplete:** Up/Down history, bash-style `Tab` completion for commands and paths, "did you mean …?" for typos, `Ctrl+C` / `Ctrl+L`.
   * **Window Management:** Working minimize/maximize title bar controls.
   * **Shutdown & Reconnect:** Simulated Linux broadcast shutdown sequence and session reconnect overlay.
+* **✍️ Blog:** Posts about my projects at `/blog`, written as Markdown files in `src/content/blog/`. Each post reads like a `less` page: a man-page header, a `tree` table of contents, a sans body font (switch to mono with `:set font=`), `[WARN]`-style callouts, code coloured by the current theme, and a status bar with reading progress and `j`/`k`/`g`/`G`/`q` keys. Also: tag pages, an RSS feed at `/rss.xml`, and posts linked from their project cards and from the terminal.
 * **🤖 Automatic Project Sync:** A daily GitHub Action reads your pinned repos, works out tech stack and status, has Claude Code summarise any README that changed, and opens a PR updating `src/data/projects.json`. The terminal `projects` command and the `/projects` page both read that one file.
 * **🛡️ Rate Limiting Engine:**
   * Custom rate limiter (`src/lib/rateLimit.mjs`) protecting API calls and the contact form.
@@ -61,10 +63,11 @@ When visiting the homepage, you can interact with the terminal prompt:
 | `help` | Lists the commands |
 | `aboutme` | Bio, current role and tech stack |
 | `projects` | Featured projects with status and links |
+| `blog [--tag <tag>]` | The latest posts, or every post with a tag |
 | `social` / `email` / `contact` | Links, mail client, and the `/contact` message form |
 | `neofetch` | System info with a pixel-art Charizard |
 | `git log` | My journey as commits (from `src/data/timeline.yml`) |
-| `ls` · `cd` · `pwd` · `cat` · `open` | Browse the fake home directory, e.g. `cd projects`, `cat about.txt`, `open resume.pdf` |
+| `ls` · `cd` · `pwd` · `cat` · `open` | Browse the fake home directory, e.g. `cd projects`, `cat about.txt`, `ls -l blog`, `open resume.pdf` |
 | `whoami` · `date` · `echo` · `uptime` · `man` | The classics; `man <command>` explains any command |
 | `theme [list \| mocha \| gruvbox \| dracula \| fire]` | Switch colour theme; remembered for your next visit, on every page |
 | `history` · `clear` · `exit` | Session controls |
@@ -94,16 +97,6 @@ Hidden commands live in `src/lib/terminal/commands/fun.js` and `effects.js` with
 </details>
 
 To add a command, add an object to one of the files in `src/lib/terminal/commands/` (see `registry.js` for its shape). `help`, Tab completion and `man` pick it up automatically.
-
---- | :--- |
-| `help` | Displays available commands and usage hints |
-| `aboutme` | Prints full bio, current role, and tech stack overview |
-| `projects` | Renders a list of featured projects with status and links |
-| `social` | Displays links to GitHub, LinkedIn, and Email |
-| `email` | Triggers mail client launcher |
-| `history` | Views chronological command history for the session |
-| `clear` | Clears terminal screen output |
-| `exit` | Triggers Linux-style shutdown sequence and overlay |
 
 ---
 
@@ -148,6 +141,18 @@ GITHUB_TOKEN=<token> GITHUB_USERNAME=<you> node scripts/sync-projects.mjs prepar
 ```
 
 This refreshes `src/data/projects.json` and writes any READMEs that need summaries to `.sync/readmes/`.
+
+---
+
+## ✍️ Writing a Blog Post
+
+Posts are Markdown files in `src/content/blog/`; the filename is the URL (`my-post.md` → `/blog/my-post/`).
+
+1. Write rough notes, then turn them into a post with the AI prompt in [`docs/blog-post-template.md`](docs/blog-post-template.md). That file also has the post template (intro → problem → approach → what I'd do differently → conclusion) and everything a post can use.
+2. Save the result as `src/content/blog/<slug>.md`. It starts as `draft: true`, which shows only in `npm run dev`.
+3. Check it at `http://localhost:4321/blog/<slug>/`, then set `draft: false` and commit.
+
+Every post needs a `title`, a one-sentence `description` and a `date`. `tags` and `project` (a GitHub repo name from `src/data/projects.json`) are optional. If something's wrong, the dev server and the build stop and name the file and the field.
 
 ---
 
