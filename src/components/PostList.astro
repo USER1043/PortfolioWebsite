@@ -1,0 +1,40 @@
+---
+/**
+ * @file Posts as `ls -lt` output: permissions, date, reading time, then the
+ * file name with the title, description and tags under it.
+ * @module components/PostList
+ */
+import type { Post } from '../lib/blog';
+import { isoDay } from '../lib/blog/util.mjs';
+
+interface Props {
+  posts: Post[];
+  /** Tag to highlight in each row (on a tag page). */
+  current?: string;
+}
+
+const { posts, current } = Astro.props;
+---
+
+<ol class="post-list" reversed>
+  {posts.map((post: Post) => (
+    <li class="post-row">
+      <span class="post-row-perm" aria-hidden="true">-rw-r--r--</span>
+      <time class="post-row-date" datetime={isoDay(post.date)}>{isoDay(post.date)}</time>
+      <span class="post-row-min">{post.minutes} min</span>
+      <div class="post-row-main">
+        <a class="post-row-file" href={`/blog/${post.slug}/`}>{post.slug}.md</a>
+        {post.draft && <span class="post-row-draft">draft</span>}
+        <p class="post-row-title">{post.title}</p>
+        <p class="post-row-desc">{post.description}</p>
+        {post.tags.length > 0 && (
+          <p class="post-row-tags">
+            {post.tags.map((tag: string) => (
+              <a class="tag" href={`/blog/tag/${tag}/`} aria-current={tag === current ? 'page' : undefined}>{tag}</a>
+            ))}
+          </p>
+        )}
+      </div>
+    </li>
+  ))}
+</ol>

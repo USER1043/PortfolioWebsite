@@ -3,7 +3,7 @@ import assert from "node:assert/strict";
 import { createSatteriMarkdownProcessor } from "@astrojs/markdown-satteri";
 import { calloutsPlugin } from "../src/lib/blog/callouts.mjs";
 import { labelListsPlugin } from "../src/lib/blog/labelLists.mjs";
-import { countWords, isoDay, readingMinutes, sortPosts, tocTree } from "../src/lib/blog/util.mjs";
+import { buildRss, countWords, escXml, isoDay, readingMinutes, sortPosts, tagCounts, tocTree } from "../src/lib/blog/util.mjs";
 
 // The same Markdown pipeline astro.config.mjs sets up.
 const processor = await createSatteriMarkdownProcessor({
@@ -157,4 +157,43 @@ test("subsections before any section are shown as sections", () => {
   const rows = tocTree([h(3, "Early"), h(2, "Main"), h(3, "Sub")]);
   assert.deepEqual(rows.map((r) => r.prefix + r.text), ["├── Early", "└── Main", "    └── Sub"]);
   assert.deepEqual(tocTree([]), []);
+});
+
+/* ── tags and RSS ── */
+
+test("tags are counted, most used first, then A–Z", () => {
+  const posts = [{ tags: ["rust", "cli"] }, { tags: ["rust"] }, { tags: ["ai", "cli"] }, { tags: [] }];
+  assert.deepEqual(tagCounts(posts), [
+    { tag: "cli", count: 2 }, { tag: "rust", count: 2 }, { tag: "ai", count: 1 },
+  ]);
+  assert.deepEqual(tagCounts([]), []);
+});
+
+test("the RSS feed lists posts with absolute links and escaped text", () => {
+  const xml = buildRss({
+    site: new URL("https://example.dev"),
+    title: "Writing",
+    description: "Notes & ideas",
+    posts: [
+      { slug: "b", title: "Rust <3 & Tauri", description: 'He said "hi"', date: new Date("2026-11-15"), tags: ["rust"] },
+      { slug: "a", title: "Older", description: "x", date: new Date("2026-09-03"), updated: new Date("2026-12-01"), tags: [] },
+    ],
+  });
+  assert.match(xml, /^<\?xml version="1.0" encoding="UTF-8"\?>\n<rss version="2.0"/);
+  assert.match(xml, /<description>Notes &amp; ideas<\/description>/);
+  assert.match(xml, /<title>Rust &lt;3 &amp; Tauri<\/title>/);
+  assert.match(xml, /<description>He said &quot;hi&quot;<\/description>/);
+  assert.match(xml, /<link>https:\/\/example.dev\/blog\/b\/<\/link>/);
+  assert.match(xml, /<guid isPermaLink="true">https:\/\/example.dev\/blog\/a\/<\/guid>/);
+  assert.match(xml, /<pubDate>Sun, 15 Nov 2026 00:00:00 GMT<\/pubDate>/);
+  assert.match(xml, /<category>rust<\/category>/);
+  assert.match(xml, /<lastBuildDate>Tue, 01 Dec 2026 00:00:00 GMT<\/lastBuildDate>/, "newest date across all posts");
+  assert.ok(xml.indexOf("/blog/b/") < xml.indexOf("/blog/a/"), "keeps the given order");
+});
+
+test("an empty feed is still valid", () => {
+  const xml = buildRss({ site: "https://example.dev", title: "W", description: "D", posts: [] });
+  assert.doesNotMatch(xml, /<item>|lastBuildDate/);
+  assert.match(xml, /<\/channel>\n<\/rss>\n$/);
+  assert.equal(escXml(`<a href="x">'&'</a>`), "&lt;a href=&quot;x&quot;&gt;&apos;&amp;&apos;&lt;/a&gt;");
 });

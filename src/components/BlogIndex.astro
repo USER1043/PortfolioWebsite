@@ -1,0 +1,61 @@
+---
+/**
+ * @file The body of /blog/ and /blog/tag/<tag>/: prompt, heading, the tag
+ * filter as `--grep=`, the post list, and an empty state.
+ * @module components/BlogIndex
+ */
+import type { Post } from '../lib/blog';
+import PostList from './PostList.astro';
+
+interface Props {
+  posts: Post[];
+  tags: { tag: string; count: number }[];
+  /** Set on a tag page. */
+  tag?: string;
+}
+
+const { posts, tags, tag } = Astro.props;
+const command = tag ? `ls -lt | grep ${tag}` : 'ls -lt';
+---
+
+<section class="blog-index">
+  <p class="prompt-line" aria-hidden="true">
+    <span class="prompt-user">prajan</span><span class="prompt-at">@</span><span class="prompt-host">portfolio</span><span class="prompt-colon">:</span><span class="prompt-tilde">~/blog</span><span class="prompt-dollar">$</span> {command}
+  </p>
+
+  {tag ? (
+    <h1 class="post-title">Posts tagged <span class="tag">{tag}</span></h1>
+  ) : (
+    <>
+      <h1 class="post-title">Writing</h1>
+      <p class="blog-intro">Notes on what I build and how I think about it, mostly about my projects.</p>
+    </>
+  )}
+
+  {tags.length > 0 && (
+    <nav class="tag-filter" aria-label="Filter by tag">
+      <span class="t-muted">--grep=</span>
+      <a href="/blog/" aria-current={tag ? undefined : 'page'}>all</a>
+      {tags.map(({ tag: t, count }) => (
+        <a href={`/blog/tag/${t}/`} aria-current={t === tag ? 'page' : undefined}>
+          {t}<span class="tag-count">{count}</span>
+        </a>
+      ))}
+    </nav>
+  )}
+
+  <p class="blog-total">total {posts.length}</p>
+
+  {posts.length > 0 ? (
+    <PostList posts={posts} current={tag} />
+  ) : (
+    <p class="blog-empty">No posts yet. The first one is on its way.</p>
+  )}
+
+  <footer class="post-end">
+    <p>
+      {tag && <><a href="/blog/">← cd ../ (all posts)</a> · </>}
+      <a href="/">~ terminal</a> · <a href="/projects/">projects</a> · <a href="/rss.xml">rss.xml</a>
+    </p>
+  </footer>
+</section>

@@ -1,0 +1,20 @@
+---
+/**
+ * @file /blog/ — every post, newest first, as `ls -lt` output.
+ * @module pages/blog/index
+ */
+import BlogIndex from '../../components/BlogIndex.astro';
+import BlogLayout from '../../components/BlogLayout.astro';
+import { getPosts } from '../../lib/blog';
+import { tagCounts } from '../../lib/blog/util.mjs';
+
+const posts = await getPosts();
+---
+
+<BlogLayout
+  title="Writing - prajan@portfolio"
+  description="Posts by Prajan Karthik about the projects he builds: the problems, the decisions and the trade-offs."
+  command="~/blog$ ls -lt"
+>
+  <BlogIndex posts={posts} tags={tagCounts(posts)} />
+</BlogLayout>

@@ -54,3 +54,53 @@ export function tocTree(headings) {
 export function sortPosts(posts) {
   return [...posts].sort((a, b) => b.date - a.date || a.slug.localeCompare(b.slug));
 }
+
+// Every tag with how many posts use it: most used first, then A–Z.
+export function tagCounts(posts) {
+  const counts = new Map();
+  for (const post of posts) for (const tag of post.tags) counts.set(tag, (counts.get(tag) ?? 0) + 1);
+  return [...counts]
+    .map(([tag, count]) => ({ tag, count }))
+    .sort((a, b) => b.count - a.count || a.tag.localeCompare(b.tag));
+}
+
+const XML_ESCAPES = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&apos;' };
+export const escXml = (text) => String(text).replace(/[&<>"']/g, (c) => XML_ESCAPES[c]);
+
+// RSS 2.0 feed for `posts` (newest first). `site` is the site's root URL.
+export function buildRss({ site, title, description, posts }) {
+  const root = new URL('/', site);
+  const items = posts.map((post) => {
+    const link = new URL(`/blog/${post.slug}/`, root).href;
+    return [
+      '    <item>',
+      `      <title>${escXml(post.title)}</title>`,
+      `      <link>${escXml(link)}</link>`,
+      `      <guid isPermaLink="true">${escXml(link)}</guid>`,
+      `      <pubDate>${post.date.toUTCString()}</pubDate>`,
+      `      <description>${escXml(post.description)}</description>`,
+      ...post.tags.map((tag) => `      <category>${escXml(tag)}</category>`),
+      '    </item>',
+    ].join('\n');
+  });
+  const feed = new URL('/rss.xml', root).href;
+  const updated = posts
+    .map((p) => p.updated ?? p.date)
+    .reduce((latest, d) => (!latest || d > latest ? d : latest), null);
+
+  return [
+    '<?xml version="1.0" encoding="UTF-8"?>',
+    '<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">',
+    '  <channel>',
+    `    <title>${escXml(title)}</title>`,
+    `    <link>${escXml(new URL('/blog/', root).href)}</link>`,
+    `    <description>${escXml(description)}</description>`,
+    '    <language>en</language>',
+    `    <atom:link href="${escXml(feed)}" rel="self" type="application/rss+xml" />`,
+    ...(updated ? [`    <lastBuildDate>${updated.toUTCString()}</lastBuildDate>`] : []),
+    ...items,
+    '  </channel>',
+    '</rss>',
+    '',
+  ].join('\n');
+}
