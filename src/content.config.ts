@@ -3,7 +3,7 @@
  * @module content.config
  */
 import { defineCollection } from 'astro:content';
-import { file } from 'astro/loaders';
+import { file, glob } from 'astro/loaders';
 import { z } from 'astro/zod';
 import * as yaml from 'js-yaml';
 
@@ -51,4 +51,22 @@ const timeline = defineCollection({
   }),
 });
 
-export const collections = { projects, projectOverrides, timeline };
+// Blog posts: one Markdown file per post in src/content/blog/, the filename is
+// the URL (`my-post.md` → /blog/my-post/). Files starting with `_` are ignored.
+// Format and examples: docs/blog-post-template.md.
+const TAG = /^[a-z0-9]+(-[a-z0-9]+)*$/;
+const blog = defineCollection({
+  loader: glob({ pattern: '**/[^_]*.md', base: './src/content/blog' }),
+  schema: z.object({
+    title: z.string().min(1),
+    description: z.string().min(1).max(200, 'Keep the description to one sentence (200 characters at most)'),
+    date: z.coerce.date(),
+    updated: z.coerce.date().optional(),
+    tags: z.array(z.string().regex(TAG, 'Tags are lowercase words joined by dashes, like "rust" or "system-design"')).default([]),
+    // GitHub repo name of the related project (the key in src/data/projects.json).
+    project: z.string().optional(),
+    draft: z.boolean().default(false),
+  }),
+});
+
+export const collections = { projects, projectOverrides, timeline, blog };

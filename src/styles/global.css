@@ -102,6 +102,26 @@
   --green:        #9CCC65;
 }
 
+/* ── Code highlighting ──
+   Markdown code blocks use Shiki's `css-variables` theme (astro.config.mjs).
+   Pointing its variables at the palette above makes code follow `theme`. */
+:root {
+  --astro-code-foreground:              var(--text);
+  --astro-code-background:              var(--bg-secondary);
+  --astro-code-token-comment:           var(--text-muted);
+  --astro-code-token-keyword:           var(--prompt-tilde);
+  --astro-code-token-string:            var(--green);
+  --astro-code-token-string-expression: var(--green);
+  --astro-code-token-constant:          var(--yellow);
+  --astro-code-token-function:          var(--prompt-blue);
+  --astro-code-token-parameter:         var(--red);
+  --astro-code-token-punctuation:       var(--text-desc);
+  --astro-code-token-link:              var(--accent);
+  --astro-code-token-inserted:          var(--green);
+  --astro-code-token-deleted:           var(--red);
+  --astro-code-token-changed:           var(--yellow);
+}
+
 /* ── Reset ── */
 *, *::before, *::after {
   box-sizing: border-box;
