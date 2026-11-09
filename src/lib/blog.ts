@@ -5,6 +5,7 @@
  */
 import { getCollection, type CollectionEntry } from 'astro:content';
 import { countWords, readingMinutes, sortPosts } from './blog/util.mjs';
+import { getProjects } from './projects';
 
 export interface Post {
   slug: string;
@@ -33,5 +34,25 @@ export async function getPosts({ includeDrafts = import.meta.env.DEV } = {}): Pr
       entry,
     };
   });
+  await warnAboutUnknownProjects(posts);
   return sortPosts(posts);
+}
+
+// A post can name a project that isn't on the site (unpinned, renamed, or
+// hidden in overrides.yml). The post still builds, just without the link;
+// this says why, once per post per build.
+const warned = new Set<string>();
+async function warnAboutUnknownProjects(posts: { slug: string; project?: string }[]) {
+  const named = posts.filter((p) => p.project && !warned.has(p.slug));
+  if (named.length === 0) return;
+  const ids = new Set((await getProjects()).map((p) => p.id));
+  for (const post of named) {
+    warned.add(post.slug);
+    if (!ids.has(post.project!)) {
+      console.warn(
+        `[blog] ${post.slug}.md: project "${post.project}" isn't on the site, so the post won't link to it. ` +
+        `Use a repo name from src/data/projects.json (e.g. "${[...ids][0] ?? 'my-repo'}").`,
+      );
+    }
+  }
 }

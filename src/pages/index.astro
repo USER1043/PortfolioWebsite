@@ -7,6 +7,8 @@ import '../styles/global.css';
 import '../styles/terminal.css';
 import TerminalLayout from '../components/TerminalLayout.astro';
 import TerminalWindow from '../components/TerminalWindow.astro';
+import { getPosts } from '../lib/blog';
+import { isoDay } from '../lib/blog/util.mjs';
 import { getProjects } from '../lib/projects';
 import { getTimeline } from '../lib/timeline';
 import art from '../data/charizard-art.json';
@@ -15,6 +17,16 @@ import art from '../data/charizard-art.json';
 // `<` is escaped so a value can never close the <script> tag early.
 const terminalJson = JSON.stringify({
   projects: await getProjects(),
+  // Post summaries for `blog`, `ls blog` and `cat` (not the posts themselves).
+  posts: (await getPosts()).map((p) => ({
+    slug: p.slug,
+    title: p.title,
+    description: p.description,
+    date: isoDay(p.date),
+    tags: p.tags,
+    project: p.project,
+    minutes: p.minutes,
+  })),
   timeline: await getTimeline(),
   art,
 })

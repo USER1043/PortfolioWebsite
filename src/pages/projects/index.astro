@@ -3,9 +3,12 @@ import '../../styles/global.css';
 import '../../styles/terminal.css';
 import ProjectCard from '../../components/ProjectCard.astro';
 import BaseHead from '../../components/BaseHead.astro';
+import { getPosts } from '../../lib/blog';
 import { getProjects } from '../../lib/projects';
 
 const projects = await getProjects();
+const posts = await getPosts();
+const postsFor = (id: string) => posts.filter((p) => p.project === id);
 const buildTime = new Date().toISOString();
 ---
 
@@ -37,7 +40,7 @@ const buildTime = new Date().toISOString();
         <div class="projects-grid">
           {projects.length > 0 ? (
             projects.map((project) => (
-              <ProjectCard project={project} />
+              <ProjectCard project={project} posts={postsFor(project.id)} />
             ))
           ) : (
             <div class="empty-state">
@@ -48,7 +51,7 @@ const buildTime = new Date().toISOString();
 
         <div class="terminal-prompt">$ cd /</div>
         <div class="terminal-output">
-          <a href="/">Return to home →</a>
+          <a href="/">Return to home →</a> · <a href="/blog/">Writing →</a>
         </div>
       </div>
     </div>

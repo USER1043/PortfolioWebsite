@@ -19,6 +19,12 @@ const PROJECTS = [
   { id: "ss", name: "Sensory Safari", tech: ["React"], status: "Live", summary: "Animals.", whyItMatters: "Accessible.", demo: "https://ss.app" },
 ];
 
+const POSTS = [
+  { slug: "pp-tauri", title: "Why <PasswordPal> uses Tauri", description: "Desktop & small.", date: "2026-11-15", tags: ["rust", "desktop"], project: "pp", minutes: 6 },
+  { slug: "ss-a11y", title: "Accessible safari", description: "Screen readers.", date: "2026-10-01", tags: ["react"], project: "ss", minutes: 9 },
+  { slug: "notes", title: "Loose notes", description: "Misc.", date: "2026-09-03", tags: ["rust"], minutes: 2 },
+];
+
 // Records what commands print, instead of touching the DOM.
 class FakeRenderer {
   constructor() { this.out = []; }
@@ -28,14 +34,15 @@ class FakeRenderer {
   get text() { return this.out.map((o) => o.text ?? o.html).join("\n"); }
 }
 
-async function run(raw, { cwd = [], timeline = [], shell, random = () => 0, reducedMotion = false, theme = DEFAULT_THEME } = {}) {
+async function run(raw, { cwd = [], timeline = [], posts = POSTS, shell, random = () => 0, reducedMotion = false, theme = DEFAULT_THEME } = {}) {
   const registry = buildRegistry();
-  const calls = { opened: [], cwd: null, theme: null, matrix: 0 };
+  const calls = { opened: [], navigated: [], cwd: null, theme: null, matrix: 0 };
   const ctx = {
     r: new FakeRenderer(),
     registry,
     projects: PROJECTS,
-    fs: buildFs(PROJECTS),
+    posts,
+    fs: buildFs(PROJECTS, posts),
     shell: shell ?? { cwd },
     random,
     reducedMotion,
@@ -47,7 +54,7 @@ async function run(raw, { cwd = [], timeline = [], shell, random = () => 0, redu
     actions: {
       setCwd: (segs) => { calls.cwd = segs; },
       openUrl: (url) => calls.opened.push(url),
-      navigate: (url) => calls.opened.push(url),
+      navigate: (url) => { calls.opened.push(url); calls.navigated.push(url); },
       clear: async () => {},
       exit: async () => {},
       setTheme: (name) => { calls.theme = name; },
@@ -99,7 +106,7 @@ test("resolves paths without escaping home", () => {
 test("builds the filesystem from projects", () => {
   const fs = buildFs(PROJECTS);
   assert.equal(slugify("Sensory Safari"), "sensory-safari");
-  assert.deepEqual(listDir(fs).map((e) => e.name), ["projects", "about.txt", "contact.txt", "resume.pdf"]);
+  assert.deepEqual(listDir(fs).map((e) => e.name), ["blog", "projects", "about.txt", "contact.txt", "resume.pdf"]);
   const ss = getNode(fs, ["projects", "sensory-safari.md"]);
   assert.equal(ss.url, "https://ss.app"); // demo wins over GitHub
   assert.equal(getNode(fs, ["projects", "passwordpal.md"]).url, "https://github.com/u/pp");
@@ -111,7 +118,7 @@ test("completes paths, optionally directories only", () => {
   const fs = buildFs(PROJECTS);
   assert.deepEqual(completePath(fs, [], "pro"), ["projects/"]);
   assert.deepEqual(completePath(fs, [], "projects/s"), ["projects/sensory-safari.md"]);
-  assert.deepEqual(completePath(fs, [], "", { dirsOnly: true }), ["projects/"]);
+  assert.deepEqual(completePath(fs, [], "", { dirsOnly: true }), ["blog/", "projects/"]);
   assert.deepEqual(completePath(fs, ["projects"], "../ab"), ["../about.txt"]);
 });
 
@@ -409,4 +416,89 @@ test("ls without a path lists the current directory, not home", async () => {
   // cd with no argument still goes home.
   await run("cd", { shell });
   assert.deepEqual(shell.cwd, []);
+});
+
+/* ── blog ── */
+
+test("the blog folder holds one file per post", () => {
+  const fs = buildFs(PROJECTS, POSTS);
+  assert.deepEqual(listDir(getNode(fs, ["blog"])).map((e) => e.name), ["notes.md", "pp-tauri.md", "ss-a11y.md"]);
+  assert.equal(getNode(fs, ["blog", "pp-tauri.md"]).url, "/blog/pp-tauri/");
+  assert.equal(listDir(getNode(fs, ["blog"]))[1].date, "2026-11-15");
+  assert.deepEqual(listDir(getNode(buildFs(PROJECTS), ["blog"])), [], "exists even with no posts");
+  assert.deepEqual(completePath(fs, [], "blog/pp"), ["blog/pp-tauri.md"]);
+});
+
+test("ls -l blog shows each post's date", async () => {
+  const { text } = await run("ls -l blog");
+  assert.match(text, /-rw-r--r--  prajan  prajan<\/span>  <span class="t-warn">2026-11-15<\/span>  pp-tauri\.md/);
+  assert.match((await run("ls")).text, /blog\/<\/span>/);
+});
+
+test("cat on a post shows its details and how to read it", async () => {
+  const { text } = await run("cat blog/pp-tauri.md");
+  assert.match(text, /# Why <PasswordPal> uses Tauri/); // printed as text, not HTML
+  assert.match(text, /2026-11-15 · 6 min · #rust #desktop/);
+  assert.match(text, /Desktop & small\./);
+  assert.match(text, /href="\/blog\/pp-tauri\/">read it/);
+  assert.match(text, /open blog\/pp-tauri\.md/);
+});
+
+test("open goes to posts in the same tab, other links in a new one", async () => {
+  const post = await run("open pp-tauri.md", { cwd: ["blog"] });
+  assert.deepEqual(post.calls.navigated, ["/blog/pp-tauri/"]);
+  assert.doesNotMatch(post.text, /_blank/);
+  assert.deepEqual((await run("open blog")).calls.navigated, ["/blog/"]);
+  const resume = await run("open resume.pdf");
+  assert.deepEqual(resume.calls.navigated, []);
+  assert.deepEqual(resume.calls.opened, ["/Resume.pdf"]);
+});
+
+test("blog lists the latest posts, newest first, escaped", async () => {
+  const { text } = await run("blog");
+  assert.match(text, /\/\/ latest posts/);
+  assert.ok(text.indexOf("pp-tauri") < text.indexOf("ss-a11y"));
+  assert.match(text, /Why &lt;PasswordPal&gt; uses Tauri/);
+  assert.match(text, /6 min · #rust #desktop/);
+  assert.match(text, /All posts → <a href="\/blog\/">/);
+  assert.match(text, /blog --tag <desktop \| react \| rust>/);
+});
+
+test("blog shows at most five posts", async () => {
+  const many = Array.from({ length: 7 }, (_, i) => ({ ...POSTS[2], slug: `p${i}`, title: `Post ${i}` }));
+  const { text } = await run("blog", { posts: many });
+  assert.equal((text.match(/Post \d/g) ?? []).length, 5);
+});
+
+test("blog --tag filters, and explains unknown or missing tags", async () => {
+  const rust = await run("blog --tag Rust");
+  assert.match(rust.text, /posts tagged rust/);
+  assert.match(rust.text, /pp-tauri/);
+  assert.match(rust.text, /notes/);
+  assert.doesNotMatch(rust.text, /ss-a11y/);
+  assert.match(rust.text, /href="\/blog\/tag\/rust\/"/);
+  const none = await run("blog --tag go");
+  assert.match(none.text, /no posts tagged 'go'/);
+  assert.match(none.text, /tags: desktop, react, rust/);
+  assert.match((await run("blog --tag")).text, /--tag needs a tag/);
+});
+
+test("blog with no posts says so", async () => {
+  const { text } = await run("blog", { posts: [] });
+  assert.match(text, /No posts yet/);
+  assert.doesNotMatch(text, /Filter:/);
+});
+
+test("a project lists the posts written about it", async () => {
+  const pp = await run("cat projects/passwordpal.md");
+  assert.match(pp.text, /\/\/ posts/);
+  assert.match(pp.text, /href="\/blog\/pp-tauri\/">Why &lt;PasswordPal&gt; uses Tauri<\/a>/);
+  assert.doesNotMatch(pp.text, /ss-a11y/);
+  assert.doesNotMatch((await run("cat projects/passwordpal.md", { posts: [] })).text, /\/\/ posts/);
+});
+
+test("neofetch counts posts and projects points at the blog", async () => {
+  assert.match((await run("neofetch")).text, /Posts<\/span>: 3 \(try: blog\)/);
+  assert.match((await run("projects")).text, /Writing\s+→ <a href="\/blog\/">/);
+  assert.equal(completeInput("blog --t", { registry: buildRegistry(), fs: buildFs([]), cwd: [] }).value, "blog --tag ");
 });

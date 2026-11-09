@@ -3,9 +3,11 @@ import type { Project } from '../lib/projects';
 
 interface Props {
   project: Project;
+  /** Blog posts about this project, newest first. */
+  posts?: { slug: string; title: string }[];
 }
 
-const { project } = Astro.props;
+const { project, posts = [] } = Astro.props;
 ---
 
 <div class="project-card">
@@ -29,6 +31,17 @@ const { project } = Astro.props;
     <div class="project-section">
       <div class="project-section-title">Why it matters</div>
       <p class="project-description">{project.whyItMatters}</p>
+    </div>
+  )}
+
+  {posts.length > 0 && (
+    <div class="project-section">
+      <div class="project-section-title">Posts</div>
+      <ul class="project-description project-posts">
+        {posts.map((post: { slug: string; title: string }) => (
+          <li><a href={`/blog/${post.slug}/`}>{post.title} →</a></li>
+        ))}
+      </ul>
     </div>
   )}
 
@@ -121,6 +134,15 @@ const { project } = Astro.props;
 
   .project-description li {
     margin-bottom: 0.35rem;
+  }
+
+  .project-posts {
+    list-style: none;
+    padding: 0;
+  }
+
+  .project-posts li + li {
+    margin-top: 0.35rem;
   }
 
   .project-links {

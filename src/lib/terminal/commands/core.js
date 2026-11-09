@@ -7,6 +7,9 @@ import { GROUPS } from '../registry.js';
 import { STAGGER, escHtml } from '../util.js';
 import { BIO_LINES, EMAIL, NOW_LINES, SOCIAL, STACK } from './profile.js';
 
+// How many posts `blog` shows without --tag.
+export const BLOG_LATEST = 5;
+
 // "  label → value" row used by aboutme and social. `valueHtml` must be safe.
 export function labelRow(r, label, valueHtml, delay) {
   r.html(
@@ -144,7 +147,63 @@ const projects = {
     }
 
     r.blank();
-    r.html('  Full details → <a href="/projects">/projects</a>', 'terminal-line--muted', d);
+    r.html('  Full details → <a href="/projects">/projects</a>', 'terminal-line--muted', d); d += STAGGER;
+    r.html('  Writing      → <a href="/blog/">/blog</a> <span class="t-muted">(or: blog)</span>', 'terminal-line--muted', d);
+    return d + STAGGER;
+  },
+};
+
+const blog = {
+  name: 'blog',
+  group: 'about',
+  description: 'Show my latest posts',
+  usage: 'blog [--tag <tag>]',
+  complete: ['--tag'],
+  run({ r, posts }, { args }) {
+    const tagAt = args.findIndex((a) => a === '--tag' || a === '-t');
+    const tag = tagAt === -1 ? null : args[tagAt + 1]?.toLowerCase();
+    let d = 0;
+    r.blank();
+
+    if (tagAt !== -1 && !tag) {
+      r.line('blog: --tag needs a tag, e.g. blog --tag rust', 'terminal-line--error', 0);
+      return STAGGER;
+    }
+
+    const tags = [...new Set(posts.flatMap((p) => p.tags))].sort();
+    const list = tag ? posts.filter((p) => p.tags.includes(tag)) : posts.slice(0, BLOG_LATEST);
+
+    if (tag && list.length === 0) {
+      r.line(`blog: no posts tagged '${tag}'`, 'terminal-line--error', d); d += STAGGER;
+      if (tags.length) { r.line(`tags: ${tags.join(', ')}`, 'terminal-line--desc', d); d += STAGGER; }
+      return d;
+    }
+
+    r.line(tag ? `// posts tagged ${tag}` : '// latest posts', 'terminal-line--info', d); d += STAGGER;
+
+    if (posts.length === 0) {
+      r.blank();
+      r.line('  No posts yet. The first one is on its way.', 'terminal-line--desc', d);
+      return d + STAGGER;
+    }
+
+    for (const p of list) {
+      r.blank();
+      r.html(
+        `  <span class="t-warn">${escHtml(p.date)}</span>  ` +
+        `<a href="/blog/${encodeURIComponent(p.slug)}/">${escHtml(p.title)}</a>`,
+        'terminal-line--default',
+        d,
+      ); d += STAGGER;
+      r.line(`              ${p.minutes} min${p.tags.length ? ' · ' + p.tags.map((t) => `#${t}`).join(' ') : ''}`, 'terminal-line--muted', d); d += STAGGER;
+    }
+
+    r.blank();
+    const more = tag ? `/blog/tag/${encodeURIComponent(tag)}/` : '/blog/';
+    r.html(`  All posts → <a href="${more}">${escHtml(more)}</a>`, 'terminal-line--muted', d); d += STAGGER;
+    if (!tag && tags.length) {
+      r.line(`  Filter: blog --tag <${tags.slice(0, 4).join(' | ')}${tags.length > 4 ? ' | …' : ''}>`, 'terminal-line--muted', d); d += STAGGER;
+    }
     return d + STAGGER;
   },
 };
@@ -220,4 +279,4 @@ const exit = {
   },
 };
 
-export const coreCommands = [aboutme, projects, social, email, contact, help, history, clear, exit];
+export const coreCommands = [aboutme, projects, blog, social, email, contact, help, history, clear, exit];
