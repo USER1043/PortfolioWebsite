@@ -14,7 +14,7 @@ export interface Post {
   date: Date;
   updated?: Date;
   tags: string[];
-  /** GitHub repo name of the related project, as in src/data/projects.json. */
+  /** Only for posts about one of my projects: its GitHub repo name, as in src/data/projects.json. */
   project?: string;
   draft: boolean;
   words: number;

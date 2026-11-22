@@ -33,7 +33,7 @@ Welcome to my interactive terminal corner of the internet! A Modern-CLI styled p
   * **History & Autocomplete:** Up/Down history, bash-style `Tab` completion for commands and paths, "did you mean …?" for typos, `Ctrl+C` / `Ctrl+L`.
   * **Window Management:** Working minimize/maximize title bar controls.
   * **Shutdown & Reconnect:** Simulated Linux broadcast shutdown sequence and session reconnect overlay.
-* **✍️ Blog:** Posts about my projects at `/blog`, written as Markdown files in `src/content/blog/`. Each post reads like a `less` page: a man-page header, a `tree` table of contents, a sans body font (switch to mono with `:set font=`), `[WARN]`-style callouts, code coloured by the current theme, and a status bar with reading progress and `j`/`k`/`g`/`G`/`q` keys. Also: tag pages, an RSS feed at `/rss.xml`, and posts linked from their project cards and from the terminal.
+* **✍️ Blog:** Posts about my projects and general CS topics at `/blog`, written as Markdown files in `src/content/blog/`. Each post reads like a `less` page: a man-page header, a `tree` table of contents, a sans body font (switch to mono with `:set font=`), `[WARN]`-style callouts, code coloured by the current theme, and a status bar with reading progress and `j`/`k`/`g`/`G`/`q` keys. Also: tag pages, an RSS feed at `/rss.xml`, and posts about a project linked from its project card. Everything is reachable from the terminal too.
 * **🤖 Automatic Project Sync:** A daily GitHub Action reads your pinned repos, works out tech stack and status, has Claude Code summarise any README that changed, and opens a PR updating `src/data/projects.json`. The terminal `projects` command and the `/projects` page both read that one file.
 * **🛡️ Rate Limiting Engine:**
   * Custom rate limiter (`src/lib/rateLimit.mjs`) protecting API calls and the contact form.
@@ -148,11 +148,11 @@ This refreshes `src/data/projects.json` and writes any READMEs that need summari
 
 Posts are Markdown files in `src/content/blog/`; the filename is the URL (`my-post.md` → `/blog/my-post/`).
 
-1. Write rough notes, then turn them into a post with the AI prompt in [`docs/blog-post-template.md`](docs/blog-post-template.md). That file also has the post template (intro → problem → approach → what I'd do differently → conclusion) and everything a post can use.
+1. Write rough notes, then turn them into a post with the AI prompt in [`docs/blog-post-template.md`](docs/blog-post-template.md). That file has two templates, one for a post about one of my projects and one for a general CS topic, plus everything a post can use.
 2. Save the result as `src/content/blog/<slug>.md`. It starts as `draft: true`, which shows only in `npm run dev`.
 3. Check it at `http://localhost:4321/blog/<slug>/`, then set `draft: false` and commit.
 
-Every post needs a `title`, a one-sentence `description` and a `date`. `tags` and `project` (a GitHub repo name from `src/data/projects.json`) are optional. If something's wrong, the dev server and the build stop and name the file and the field.
+Every post needs a `title`, a one-sentence `description` and a `date`. `tags` are optional. `project` is only for posts about one of my projects (its GitHub repo name from `src/data/projects.json`); leave it out for anything else. If something's wrong, the dev server and the build stop and name the file and the field.
 
 ---
 

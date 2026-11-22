@@ -63,7 +63,8 @@ const blog = defineCollection({
     date: z.coerce.date(),
     updated: z.coerce.date().optional(),
     tags: z.array(z.string().regex(TAG, 'Tags are lowercase words joined by dashes, like "rust" or "system-design"')).default([]),
-    // GitHub repo name of the related project (the key in src/data/projects.json).
+    // Only for posts about one of my projects: its GitHub repo name (the key in
+    // src/data/projects.json). Leave it out for general posts.
     project: z.string().optional(),
     draft: z.boolean().default(false),
   }),

@@ -10,7 +10,7 @@ export const GET: APIRoute = async ({ site }) => {
   const xml = buildRss({
     site: site ?? new URL('https://prajan-karthik.vercel.app'),
     title: 'Prajan Karthik — Writing',
-    description: 'Posts about the projects I build: the problems, the decisions and the trade-offs.',
+    description: 'Posts about the projects I build and the computer science behind them.',
     posts: await getPosts(),
   });
   return new Response(xml, { headers: { 'Content-Type': 'application/rss+xml; charset=utf-8' } });

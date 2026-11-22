@@ -9,10 +9,70 @@ The quickest way to write one: jot rough notes, give them to your local AI with
 the [prompt below](#prompt-for-your-local-ai), save what it returns as
 `src/content/blog/<slug>.md`, then run `npm run dev` and open `/blog/<slug>/`.
 
-## The template
+## Pick a template
 
-Copy everything inside the block. The part between the `---` lines is the
-post's details. Everything below it is the post itself.
+There are two shapes. Both are suggestions: any `##` sections and `###`
+subsections work, so change the headings to fit what you're writing.
+
+- **A topic post** explains a CS idea: an algorithm, a data structure, how
+  something works under the hood, a concept you finally understood. It doesn't
+  need a project or a repo.
+- **A project post** walks through something you built: the problem, the
+  decisions and what they cost. It can link to the project's card.
+
+In both, the part between the `---` lines is the post's details. Everything
+below it is the post itself.
+
+### Topic post
+
+````markdown
+---
+title: How consistent hashing keeps caches from reshuffling
+description: One sentence, used in the post list, the RSS feed and link previews.
+date: 2026-11-22
+tags: [distributed-systems, algorithms]
+draft: false
+---
+
+## Intro
+
+Two or three sentences: what this post explains and why it's worth knowing.
+Say what the reader will understand by the end.
+
+## The problem it solves
+
+What goes wrong without it, in plain words. A small example helps.
+
+## How it works
+
+The idea in one paragraph, then the details.
+
+### <First piece of the idea>
+
+Explain one part at a time. Add a code block or a diagram if it helps.
+
+### <Second piece>
+
+Same again.
+
+## An example
+
+Walk through it once with real values, or show a short program.
+
+## Where it shows up
+
+- Real systems, libraries or problems that use it.
+
+## Gotchas
+
+- Mistakes people make, or limits of the idea.
+
+## Conclusion
+
+Two or three sentences: the one idea you want the reader to leave with.
+````
+
+### Project post
 
 ````markdown
 ---
@@ -20,7 +80,7 @@ title: How I think about Jobify's scraper engine
 description: One sentence, used in the post list, the RSS feed and link previews.
 date: 2026-11-09
 tags: [node, architecture]
-project: Jobify      # GitHub repo name; delete this line if the post isn't about one project
+project: Jobify      # GitHub repo name; delete this line if you'd rather not link the project
 draft: false
 ---
 
@@ -75,7 +135,7 @@ Two or three sentences: the one idea you want the reader to leave with.
 | `date` | yes | Publish date, `YYYY-MM-DD`. Posts are listed newest first. |
 | `updated` | no | Date of a meaningful edit, `YYYY-MM-DD`. |
 | `tags` | no | Lowercase words joined by dashes: `[rust, system-design]`. Each tag gets its own page. |
-| `project` | no | The project's GitHub repo name, exactly as in `src/data/projects.json`: for example `Talent-Radar` or `SentinelFlow`, not the display name. Links the post and the project to each other. |
+| `project` | no | Only for a post about one of your projects. Leave it out for topic posts and anything else. It's the project's GitHub repo name, exactly as in `src/data/projects.json`: for example `Talent-Radar` or `SentinelFlow`, not the display name. Links the post and the project card to each other, and labels the post "Project Notes" instead of "Notes". |
 | `draft` | no | `true` shows the post in `npm run dev` only. Defaults to `false`. |
 
 If a field is wrong, `npm run dev` and `npm run build` stop and name the file
@@ -161,11 +221,23 @@ title: <a specific title, under 70 characters>
 description: <one sentence, under 200 characters, saying what the reader learns>
 date: <today's date as YYYY-MM-DD>
 tags: [<2 to 4 lowercase tags, words joined by dashes>]
-project: <the project's GitHub repo name if the post is about one project, otherwise delete this line>
+project: <ONLY if the post is about one specific project I built: its GitHub repo name. Otherwise delete this line.>
 draft: true
 ---
 
-Then use exactly this structure:
+Then pick ONE structure.
+
+If the post explains a CS topic, idea or technique (not one of my projects), use:
+## Intro                     (2-3 sentences: what this explains and why it's worth knowing)
+## The problem it solves     (what goes wrong without it)
+## How it works              (the idea in one paragraph)
+### <one ### per part of the idea>
+## An example                (real values or a short program)
+## Where it shows up         (a bullet list)
+## Gotchas                   (a bullet list)
+## Conclusion                (2-3 sentences)
+
+If the post is about something I built, use:
 ## Intro                     (2-3 sentences: what this is about and why it was interesting)
 ## The problem               (what was hard)
 ### The constraints I had    (a bullet list)
@@ -175,11 +247,13 @@ Then use exactly this structure:
 ## What I'd do differently   (a bullet list)
 ## Conclusion                (2-3 sentences)
 
+If neither fits my notes, keep the Intro and Conclusion and choose clear ## sections in between.
+
 Rules:
 - Never use a single # heading.
 - Write in first person, in plain, direct sentences. Keep my own wording where it's clear.
-- Do not invent numbers, results, names or features that aren't in my notes. If something is missing, write TODO in its place.
-- Code blocks must name their language after the backticks (js, ts, python, rust, json, bash, yaml). Use `text` for diagrams.
+- Do not invent numbers, results, names, facts or features that aren't in my notes. If something is missing or you're unsure it's correct, write TODO in its place.
+- Code blocks must name their language after the backticks (js, ts, python, rust, c, cpp, java, go, json, bash, yaml). Use `text` for diagrams.
 - For a warning, tip, note or success, use a callout: a line "> [!WARN]", "> [!TIP]", "> [!NOTE]" or "> [!OK]", then the text on the next line starting with "> ".
 - No emoji, no HTML.
 

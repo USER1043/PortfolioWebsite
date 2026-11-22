@@ -32,6 +32,8 @@ const toc = tocTree(headings);
 const project = post.project ? (await getProjects()).find((p) => p.id === post.project) : undefined;
 const projectUrl = project ? (project.demo ?? project.github ?? '/projects/') : undefined;
 const file = `${post.slug}.md`;
+// Man-page section: posts about one of my projects vs. everything else.
+const section = post.project ? 'Project Notes' : 'Notes';
 ---
 
 <BlogLayout
@@ -44,7 +46,7 @@ const file = `${post.slug}.md`;
     <header>
       <div class="man-head" aria-hidden="true">
         <span class="man-name">{post.slug.toUpperCase()}(7)</span>
-        <span class="man-section">Project Notes</span>
+        <span class="man-section">{section}</span>
         <span class="man-date">{isoDay(post.date)}</span>
       </div>
 
