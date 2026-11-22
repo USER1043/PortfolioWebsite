@@ -17,8 +17,15 @@ export function slugify(name) {
   return name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
 }
 
-// Builds the home directory from the site's real data.
-export function buildFs(projects = []) {
+// Builds the home directory from the site's real data. `posts` are blog post
+// summaries (slug, title, description, date, tags, project, minutes).
+export function buildFs(projects = [], posts = []) {
+  const postFiles = {};
+  for (const post of posts) {
+    // Posts open in the same tab: they're part of this site.
+    postFiles[`${post.slug}.md`] = file('post', { post, url: `/blog/${post.slug}/`, sameTab: true });
+  }
+
   const projectFiles = {};
   for (const project of projects) {
     projectFiles[`${slugify(project.name)}.md`] = file('project', {
@@ -33,6 +40,7 @@ export function buildFs(projects = []) {
     'resume.pdf': file('binary', { url: '/Resume.pdf' }),
     '.secrets': file('secrets'),
     projects: { ...dir(projectFiles), url: '/projects' },
+    blog: { ...dir(postFiles), url: '/blog/', sameTab: true },
   });
 }
 
@@ -83,11 +91,12 @@ export function absolutePath(segs) {
   return [HOME, ...segs].join('/');
 }
 
-// Directory entries, directories first, each `{ name, type }`.
+// Directory entries, directories first, each `{ name, type, date? }`
+// (`date` is a blog post's publish day, shown by `ls -l`).
 export function listDir(node, { all = false } = {}) {
   return Object.entries(node.children)
     .filter(([name]) => all || !name.startsWith('.'))
-    .map(([name, child]) => ({ name, type: child.type }))
+    .map(([name, child]) => ({ name, type: child.type, ...(child.post ? { date: child.post.date } : {}) }))
     .sort((a, b) => (a.type === b.type ? a.name.localeCompare(b.name) : a.type === 'dir' ? -1 : 1));
 }
 

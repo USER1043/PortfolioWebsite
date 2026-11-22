@@ -1,0 +1,35 @@
+---
+/**
+ * @file /blog/tag/<tag>/ — the posts with one tag.
+ * @module pages/blog/tag/[tag]
+ */
+import BlogIndex from '../../../components/BlogIndex.astro';
+import BlogLayout from '../../../components/BlogLayout.astro';
+import { getPosts, type Post } from '../../../lib/blog';
+import { tagCounts } from '../../../lib/blog/util.mjs';
+
+export async function getStaticPaths() {
+  const posts = await getPosts();
+  const tags = tagCounts(posts);
+  return tags.map(({ tag }) => ({
+    params: { tag },
+    props: { tag, tags, posts: posts.filter((p) => p.tags.includes(tag)) },
+  }));
+}
+
+interface Props {
+  tag: string;
+  tags: { tag: string; count: number }[];
+  posts: Post[];
+}
+
+const { tag, tags, posts } = Astro.props;
+---
+
+<BlogLayout
+  title={`#${tag} - Writing - prajan@portfolio`}
+  description={`Posts by Prajan Karthik tagged ${tag}.`}
+  command={`~/blog$ ls -lt | grep ${tag}`}
+>
+  <BlogIndex posts={posts} tags={tags} tag={tag} />
+</BlogLayout>

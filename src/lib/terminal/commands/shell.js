@@ -39,7 +39,7 @@ export function artToHtml(art) {
 }
 
 // The info column as [label, value] pairs (label null for the header lines).
-export function neofetchInfo({ projects, startedAt, theme = 'mocha', now = Date.now() }) {
+export function neofetchInfo({ projects, posts = [], startedAt, theme = 'mocha', now = Date.now() }) {
   return [
     [null, `${SYSTEM.user}@${SYSTEM.host}`],
     [null, '-'.repeat(`${SYSTEM.user}@${SYSTEM.host}`.length)],
@@ -49,6 +49,7 @@ export function neofetchInfo({ projects, startedAt, theme = 'mocha', now = Date.
     ['Shell', SYSTEM.shell],
     ['Uptime', formatDuration(now - startedAt)],
     ['Projects', `${projects.length} (try: ls projects)`],
+    ['Posts', `${posts.length} (try: blog)`],
     ['Role', SYSTEM.role],
     ['Stack', SYSTEM.stack],
     ['Theme', theme],
@@ -117,7 +118,8 @@ const ls = {
     if (flags.includes('l') || name === 'll') {
       entries.forEach((e, i) => {
         const perms = e.type === 'dir' ? 'drwxr-xr-x' : '-rw-r--r--';
-        r.html(`<span class="t-muted">${perms}  prajan  prajan</span>  ${fmt(e)}`, 'terminal-line--default', i * 30);
+        const date = e.date ? `  <span class="t-warn">${escHtml(e.date)}</span>` : '';
+        r.html(`<span class="t-muted">${perms}  prajan  prajan</span>${date}  ${fmt(e)}`, 'terminal-line--default', i * 30);
       });
       return entries.length * 30 + STAGGER;
     }
@@ -155,8 +157,34 @@ const pwd = {
   },
 };
 
+// "2026-11-09 · 8 min · #rust #cli" for a post.
+export function postMeta(post) {
+  return [post.date, `${post.minutes} min`, post.tags.map((t) => `#${t}`).join(' ')].filter(Boolean).join(' · ');
+}
+
+// A linked post title, for `blog` and the related posts under a project.
+export function postLink(post) {
+  return `<a href="/blog/${encodeURIComponent(post.slug)}/">${escHtml(post.title)}</a>`;
+}
+
+// Lines for `cat` on a blog post: what it is, then how to read it.
+function postLines(r, post, path, d) {
+  r.line(`# ${post.title}`, 'terminal-line--info', d); d += STAGGER;
+  r.line(postMeta(post), 'terminal-line--muted', d); d += STAGGER;
+  r.blank();
+  r.line(post.description, 'terminal-line--default', d); d += STAGGER;
+  r.blank();
+  r.html(
+    `<span class="t-muted">→</span> <a href="/blog/${encodeURIComponent(post.slug)}/">read it</a>` +
+    `<span class="t-muted">  (or: open ${escHtml(path)})</span>`,
+    'terminal-line--default',
+    d,
+  );
+  return d + STAGGER;
+}
+
 // Lines for `cat` on a project file.
-function projectLines(r, p, d) {
+function projectLines(r, p, d, posts = []) {
   r.line(`# ${p.name}`, 'terminal-line--info', d); d += STAGGER;
   r.line(`${p.tech.join(' · ')}  —  ${p.status}`, 'terminal-line--muted', d); d += STAGGER;
   r.blank();
@@ -171,6 +199,15 @@ function projectLines(r, p, d) {
     labelRow(r, label, `<a href="${escHtml(url)}" target="_blank" rel="noopener noreferrer">${escHtml(url)}</a>`, d);
     d += STAGGER;
   }
+  const related = posts.filter((post) => post.project === p.id);
+  if (related.length > 0) {
+    r.blank();
+    r.line('// posts', 'terminal-line--info', d); d += STAGGER;
+    for (const post of related) {
+      r.html(`  ${postLink(post)}  <span class="t-muted">${escHtml(post.date)}</span>`, 'terminal-line--default', d);
+      d += STAGGER;
+    }
+  }
   return d;
 }
 
@@ -180,7 +217,7 @@ const cat = {
   description: 'Print a file',
   usage: 'cat <file>',
   complete: 'path',
-  run({ r, fs, shell }, { args }) {
+  run({ r, fs, shell, posts }, { args }) {
     const target = args[0];
     if (!target) return fail(r, 'cat: missing file operand (try: ls)');
     const node = getNode(fs, resolvePath(shell.cwd, target));
@@ -203,7 +240,10 @@ const cat = {
         labelRow(r, 'Message  ', '<a href="/contact">/contact</a>', d); d += STAGGER;
         break;
       case 'project':
-        d = projectLines(r, node.project, d);
+        d = projectLines(r, node.project, d, posts);
+        break;
+      case 'post':
+        d = postLines(r, node.post, target, d);
         break;
       case 'secrets':
         d = printLines(r, [
@@ -241,12 +281,10 @@ const open = {
     if (!node.url) return fail(r, `open: ${target}: nothing to open — try: cat ${target}`);
 
     r.blank();
-    r.html(
-      `Opening <a href="${escHtml(node.url)}" target="_blank" rel="noopener noreferrer">${escHtml(node.url)}</a>…`,
-      'terminal-line--muted',
-      0,
-    );
-    actions.openUrl(node.url);
+    const newTab = node.sameTab ? '' : ' target="_blank" rel="noopener noreferrer"';
+    r.html(`Opening <a href="${escHtml(node.url)}"${newTab}>${escHtml(node.url)}</a>…`, 'terminal-line--muted', 0);
+    if (node.sameTab) actions.navigate(node.url);
+    else actions.openUrl(node.url);
     return STAGGER;
   },
 };

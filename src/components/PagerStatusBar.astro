@@ -1,0 +1,95 @@
+---
+/**
+ * @file The `less`-style status bar at the bottom of blog pages: file name,
+ * reading time, body-font switch, key hints and how far you've read.
+ * Keys: j/k scroll, d/u half a page, g/G top/end, q back to the post list.
+ * @module components/PagerStatusBar
+ */
+interface Props {
+  file: string;
+  minutes?: number;
+  /** Where `q` goes. */
+  back?: string;
+}
+
+const { file, minutes, back = '/blog/' } = Astro.props;
+---
+
+<div class="pager-progress" id="pager-progress" aria-hidden="true"></div>
+<div class="pager-status" data-back={back}>
+  <div class="pager-left">
+    <span class="pager-mode">LESS</span>
+    <span class="pager-file">{file}</span>
+    {minutes && <span class="pager-time">~{minutes} min</span>}
+  </div>
+  <div class="pager-right">
+    <button type="button" class="pager-font" id="pager-font">:set font=sans</button>
+    <span class="pager-keys" aria-hidden="true">j/k scroll · g/G top/end · q back</span>
+    <span class="pager-pct" id="pager-pct" aria-hidden="true">Top</span>
+  </div>
+</div>
+
+<script>
+  const root = document.documentElement;
+  const status = document.querySelector<HTMLElement>('.pager-status');
+  const pct = document.getElementById('pager-pct');
+  const bar = document.getElementById('pager-progress');
+  const fontBtn = document.getElementById('pager-font');
+  const back = status?.dataset.back ?? '/blog/';
+  const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* ── body font ── */
+  const showFont = () => {
+    const font = root.dataset.font === 'mono' ? 'mono' : 'sans';
+    if (fontBtn) {
+      fontBtn.textContent = `:set font=${font}`;
+      fontBtn.setAttribute('aria-label', `Body font: ${font}. Switch to ${font === 'mono' ? 'sans' : 'mono'}.`);
+    }
+  };
+  fontBtn?.addEventListener('click', () => {
+    const next = root.dataset.font === 'mono' ? 'sans' : 'mono';
+    if (next === 'mono') root.dataset.font = 'mono';
+    else delete root.dataset.font;
+    try { localStorage.setItem('blog-font', next); } catch { /* not saved */ }
+    showFont();
+  });
+  showFont();
+
+  /* ── reading position ── */
+  let queued = false;
+  const update = () => {
+    queued = false;
+    const max = document.documentElement.scrollHeight - window.innerHeight;
+    const p = max > 0 ? Math.min(1, Math.max(0, window.scrollY / max)) : 1;
+    if (pct) pct.textContent = max <= 0 ? 'All' : p < 0.005 ? 'Top' : p > 0.995 ? 'Bot' : `${Math.round(p * 100)}%`;
+    if (bar) bar.style.transform = `scaleX(${p})`;
+  };
+  const queue = () => { if (!queued) { queued = true; requestAnimationFrame(update); } };
+  window.addEventListener('scroll', queue, { passive: true });
+  window.addEventListener('resize', queue);
+  update();
+
+  /* ── keys ── */
+  const typing = (el: EventTarget | null) =>
+    el instanceof HTMLElement && (el.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(el.tagName));
+
+  window.addEventListener('keydown', (e) => {
+    if (e.metaKey || e.ctrlKey || e.altKey || typing(e.target)) return;
+    const behavior: ScrollBehavior = reduced ? 'auto' : 'smooth';
+    const half = window.innerHeight / 2;
+    const actions: Record<string, () => void> = {
+      j: () => window.scrollBy({ top: 80, behavior }),
+      k: () => window.scrollBy({ top: -80, behavior }),
+      d: () => window.scrollBy({ top: half, behavior }),
+      u: () => window.scrollBy({ top: -half, behavior }),
+      g: () => window.scrollTo({ top: 0, behavior }),
+      G: () => window.scrollTo({ top: document.documentElement.scrollHeight, behavior }),
+      q: () => { window.location.href = back; },
+    };
+    const action = actions[e.key];
+    if (action) {
+      e.preventDefault();
+      action();
+    }
+  });
+</script>

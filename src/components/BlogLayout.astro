@@ -1,0 +1,59 @@
+---
+/**
+ * @file Page shell for the blog: a terminal window that scrolls with the page,
+ * the reading font, and the visitor's saved font choice applied before paint.
+ * @module components/BlogLayout
+ */
+import '../styles/global.css';
+import '../styles/terminal.css';
+import '../styles/blog.css';
+import BaseHead from './BaseHead.astro';
+import TuxIcon from './TuxIcon.astro';
+
+interface Props {
+  title: string;
+  description: string;
+  /** Shown in the title bar, e.g. "~/blog $ less my-post.md". */
+  command: string;
+  article?: { published: Date; modified?: Date; tags?: string[] };
+}
+
+const { title, description, command, article } = Astro.props;
+---
+
+<html lang="en">
+  <head>
+    <BaseHead title={title} description={description} article={article} />
+    <link
+      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@0,400;0,600;1,400&display=swap"
+      rel="stylesheet"
+    />
+    <!-- Body font chosen with the status bar's `:set font=` button (sans by default). -->
+    <script is:inline>
+      try {
+        if (localStorage.getItem('blog-font') === 'mono') document.documentElement.dataset.font = 'mono';
+      } catch {
+        // Storage unavailable: keep the default font.
+      }
+    </script>
+  </head>
+  <body class="blog">
+    <div class="blog-shell">
+      <div class="blog-window">
+        <div class="terminal-titlebar">
+          <div class="titlebar-left">
+            <TuxIcon />
+            <span class="titlebar-username blog-command">
+              <a href="/">prajan@portfolio</a>:{command}
+            </span>
+          </div>
+          <div class="titlebar-buttons">
+            <a href="/" class="win-btn win-btn--close" aria-label="Back to the terminal" title="Back to the terminal"></a>
+          </div>
+        </div>
+        <slot />
+      </div>
+    </div>
+    <slot name="after" />
+  </body>
+</html>

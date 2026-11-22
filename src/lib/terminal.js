@@ -150,7 +150,7 @@ async function exitSequence(r, terminalWindowEl, sessionEndedEl, bodyEl) {
    ───────────────────────────────────────────── */
 
 // Bootstraps the interactive terminal — call once after the DOM is ready.
-// `data` carries the site content: { projects, art, timeline }.
+// `data` carries the site content: { projects, posts, art, timeline }.
 export function initTerminal({
   outputEl, inputEl, bodyEl, terminalWindowEl, sessionEndedEl, promptCwdEl, data = {},
 }) {
@@ -158,7 +158,8 @@ export function initTerminal({
   const cmdHist  = new CommandHistory();
   const registry = buildRegistry();
   const projects = data.projects ?? [];
-  const fs       = buildFs(projects);
+  const posts    = data.posts ?? [];
+  const fs       = buildFs(projects, posts);
   const shell    = { cwd: [], inVim: false };
   /** @type {string[]} */
   let sessionLog = [];
@@ -195,6 +196,7 @@ export function initTerminal({
     r,
     registry,
     projects,
+    posts,
     fs,
     shell,
     actions,
