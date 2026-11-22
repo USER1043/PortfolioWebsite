@@ -50,7 +50,7 @@ Welcome to my interactive terminal corner of the internet! A Modern-CLI styled p
 * **Styling:** Custom CSS Variables, Flexbox, CSS Grid, CSS Animations
 * **API & Integrations:** GitHub REST + GraphQL API, Claude Code GitHub Action, Formspree
 * **Testing:** Node.js Native Test Runner (`node --test`)
-* **Environment Management:** Node.js v20+ / `fnm`
+* **Environment Management:** Node.js 24 (pinned in `.node-version`) / `fnm`
 
 ---
 
@@ -160,8 +160,8 @@ Every post needs a `title`, a one-sentence `description` and a `date`. `tags` ar
 
 ### Prerequisites
 
-* Node.js v20.0.0 or higher.
-* `npm` v10+
+* Node.js 24, the version in `.node-version` (`fnm use` picks it up).
+* `npm` v11+ (ships with Node 24)
 
 ### Installation
 
