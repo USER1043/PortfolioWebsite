@@ -1,5 +1,18 @@
 [
   {
+    "id": "cloudsync",
+    "name": "CloudSync",
+    "github": "https://github.com/USER1043/cloudsync",
+    "tech": [
+      "Go"
+    ],
+    "status": "Active",
+    "summary": "Keeps a folder identical across Windows and Linux computers by syncing it through Google Drive, with two-way sync and a background service that starts at login.",
+    "whyItMatters": "Built for a dual-boot laptop where only one OS runs at a time. Transfers are verified by MD5 checksum, conflicts keep both copies, and a big-delete guard holds mass deletions until you approve them.",
+    "readmeSha": "f96cee7cb6b215fe4f53f2cc8268d4858d7a9aae",
+    "order": 0
+  },
+  {
     "id": "PasswordPal_Frontend",
     "name": "PasswordPal",
     "github": "https://github.com/USER1043/PasswordPal_Frontend",
@@ -14,19 +27,6 @@
     "summary": "A zero-knowledge, local-first desktop password manager built with Tauri v2, React and Rust, where the vault is encrypted on the device before anything is synced.",
     "whyItMatters": "The server only ever stores ciphertext it cannot read. Keys are derived with Argon2id, vaults use AES-256-GCM, and a recovery key lets users reset a forgotten master password via an Ed25519 signature.",
     "readmeSha": "98252867187e8211a7ddfcff842fe8adeb494df3",
-    "order": 0
-  },
-  {
-    "id": "Distributed-Auction-System",
-    "name": "Distributed Auction System",
-    "github": "https://github.com/EliteGamer007/Distributed-Auction-System",
-    "tech": [
-      "Go"
-    ],
-    "status": "Paused",
-    "summary": "A fault-tolerant real-time online auction built in Go, where four independent nodes coordinate over RPC using classic distributed systems algorithms.",
-    "whyItMatters": "It implements Bully election, Ricart-Agrawala mutual exclusion, two-phase commit with majority quorum, and Koo-Toueg checkpointing end-to-end, with crash recovery and transaction logging across laptops on Wi-Fi.",
-    "readmeSha": "fe1c13c14f0470127df7a370843699e208c09b03",
     "order": 1
   },
   {
@@ -48,14 +48,15 @@
     "id": "Monday.com-BI-Agent",
     "name": "Monday.com BI Agent",
     "github": "https://github.com/USER1043/Monday.com-BI-Agent",
+    "demo": "https://founder-bi-agent.streamlit.app/",
     "tech": [
       "Streamlit",
       "Python"
     ],
-    "status": "Active",
-    "summary": "A conversational assistant that answers founders' questions about sales pipeline and work order data from two Monday.com boards, using Llama 3.3 70B via Groq and the Monday.com MCP server.",
-    "whyItMatters": "Real board data has messy currencies, dates, nulls and contradictory statuses. A deterministic normalization layer cleans it and every answer discloses data quality issues, including the stage-based fallback used when 75% of deals lack a probability.",
-    "readmeSha": "54c3a522737530a78226cceb70254d44e26ce241",
+    "status": "Live",
+    "summary": "A conversational Streamlit assistant that answers natural-language questions about sales pipeline and work order data pulled from two Monday.com boards.",
+    "whyItMatters": "It normalizes messy data such as currency strings, mixed units and null values, and discloses anomalies in every answer. Tool figures are tested against independent pandas calculations from the raw Excel files.",
+    "readmeSha": "5a2aa67e0812882dd0fc4f297dfeb48cd9abb041",
     "order": 3
   },
   {
